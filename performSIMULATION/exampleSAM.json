@@ -1,0 +1,1 @@
+{"RandomVariables": [{"distribution": "normal", "mean": 1.0, "name": "kFactor", "value": "RV.kFactor", "stdDev": 0.10000000000000001}, {"distribution": "normal", "mean": 1.0, "name": "dampFactor", "value": "RV.dampFactor", "stdDev": 0.10000000000000001}]}

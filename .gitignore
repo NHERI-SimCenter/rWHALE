@@ -1,0 +1,57 @@
+# Prerequisites
+*.d
+
+# old text editor files
+*~
+
+# Qt created files
+moc*
+
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Fortran module files
+*.mod
+*.smod
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
+
+# QT
+*.pro.user
+
+# EXAMPLE & EXE
+*.out
+createBIM/createBIM
+createEVENT
+createEDP
+createSAM
+createLOSS
+createDL/DL-data.tar.gz
+mainPreprocessor
+mainPostprocessor
+*.tcl
+
+*.gz
+*.csv
+
