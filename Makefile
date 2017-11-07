@@ -1,13 +1,12 @@
 
 all:
 	cd createBIM; make
-	cd createEVENT; make
-
-test:
-	cd createSAM; make
 	cd createEDP; make
+	cd createEVENT; make
+	cd createSAM; make
 	cd performSIMULATION; make
-	cd createDL; make
+	cd performUQ; make
+	cd createLOSS; make
 
 HazusLossEstimator.o: HazusLossEstimator.cpp HazusLossEstimator.h
 
@@ -22,7 +21,7 @@ clean:
 	cd createSAM; make clean
 	cd createEDP; make clean
 	cd performSIMULATION; make clean
-	cd createDL; make clean
+	cd createLOSS; make clean
 	$(RM) $(OBJS) *~ \#*
 
 distclean: clean
@@ -31,6 +30,6 @@ distclean: clean
 	cd createSAM; make distclean
 	cd createEDP; make distclean
 	cd performSIMULATION; make distclean
-	cd createDL; make distclean
+	cd createLOSS; make distclean
 
 

@@ -46,10 +46,16 @@ createBIM/createBIM
 createEVENT/createEVENT
 createEDP/createEDP
 createSAM/createSAM
-createDL/createLOSS
-createDL/DL-data.tar.gz
+createLOSS/createLOSS
+createLOSS/DL-data.tar.gz
+performUQ/extractEDP
+performUQ/finishUP.sh
+getUncertainty
 mainPreprocessor
 mainPostprocessor
+dakota*
+templatedir
+workdir.*
 *.tcl
 
 *.gz

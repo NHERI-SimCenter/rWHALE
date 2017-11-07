@@ -13,7 +13,7 @@ SRCS=createSAM.cpp \
 	HazusSAM_Generator.cpp
 
 OBJS= FloorParam.o InterstoryParam.o Building.o \
-	HazusSAM_Generator.o
+	HazusSAM_Generator.o 
 
 all: createSAM processSAM
 
@@ -29,10 +29,10 @@ createSAM.o: createSAM.cpp
 
 processSAM.o: processSAM.cpp
 
-createSAM: $(OBJS)
+createSAM: $(OBJS) createSAM.o
 	$(CXX) $(LDFLAGS) -o createSAM createSAM.o $(OBJS) $(LDLIBS)
 
-processSAM: $(OBJS)
+processSAM: $(OBJS) processSAM.o
 	$(CXX) $(LDFLAGS) -o processSAM processSAM.o $(OBJS) $(LDLIBS)
 
 clean:
