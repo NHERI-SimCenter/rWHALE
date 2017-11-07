@@ -1,0 +1,152 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FragilityCurve FileVersion="2.0">
+  <UniqueID>5b600868-6be2-46d3-a300-34163af596fc</UniqueID>
+  <ID>B1042.022a</ID>
+  <Description>None</Description>
+  <BasicUnit>Each</BasicUnit>
+  <Name>Concrete link beam, conventionally reinforced, aspect ratio between 1.0 and 2.0, beam &gt; 24" wide and depth &lt; 30"</Name>
+  <Author>John Wallace</Author>
+  <Correlation>0</Correlation>
+  <Directional>true</Directional>
+  <EDPType>
+    <Dimension>NumLevels</Dimension>
+    <TypeName>Link Beam Chord Rotation</TypeName>
+    <DefaultUnits>Radian</DefaultUnits>
+    <UserDefined>false</UserDefined>
+  </EDPType>
+  <Ratings>
+    <DataQuality>NA</DataQuality>
+    <DataRelevance>NA</DataRelevance>
+    <Documentation>NA</Documentation>
+    <Rationality>NA</Rationality>
+  </Ratings>
+  <Official>true</Official>
+  <DateCreated>2016-09-23T16:13:55.6344487-07:00</DateCreated>
+  <Approved>true</Approved>
+  <Incomplete>true</Incomplete>
+  <Notes>None
+Import errors:
+ Warning, Data missing: B1042.022a:DS3:Time: Could not parse CurveType - Assuming Normal
+Warning, Data missing: B1042.022a:DS3:Time: Could not parse Upper Quantity cost - Assuming 0
+Warning, Data missing: B1042.022a:DS3:Time: Could not parse Lower Quantity cost - Assuming 0
+Warning, Data missing: B1042.022a:DS3:Time: Could not parse Dispersion - Assuming 0.5
+Warning, Data missing: B1042.022a:DS3:Cost: Could not parse CurveType - Assuming Normal
+Warning, Data missing: B1042.022a:DS3:Cost: Could not parse Upper Quantity cost - Assuming 0
+Warning, Data missing: B1042.022a:DS3:Cost: Could not parse Lower Quantity cost - Assuming 0
+Warning, Data missing: B1042.022a:DS3:Cost: Could not parse Dispersion - Assuming 0.5
+Warning: B1042.022a: B1042.022a: DS1 overlaps DS2 at 0.003425 - Make sure damage states are minimally overlapping
+Warning: B1042.022a: B1042.022a: DS2 overlaps DS3 in the range of 0.003425 to 0.0137 - Make sure damage states are minimally overlapping
+</Notes>
+  <UseEDPValueOfFloorAbove>false</UseEDPValueOfFloorAbove>
+  <DamageStates>
+    <DSGroupType>Sequential</DSGroupType>
+    <DamageState>
+      <Name></Name>
+      <Description>Residual cracks no greater than 1/16 inch.  Cracks are mainly at the beam to wall interface, some limited flexural cracking.</Description>
+      <DamageImageName></DamageImageName>
+      <ConsequenceGroup>
+        <RepairMeasures>Epoxy inject cracks (200 to 240 inches in length).</RepairMeasures>
+        <TagState>0</TagState>
+        <UseCasualty>false</UseCasualty>
+        <LongLeadFlag>false</LongLeadFlag>
+        <AffectedFloorArea />
+        <AffectedDeathRate>0</AffectedDeathRate>
+        <AffectedInjuryRate>0</AffectedInjuryRate>
+        <AffectedDeathRateBeta>0</AffectedDeathRateBeta>
+        <AffectedInjuryRateBeta>0</AffectedInjuryRateBeta>
+        <RedTagMedian>0</RedTagMedian>
+        <RedTagBeta>0</RedTagBeta>
+        <CostConsequence>
+          <LowerQuantity>1</LowerQuantity>
+          <MaxAmount>9840</MaxAmount>
+          <UpperQuantity>14</UpperQuantity>
+          <MinAmount>6560</MinAmount>
+          <Uncertainty>0.0808</Uncertainty>
+          <CurveType>LogNormal</CurveType>
+        </CostConsequence>
+        <TimeConsequence>
+          <LowerQuantity>1</LowerQuantity>
+          <MaxAmount>8.3963</MaxAmount>
+          <UpperQuantity>14</UpperQuantity>
+          <MinAmount>5.5987</MinAmount>
+          <Uncertainty>0.2627</Uncertainty>
+          <CurveType>LogNormal</CurveType>
+        </TimeConsequence>
+      </ConsequenceGroup>
+      <Median>0.0137</Median>
+      <Beta>0.21</Beta>
+    </DamageState>
+    <DamageState>
+      <Name></Name>
+      <Description>Residual cracks greater than 1/8 inch and minor spalling of concrete.</Description>
+      <DamageImageName></DamageImageName>
+      <ConsequenceGroup>
+        <RepairMeasures>Epoxy inject cracks (600 to 720 inches) and slab (300 inches), replace spalled concrete.</RepairMeasures>
+        <TagState>0</TagState>
+        <UseCasualty>false</UseCasualty>
+        <LongLeadFlag>false</LongLeadFlag>
+        <AffectedFloorArea />
+        <AffectedDeathRate>0</AffectedDeathRate>
+        <AffectedInjuryRate>0</AffectedInjuryRate>
+        <AffectedDeathRateBeta>0</AffectedDeathRateBeta>
+        <AffectedInjuryRateBeta>0</AffectedInjuryRateBeta>
+        <RedTagMedian>0</RedTagMedian>
+        <RedTagBeta>0</RedTagBeta>
+        <CostConsequence>
+          <LowerQuantity>1</LowerQuantity>
+          <MaxAmount>14850</MaxAmount>
+          <UpperQuantity>14</UpperQuantity>
+          <MinAmount>9900</MinAmount>
+          <Uncertainty>0.1287</Uncertainty>
+          <CurveType>Normal</CurveType>
+        </CostConsequence>
+        <TimeConsequence>
+          <LowerQuantity>1</LowerQuantity>
+          <MaxAmount>12.6635</MaxAmount>
+          <UpperQuantity>14</UpperQuantity>
+          <MinAmount>8.4415</MinAmount>
+          <Uncertainty>0.2812</Uncertainty>
+          <CurveType>Normal</CurveType>
+        </TimeConsequence>
+      </ConsequenceGroup>
+      <Median>0.0264</Median>
+      <Beta>0.33</Beta>
+    </DamageState>
+    <DamageState>
+      <Name></Name>
+      <Description>Significant strength degradation (&lt;0.8Vn), buckling or fracture of diagonal reinforcing, crushing of concrete.</Description>
+      <DamageImageName></DamageImageName>
+      <ConsequenceGroup>
+        <RepairMeasures>Chip away damaged concrete, attached mechanical couplers to the diagonal bars still embedded in the wall, replace damaged or fractured reinforcing.  Replace damaged concrete.  </RepairMeasures>
+        <TagState>Red</TagState>
+        <UseCasualty>false</UseCasualty>
+        <LongLeadFlag>false</LongLeadFlag>
+        <AffectedFloorArea />
+        <AffectedDeathRate>0</AffectedDeathRate>
+        <AffectedInjuryRate>0</AffectedInjuryRate>
+        <AffectedDeathRateBeta>0</AffectedDeathRateBeta>
+        <AffectedInjuryRateBeta>0</AffectedInjuryRateBeta>
+        <RedTagMedian>0.25</RedTagMedian>
+        <RedTagBeta>0.5</RedTagBeta>
+        <CostConsequence>
+          <LowerQuantity>1</LowerQuantity>
+          <MaxAmount>0</MaxAmount>
+          <UpperQuantity>1</UpperQuantity>
+          <MinAmount>0</MinAmount>
+          <Uncertainty>0.5</Uncertainty>
+          <CurveType>Normal</CurveType>
+        </CostConsequence>
+        <TimeConsequence>
+          <LowerQuantity>1</LowerQuantity>
+          <MaxAmount>0</MaxAmount>
+          <UpperQuantity>1</UpperQuantity>
+          <MinAmount>0</MinAmount>
+          <Uncertainty>0.5</Uncertainty>
+          <CurveType>Normal</CurveType>
+        </TimeConsequence>
+      </ConsequenceGroup>
+      <Median>0.0428</Median>
+      <Beta>0.74</Beta>
+    </DamageState>
+  </DamageStates>
+</FragilityCurve>

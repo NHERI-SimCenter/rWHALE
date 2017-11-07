@@ -1,0 +1,157 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FragilityCurve FileVersion="2.0">
+  <UniqueID>8c020b99-a0b9-404d-bc16-2dadc4b2626e</UniqueID>
+  <ID>D5092.013b</ID>
+  <Description>Costing is per unit.</Description>
+  <BasicUnit>Each</BasicUnit>
+  <Name>Battery Rack - Capacity: all - Equipment that is either hard anchored or is vibration isolated with seismic snubbers/restraints - Equipment fragility only</Name>
+  <Author>Not Given</Author>
+  <Correlation>0</Correlation>
+  <Directional>false</Directional>
+  <EDPType>
+    <Dimension>NumLevelsPlusOne</Dimension>
+    <TypeName>Acceleration</TypeName>
+    <DefaultUnits>g</DefaultUnits>
+    <UserDefined>false</UserDefined>
+  </EDPType>
+  <Ratings>
+    <DataQuality>Superior</DataQuality>
+    <DataRelevance>Average</DataRelevance>
+    <Documentation>Superior</Documentation>
+    <Rationality>Superior</Rationality>
+  </Ratings>
+  <Official>true</Official>
+  <DateCreated>2016-09-23T16:17:18.0136846-07:00</DateCreated>
+  <Approved>true</Approved>
+  <Incomplete>true</Incomplete>
+  <Notes>None
+Import errors:
+ Warning, Data missing: D5092.013b:DS1:DS3:Time: Could not parse CurveType - Assuming Normal
+Warning, Data missing: D5092.013b:DS1:DS3:Time: Could not parse Upper Quantity cost - Assuming 0
+Warning, Data missing: D5092.013b:DS1:DS3:Time: Could not parse Lower Quantity cost - Assuming 0
+Warning, Data missing: D5092.013b:DS1:DS3:Time: Could not parse Dispersion - Assuming 0.5
+Warning, Data missing: D5092.013b:DS1:DS3:Cost: Could not parse CurveType - Assuming Normal
+Warning, Data missing: D5092.013b:DS1:DS3:Cost: Could not parse Upper Quantity cost - Assuming 0
+Warning, Data missing: D5092.013b:DS1:DS3:Cost: Could not parse Lower Quantity cost - Assuming 0
+Warning, Data missing: D5092.013b:DS1:DS3:Cost: Could not parse Dispersion - Assuming 0.5
+</Notes>
+  <UseEDPValueOfFloorAbove>false</UseEDPValueOfFloorAbove>
+  <DamageStates>
+    <DSGroupType>Sequential</DSGroupType>
+    <DamageState>
+      <Name></Name>
+      <Description>Damaged, inoperative but anchorage is OK. Batteries fall, crack cases, dislodge conductors, or are otherwise damaged.</Description>
+      <DamageImageName></DamageImageName>
+      <DamageStates>
+        <DSGroupType>Simultaneous</DSGroupType>
+        <DamageState>
+          <Name></Name>
+          <Description>Damaged, inoperative but anchorage is OK. Batteries fall, crack cases, dislodge conductors, or are otherwise damaged.</Description>
+          <DamageImageName></DamageImageName>
+          <ConsequenceGroup>
+            <RepairMeasures>Replace batteries.</RepairMeasures>
+            <TagState>0</TagState>
+            <UseCasualty>false</UseCasualty>
+            <LongLeadFlag>true</LongLeadFlag>
+            <AffectedFloorArea />
+            <AffectedDeathRate>0</AffectedDeathRate>
+            <AffectedInjuryRate>0</AffectedInjuryRate>
+            <AffectedDeathRateBeta>0</AffectedDeathRateBeta>
+            <AffectedInjuryRateBeta>0</AffectedInjuryRateBeta>
+            <RedTagMedian>0</RedTagMedian>
+            <RedTagBeta>0</RedTagBeta>
+            <CostConsequence>
+              <LowerQuantity>1</LowerQuantity>
+              <MaxAmount>770</MaxAmount>
+              <UpperQuantity>5</UpperQuantity>
+              <MinAmount>630</MinAmount>
+              <Uncertainty>0.1998</Uncertainty>
+              <CurveType>Normal</CurveType>
+            </CostConsequence>
+            <TimeConsequence>
+              <LowerQuantity>1</LowerQuantity>
+              <MaxAmount>1.0191</MaxAmount>
+              <UpperQuantity>5</UpperQuantity>
+              <MinAmount>0.8339</MinAmount>
+              <Uncertainty>0.3201</Uncertainty>
+              <CurveType>Normal</CurveType>
+            </TimeConsequence>
+          </ConsequenceGroup>
+          <Percent>1</Percent>
+        </DamageState>
+        <DamageState>
+          <Name></Name>
+          <Description>Batteries spill battery acid.</Description>
+          <DamageImageName></DamageImageName>
+          <ConsequenceGroup>
+            <RepairMeasures>Clean up spilled acid.</RepairMeasures>
+            <TagState>0</TagState>
+            <UseCasualty>false</UseCasualty>
+            <LongLeadFlag>true</LongLeadFlag>
+            <AffectedFloorArea />
+            <AffectedDeathRate>0</AffectedDeathRate>
+            <AffectedInjuryRate>0</AffectedInjuryRate>
+            <AffectedDeathRateBeta>0</AffectedDeathRateBeta>
+            <AffectedInjuryRateBeta>0</AffectedInjuryRateBeta>
+            <RedTagMedian>0</RedTagMedian>
+            <RedTagBeta>0</RedTagBeta>
+            <CostConsequence>
+              <LowerQuantity>1</LowerQuantity>
+              <MaxAmount>14135</MaxAmount>
+              <UpperQuantity>5</UpperQuantity>
+              <MinAmount>11565</MinAmount>
+              <Uncertainty>0.1306</Uncertainty>
+              <CurveType>Normal</CurveType>
+            </CostConsequence>
+            <TimeConsequence>
+              <LowerQuantity>1</LowerQuantity>
+              <MaxAmount>18.7081</MaxAmount>
+              <UpperQuantity>5</UpperQuantity>
+              <MinAmount>15.3067</MinAmount>
+              <Uncertainty>0.282</Uncertainty>
+              <CurveType>Normal</CurveType>
+            </TimeConsequence>
+          </ConsequenceGroup>
+          <Percent>0.5</Percent>
+        </DamageState>
+        <DamageState>
+          <Name></Name>
+          <Description>Battery rack collapses.</Description>
+          <DamageImageName></DamageImageName>
+          <ConsequenceGroup>
+            <RepairMeasures>Replace battery rack.</RepairMeasures>
+            <TagState>0</TagState>
+            <UseCasualty>false</UseCasualty>
+            <LongLeadFlag>true</LongLeadFlag>
+            <AffectedFloorArea />
+            <AffectedDeathRate>0</AffectedDeathRate>
+            <AffectedInjuryRate>0</AffectedInjuryRate>
+            <AffectedDeathRateBeta>0</AffectedDeathRateBeta>
+            <AffectedInjuryRateBeta>0</AffectedInjuryRateBeta>
+            <RedTagMedian>0</RedTagMedian>
+            <RedTagBeta>0</RedTagBeta>
+            <CostConsequence>
+              <LowerQuantity>1</LowerQuantity>
+              <MaxAmount>0</MaxAmount>
+              <UpperQuantity>1</UpperQuantity>
+              <MinAmount>0</MinAmount>
+              <Uncertainty>0.5</Uncertainty>
+              <CurveType>Normal</CurveType>
+            </CostConsequence>
+            <TimeConsequence>
+              <LowerQuantity>1</LowerQuantity>
+              <MaxAmount>0</MaxAmount>
+              <UpperQuantity>1</UpperQuantity>
+              <MinAmount>0</MinAmount>
+              <Uncertainty>0.5</Uncertainty>
+              <CurveType>Normal</CurveType>
+            </TimeConsequence>
+          </ConsequenceGroup>
+          <Percent>0.1</Percent>
+        </DamageState>
+      </DamageStates>
+      <Median>2.32</Median>
+      <Beta>0.2</Beta>
+    </DamageState>
+  </DamageStates>
+</FragilityCurve>

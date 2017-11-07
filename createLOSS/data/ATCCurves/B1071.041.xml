@@ -1,0 +1,150 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FragilityCurve FileVersion="2.0">
+  <UniqueID>5dd8cd48-ab96-46c2-bc44-a53cc37df70d</UniqueID>
+  <ID>B1071.041</ID>
+  <Description>Costing based upon 13'x100' Panels</Description>
+  <BasicUnit>Each</BasicUnit>
+  <Name>Exterior Wall - Type: Gypsum with wood studs, Full Height, Fixed Below, Fixed Above</Name>
+  <Author>Not Given</Author>
+  <Correlation>0</Correlation>
+  <Directional>true</Directional>
+  <EDPType>
+    <Dimension>NumLevels</Dimension>
+    <TypeName>Story Drift Ratio</TypeName>
+    <DefaultUnits>Radian</DefaultUnits>
+    <UserDefined>false</UserDefined>
+  </EDPType>
+  <Ratings>
+    <DataQuality>Superior</DataQuality>
+    <DataRelevance>Superior</DataRelevance>
+    <Documentation>Superior</Documentation>
+    <Rationality>NA</Rationality>
+  </Ratings>
+  <Official>true</Official>
+  <DateCreated>2016-09-23T16:14:09.008786-07:00</DateCreated>
+  <Approved>true</Approved>
+  <Incomplete>true</Incomplete>
+  <Notes>Copy of C1011.011a for use as an exterior wall.
+Import errors:
+ Warning, Data missing: B1071.041:DS3:Time: Could not parse CurveType - Assuming Normal
+Warning, Data missing: B1071.041:DS3:Time: Could not parse Upper Quantity cost - Assuming 0
+Warning, Data missing: B1071.041:DS3:Time: Could not parse Lower Quantity cost - Assuming 0
+Warning, Data missing: B1071.041:DS3:Time: Could not parse Dispersion - Assuming 0.5
+Warning, Data missing: B1071.041:DS3:Cost: Could not parse CurveType - Assuming Normal
+Warning, Data missing: B1071.041:DS3:Cost: Could not parse Upper Quantity cost - Assuming 0
+Warning, Data missing: B1071.041:DS3:Cost: Could not parse Lower Quantity cost - Assuming 0
+Warning, Data missing: B1071.041:DS3:Cost: Could not parse Dispersion - Assuming 0.5
+</Notes>
+  <UseEDPValueOfFloorAbove>false</UseEDPValueOfFloorAbove>
+  <DamageStates>
+    <DSGroupType>Sequential</DSGroupType>
+    <DamageState>
+      <Name></Name>
+      <Description>Screws pop-out, minor cracking of wall board, warping or cracking of tape.</Description>
+      <DamageImageName></DamageImageName>
+      <ConsequenceGroup>
+        <RepairMeasures>Retape joints, paste and repaint both sides of  full 100 foot length of wall board.</RepairMeasures>
+        <TagState>0</TagState>
+        <UseCasualty>false</UseCasualty>
+        <LongLeadFlag>false</LongLeadFlag>
+        <AffectedFloorArea />
+        <AffectedDeathRate>0</AffectedDeathRate>
+        <AffectedInjuryRate>0</AffectedInjuryRate>
+        <AffectedDeathRateBeta>0</AffectedDeathRateBeta>
+        <AffectedInjuryRateBeta>0</AffectedInjuryRateBeta>
+        <RedTagMedian>0</RedTagMedian>
+        <RedTagBeta>0</RedTagBeta>
+        <CostConsequence>
+          <LowerQuantity>2</LowerQuantity>
+          <MaxAmount>4051.6667</MaxAmount>
+          <UpperQuantity>6</UpperQuantity>
+          <MinAmount>2493.3333</MinAmount>
+          <Uncertainty>0.2404</Uncertainty>
+          <CurveType>LogNormal</CurveType>
+        </CostConsequence>
+        <TimeConsequence>
+          <LowerQuantity>2</LowerQuantity>
+          <MaxAmount>3.1588</MaxAmount>
+          <UpperQuantity>6</UpperQuantity>
+          <MinAmount>1.9442</MinAmount>
+          <Uncertainty>0.3468</Uncertainty>
+          <CurveType>LogNormal</CurveType>
+        </TimeConsequence>
+      </ConsequenceGroup>
+      <Median>0.0021</Median>
+      <Beta>0.6</Beta>
+    </DamageState>
+    <DamageState>
+      <Name></Name>
+      <Description>Moderate cracking or crushing of gypsum wall boards (typically in corners and in corners of openings).</Description>
+      <DamageImageName></DamageImageName>
+      <ConsequenceGroup>
+        <RepairMeasures>Remove full 100 foot length of wall board (both sides), install new wall board (both sides), tape, paste and repaint.</RepairMeasures>
+        <TagState>0</TagState>
+        <UseCasualty>false</UseCasualty>
+        <LongLeadFlag>false</LongLeadFlag>
+        <AffectedFloorArea />
+        <AffectedDeathRate>0</AffectedDeathRate>
+        <AffectedInjuryRate>0</AffectedInjuryRate>
+        <AffectedDeathRateBeta>0</AffectedDeathRateBeta>
+        <AffectedInjuryRateBeta>0</AffectedInjuryRateBeta>
+        <RedTagMedian>0</RedTagMedian>
+        <RedTagBeta>0</RedTagBeta>
+        <CostConsequence>
+          <LowerQuantity>2</LowerQuantity>
+          <MaxAmount>4530</MaxAmount>
+          <UpperQuantity>6</UpperQuantity>
+          <MinAmount>3208.75</MinAmount>
+          <Uncertainty>0.0973</Uncertainty>
+          <CurveType>Normal</CurveType>
+        </CostConsequence>
+        <TimeConsequence>
+          <LowerQuantity>2</LowerQuantity>
+          <MaxAmount>3.5285</MaxAmount>
+          <UpperQuantity>6</UpperQuantity>
+          <MinAmount>2.4987</MinAmount>
+          <Uncertainty>0.2683</Uncertainty>
+          <CurveType>Normal</CurveType>
+        </TimeConsequence>
+      </ConsequenceGroup>
+      <Median>0.0071</Median>
+      <Beta>0.45</Beta>
+    </DamageState>
+    <DamageState>
+      <Name></Name>
+      <Description>Significant cracking and/or crushing of gypsum wall boards- buckling of studs and tearing of tracks.</Description>
+      <DamageImageName></DamageImageName>
+      <ConsequenceGroup>
+        <RepairMeasures>Remove and replace full 100 foot length of metal stud wall, both sides of the gypsum wall board and any embedded utilities, and tape, paste and repaint.</RepairMeasures>
+        <TagState>0</TagState>
+        <UseCasualty>false</UseCasualty>
+        <LongLeadFlag>false</LongLeadFlag>
+        <AffectedFloorArea />
+        <AffectedDeathRate>0</AffectedDeathRate>
+        <AffectedInjuryRate>0</AffectedInjuryRate>
+        <AffectedDeathRateBeta>0</AffectedDeathRateBeta>
+        <AffectedInjuryRateBeta>0</AffectedInjuryRateBeta>
+        <RedTagMedian>0</RedTagMedian>
+        <RedTagBeta>0</RedTagBeta>
+        <CostConsequence>
+          <LowerQuantity>1</LowerQuantity>
+          <MaxAmount>0</MaxAmount>
+          <UpperQuantity>1</UpperQuantity>
+          <MinAmount>0</MinAmount>
+          <Uncertainty>0.5</Uncertainty>
+          <CurveType>Normal</CurveType>
+        </CostConsequence>
+        <TimeConsequence>
+          <LowerQuantity>1</LowerQuantity>
+          <MaxAmount>0</MaxAmount>
+          <UpperQuantity>1</UpperQuantity>
+          <MinAmount>0</MinAmount>
+          <Uncertainty>0.5</Uncertainty>
+          <CurveType>Normal</CurveType>
+        </TimeConsequence>
+      </ConsequenceGroup>
+      <Median>0.012</Median>
+      <Beta>0.45</Beta>
+    </DamageState>
+  </DamageStates>
+</FragilityCurve>

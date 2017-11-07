@@ -1,0 +1,194 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FragilityCurve FileVersion="2.0">
+  <UniqueID>1e9e663b-1206-4558-bbd8-889feca7de78</UniqueID>
+  <ID>B1031.011a</ID>
+  <Description>Costing is on a per connection basis.  Costing does not include fireproofing removal or reapplication cost.</Description>
+  <BasicUnit>Each</BasicUnit>
+  <Name>Steel Column Base Plates, Column W &lt; 150 plf</Name>
+  <Author>Greg Deierlein</Author>
+  <Correlation>0</Correlation>
+  <Directional>true</Directional>
+  <EDPType>
+    <Dimension>NumLevels</Dimension>
+    <TypeName>Story Drift Ratio</TypeName>
+    <DefaultUnits>Radian</DefaultUnits>
+    <UserDefined>false</UserDefined>
+  </EDPType>
+  <Ratings>
+    <DataQuality>Superior</DataQuality>
+    <DataRelevance>Superior</DataRelevance>
+    <Documentation>Superior</Documentation>
+    <Rationality>Superior</Rationality>
+  </Ratings>
+  <Official>true</Official>
+  <DateCreated>2016-09-23T16:12:16.3445207-07:00</DateCreated>
+  <Approved>true</Approved>
+  <Incomplete>true</Incomplete>
+  <Notes>None
+Import errors:
+ Warning, Data missing: B1031.011a:DS3:Time: Could not parse CurveType - Assuming Normal
+Warning, Data missing: B1031.011a:DS3:Time: Could not parse Upper Quantity cost - Assuming 0
+Warning, Data missing: B1031.011a:DS3:Time: Could not parse Lower Quantity cost - Assuming 0
+Warning, Data missing: B1031.011a:DS3:Time: Could not parse Dispersion - Assuming 0.5
+Warning, Data missing: B1031.011a:DS3:Cost: Could not parse CurveType - Assuming Normal
+Warning, Data missing: B1031.011a:DS3:Cost: Could not parse Upper Quantity cost - Assuming 0
+Warning, Data missing: B1031.011a:DS3:Cost: Could not parse Lower Quantity cost - Assuming 0
+Warning, Data missing: B1031.011a:DS3:Cost: Could not parse Dispersion - Assuming 0.5
+</Notes>
+  <UseEDPValueOfFloorAbove>false</UseEDPValueOfFloorAbove>
+  <DamageStates>
+    <DSGroupType>Sequential</DSGroupType>
+    <DamageState>
+      <Name></Name>
+      <Description>Initiation of crack at the fusion line between the column flange and the base plate weld.  Damage in field is either obscured or deemed to not warrant repair.  No repair conducted.</Description>
+      <DamageImageName>B1031.011a-schematic.JPG</DamageImageName>
+      <DamageStates>
+        <DSGroupType>MutuallyExclusive</DSGroupType>
+        <DamageState>
+          <Name></Name>
+          <Description>Initiation of crack at the fusion line between the column flange and the base plate weld.  Damage in field is either obscured or deemed to not warrant repair.  No repair conducted.</Description>
+          <DamageImageName>B1031.011a-schematic.JPG</DamageImageName>
+          <ConsequenceGroup>
+            <RepairMeasures>The repair will involve removal of a portion of grade slab, gouging out material surrounding the fracture initiating and re-welding, then repair of slab. Field condition is deemed to not warrant repair by field observation.  This Damage State is Mutually Exclusive with DS2.  See fragility DS1 and DS2 probabilities.</RepairMeasures>
+            <TagState>0</TagState>
+            <UseCasualty>false</UseCasualty>
+            <LongLeadFlag>false</LongLeadFlag>
+            <AffectedFloorArea />
+            <AffectedDeathRate>0</AffectedDeathRate>
+            <AffectedInjuryRate>0</AffectedInjuryRate>
+            <AffectedDeathRateBeta>0</AffectedDeathRateBeta>
+            <AffectedInjuryRateBeta>0</AffectedInjuryRateBeta>
+            <RedTagMedian>0</RedTagMedian>
+            <RedTagBeta>0</RedTagBeta>
+            <CostConsequence>
+              <LowerQuantity>5</LowerQuantity>
+              <MaxAmount>0</MaxAmount>
+              <UpperQuantity>20</UpperQuantity>
+              <MinAmount>0</MinAmount>
+              <Uncertainty>0.25</Uncertainty>
+              <CurveType>LogNormal</CurveType>
+            </CostConsequence>
+            <TimeConsequence>
+              <LowerQuantity>5</LowerQuantity>
+              <MaxAmount>0</MaxAmount>
+              <UpperQuantity>20</UpperQuantity>
+              <MinAmount>0</MinAmount>
+              <Uncertainty>0.3536</Uncertainty>
+              <CurveType>LogNormal</CurveType>
+            </TimeConsequence>
+          </ConsequenceGroup>
+          <Percent>0.95</Percent>
+        </DamageState>
+        <DamageState>
+          <Name></Name>
+          <Description>Initiation of crack at the fusion line between the column flange and the base plate weld.</Description>
+          <DamageImageName>B1031.011a-schematic.JPG</DamageImageName>
+          <ConsequenceGroup>
+            <RepairMeasures>The repair will involve removal of a portion of grade slab, gouging out material surrounding the fracture initiating and re-welding, then repair of slab. </RepairMeasures>
+            <TagState>0</TagState>
+            <UseCasualty>false</UseCasualty>
+            <LongLeadFlag>false</LongLeadFlag>
+            <AffectedFloorArea />
+            <AffectedDeathRate>0</AffectedDeathRate>
+            <AffectedInjuryRate>0</AffectedInjuryRate>
+            <AffectedDeathRateBeta>0</AffectedDeathRateBeta>
+            <AffectedInjuryRateBeta>0</AffectedInjuryRateBeta>
+            <RedTagMedian>0</RedTagMedian>
+            <RedTagBeta>0</RedTagBeta>
+            <CostConsequence>
+              <LowerQuantity>5</LowerQuantity>
+              <MaxAmount>12142</MaxAmount>
+              <UpperQuantity>20</UpperQuantity>
+              <MinAmount>7472</MinAmount>
+              <Uncertainty>0.3248</Uncertainty>
+              <CurveType>Normal</CurveType>
+            </CostConsequence>
+            <TimeConsequence>
+              <LowerQuantity>5</LowerQuantity>
+              <MaxAmount>11.7849</MaxAmount>
+              <UpperQuantity>20</UpperQuantity>
+              <MinAmount>7.2522</MinAmount>
+              <Uncertainty>0.4098</Uncertainty>
+              <CurveType>Normal</CurveType>
+            </TimeConsequence>
+          </ConsequenceGroup>
+          <Percent>0.05</Percent>
+        </DamageState>
+      </DamageStates>
+      <Median>0.04</Median>
+      <Beta>0.4</Beta>
+    </DamageState>
+    <DamageState>
+      <Name></Name>
+      <Description>Propagation of brittle crack into column and/or base plate. </Description>
+      <DamageImageName></DamageImageName>
+      <ConsequenceGroup>
+        <RepairMeasures>Depending on the crack trajectory, the repair will range from replacement of a portion of the column or base plate to full replacement of the column base. Replacement will require shoring of column, torch cutting to remove damaged material, and fabrication and field welding to install replacement material.</RepairMeasures>
+        <TagState>Red</TagState>
+        <UseCasualty>false</UseCasualty>
+        <LongLeadFlag>false</LongLeadFlag>
+        <AffectedFloorArea />
+        <AffectedDeathRate>0</AffectedDeathRate>
+        <AffectedInjuryRate>0</AffectedInjuryRate>
+        <AffectedDeathRateBeta>0</AffectedDeathRateBeta>
+        <AffectedInjuryRateBeta>0</AffectedInjuryRateBeta>
+        <RedTagMedian>0.25</RedTagMedian>
+        <RedTagBeta>0.5</RedTagBeta>
+        <CostConsequence>
+          <LowerQuantity>5</LowerQuantity>
+          <MaxAmount>13608</MaxAmount>
+          <UpperQuantity>20</UpperQuantity>
+          <MinAmount>9639</MinAmount>
+          <Uncertainty>0.302</Uncertainty>
+          <CurveType>LogNormal</CurveType>
+        </CostConsequence>
+        <TimeConsequence>
+          <LowerQuantity>5</LowerQuantity>
+          <MaxAmount>13.2078</MaxAmount>
+          <UpperQuantity>20</UpperQuantity>
+          <MinAmount>9.3555</MinAmount>
+          <Uncertainty>0.3921</Uncertainty>
+          <CurveType>LogNormal</CurveType>
+        </TimeConsequence>
+      </ConsequenceGroup>
+      <Median>0.07</Median>
+      <Beta>0.4</Beta>
+    </DamageState>
+    <DamageState>
+      <Name></Name>
+      <Description>Complete fracture of the column (or column weld) and dislocation of column relative to the base.</Description>
+      <DamageImageName></DamageImageName>
+      <ConsequenceGroup>
+        <RepairMeasures>Repair would likely involve replacing the entire base plate assembly and most of the column in the story above the base plate.</RepairMeasures>
+        <TagState>Red</TagState>
+        <UseCasualty>false</UseCasualty>
+        <LongLeadFlag>false</LongLeadFlag>
+        <AffectedFloorArea />
+        <AffectedDeathRate>0</AffectedDeathRate>
+        <AffectedInjuryRate>0</AffectedInjuryRate>
+        <AffectedDeathRateBeta>0</AffectedDeathRateBeta>
+        <AffectedInjuryRateBeta>0</AffectedInjuryRateBeta>
+        <RedTagMedian>0.1</RedTagMedian>
+        <RedTagBeta>0.5</RedTagBeta>
+        <CostConsequence>
+          <LowerQuantity>1</LowerQuantity>
+          <MaxAmount>0</MaxAmount>
+          <UpperQuantity>1</UpperQuantity>
+          <MinAmount>0</MinAmount>
+          <Uncertainty>0.5</Uncertainty>
+          <CurveType>Normal</CurveType>
+        </CostConsequence>
+        <TimeConsequence>
+          <LowerQuantity>1</LowerQuantity>
+          <MaxAmount>0</MaxAmount>
+          <UpperQuantity>1</UpperQuantity>
+          <MinAmount>0</MinAmount>
+          <Uncertainty>0.5</Uncertainty>
+          <CurveType>Normal</CurveType>
+        </TimeConsequence>
+      </ConsequenceGroup>
+      <Median>0.1</Median>
+      <Beta>0.4</Beta>
+    </DamageState>
+  </DamageStates>
+</FragilityCurve>

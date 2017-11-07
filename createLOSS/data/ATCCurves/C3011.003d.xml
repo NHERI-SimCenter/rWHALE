@@ -1,0 +1,119 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FragilityCurve FileVersion="2.0">
+  <UniqueID>0ac7714e-4af3-4d26-b2c9-0075a75ba597</UniqueID>
+  <ID>C3011.003d</ID>
+  <Description>Costing based upon 9'x100' Panels</Description>
+  <BasicUnit>Each</BasicUnit>
+  <Name>Wall Partition, Type: High End Marble or Wood Panel, Full Height, Fixed Below, Slip Track Above w/o returns (friction connection)</Name>
+  <Author>Not Given</Author>
+  <Correlation>0</Correlation>
+  <Directional>true</Directional>
+  <EDPType>
+    <Dimension>NumLevels</Dimension>
+    <TypeName>Story Drift Ratio</TypeName>
+    <DefaultUnits>Radian</DefaultUnits>
+    <UserDefined>false</UserDefined>
+  </EDPType>
+  <Ratings>
+    <DataQuality>Superior</DataQuality>
+    <DataRelevance>Superior</DataRelevance>
+    <Documentation>Superior</Documentation>
+    <Rationality>NA</Rationality>
+  </Ratings>
+  <Official>true</Official>
+  <DateCreated>2016-09-23T16:14:53.3152162-07:00</DateCreated>
+  <Approved>true</Approved>
+  <Incomplete>true</Incomplete>
+  <Notes>None
+Import errors:
+ Warning, Data missing: C3011.003d:DS2:Time: Could not parse CurveType - Assuming Normal
+Warning, Data missing: C3011.003d:DS2:Time: Could not parse Upper Quantity cost - Assuming 0
+Warning, Data missing: C3011.003d:DS2:Time: Could not parse Lower Quantity cost - Assuming 0
+Warning, Data missing: C3011.003d:DS2:Time: Could not parse Dispersion - Assuming 0.5
+Warning, Data missing: C3011.003d:DS2:Cost: Could not parse CurveType - Assuming Normal
+Warning, Data missing: C3011.003d:DS2:Cost: Could not parse Upper Quantity cost - Assuming 0
+Warning, Data missing: C3011.003d:DS2:Cost: Could not parse Lower Quantity cost - Assuming 0
+Warning, Data missing: C3011.003d:DS2:Cost: Could not parse Dispersion - Assuming 0.5
+</Notes>
+  <UseEDPValueOfFloorAbove>false</UseEDPValueOfFloorAbove>
+  <DamageStates>
+    <DSGroupType>Sequential</DSGroupType>
+    <DamageState>
+      <Name></Name>
+      <Description>minor cracked joints and minor cracks in marble / wood paneling.</Description>
+      <DamageImageName></DamageImageName>
+      <ConsequenceGroup>
+        <RepairMeasures>Carefully remove cracked marble/paneling and grout at cracked joints, and install new marble/paneling and re-grout joints for 10% of full 100 foot length of wall.  Existing wall board will remain place.</RepairMeasures>
+        <TagState>0</TagState>
+        <UseCasualty>false</UseCasualty>
+        <LongLeadFlag>false</LongLeadFlag>
+        <AffectedFloorArea />
+        <AffectedDeathRate>0</AffectedDeathRate>
+        <AffectedInjuryRate>0</AffectedInjuryRate>
+        <AffectedDeathRateBeta>0</AffectedDeathRateBeta>
+        <AffectedInjuryRateBeta>0</AffectedInjuryRateBeta>
+        <RedTagMedian>0</RedTagMedian>
+        <RedTagBeta>0</RedTagBeta>
+        <CostConsequence>
+          <LowerQuantity>500</LowerQuantity>
+          <MaxAmount>88.5</MaxAmount>
+          <UpperQuantity>2000</UpperQuantity>
+          <MinAmount>26.55</MinAmount>
+          <Uncertainty>0.312</Uncertainty>
+          <CurveType>Normal</CurveType>
+        </CostConsequence>
+        <TimeConsequence>
+          <LowerQuantity>500</LowerQuantity>
+          <MaxAmount>0.082</MaxAmount>
+          <UpperQuantity>2000</UpperQuantity>
+          <MinAmount>0.0246</MinAmount>
+          <Uncertainty>0.3998</Uncertainty>
+          <CurveType>Normal</CurveType>
+        </TimeConsequence>
+      </ConsequenceGroup>
+      <Median>0.0035</Median>
+      <Beta>0.7</Beta>
+    </DamageState>
+    <DamageState>
+      <Name></Name>
+      <Description>significant cracks in marble / wood paneling.</Description>
+      <DamageImageName></DamageImageName>
+      <ConsequenceGroup>
+        <RepairMeasures>Install new marble/paneling for full 100 foot length of wall.  Note: the gypsum wall board will also be removed and replaced which means the removal of the marble/paneling will be part of the gypsum wall board removal. </RepairMeasures>
+        <TagState>Red</TagState>
+        <UseCasualty>true</UseCasualty>
+        <LongLeadFlag>false</LongLeadFlag>
+        <AffectedFloorArea>
+          <Area>
+            <Unit>Square Foot</Unit>
+            <Value>100</Value>
+          </Area>
+        </AffectedFloorArea>
+        <AffectedDeathRate>0.05</AffectedDeathRate>
+        <AffectedInjuryRate>0.1</AffectedInjuryRate>
+        <AffectedDeathRateBeta>0.5</AffectedDeathRateBeta>
+        <AffectedInjuryRateBeta>0.5</AffectedInjuryRateBeta>
+        <RedTagMedian>0.5</RedTagMedian>
+        <RedTagBeta>0.5</RedTagBeta>
+        <CostConsequence>
+          <LowerQuantity>1</LowerQuantity>
+          <MaxAmount>0</MaxAmount>
+          <UpperQuantity>1</UpperQuantity>
+          <MinAmount>0</MinAmount>
+          <Uncertainty>0.5</Uncertainty>
+          <CurveType>Normal</CurveType>
+        </CostConsequence>
+        <TimeConsequence>
+          <LowerQuantity>1</LowerQuantity>
+          <MaxAmount>0</MaxAmount>
+          <UpperQuantity>1</UpperQuantity>
+          <MinAmount>0</MinAmount>
+          <Uncertainty>0.5</Uncertainty>
+          <CurveType>Normal</CurveType>
+        </TimeConsequence>
+      </ConsequenceGroup>
+      <Median>0.0093</Median>
+      <Beta>0.45</Beta>
+    </DamageState>
+  </DamageStates>
+</FragilityCurve>

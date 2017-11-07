@@ -1,0 +1,140 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FragilityCurve FileVersion="2.0">
+  <UniqueID>8ee0d093-2462-470c-8345-a076870a20d6</UniqueID>
+  <ID>C2011.001b</ID>
+  <Description>Flexible stair without seismic interstory slip joint.  Steel prefab stringers, steel or concrete filled pan treads.</Description>
+  <BasicUnit>Each</BasicUnit>
+  <Name>Prefabricated steel stair with steel treads and landings with no seismic joint.</Name>
+  <Author>Not Given</Author>
+  <Correlation>0</Correlation>
+  <Directional>true</Directional>
+  <EDPType>
+    <Dimension>NumLevels</Dimension>
+    <TypeName>Story Drift Ratio</TypeName>
+    <DefaultUnits>Radian</DefaultUnits>
+    <UserDefined>false</UserDefined>
+  </EDPType>
+  <Ratings>
+    <DataQuality>Marginal</DataQuality>
+    <DataRelevance>Marginal</DataRelevance>
+    <Documentation>Average</Documentation>
+    <Rationality>NA</Rationality>
+  </Ratings>
+  <Official>true</Official>
+  <DateCreated>2016-09-23T16:14:43.9512799-07:00</DateCreated>
+  <Approved>true</Approved>
+  <Incomplete>false</Incomplete>
+  <Notes>Confirm median demand and dispersion values</Notes>
+  <UseEDPValueOfFloorAbove>false</UseEDPValueOfFloorAbove>
+  <DamageStates>
+    <DSGroupType>Sequential</DSGroupType>
+    <DamageState>
+      <Name></Name>
+      <Description>Non structural damage, local steel yielding.</Description>
+      <DamageImageName>C2011.001a-DS1-1.jpg</DamageImageName>
+      <ConsequenceGroup>
+        <RepairMeasures>Patch, paint.</RepairMeasures>
+        <TagState>0</TagState>
+        <UseCasualty>false</UseCasualty>
+        <LongLeadFlag>false</LongLeadFlag>
+        <AffectedFloorArea />
+        <AffectedDeathRate>0</AffectedDeathRate>
+        <AffectedInjuryRate>0</AffectedInjuryRate>
+        <AffectedDeathRateBeta>0</AffectedDeathRateBeta>
+        <AffectedInjuryRateBeta>0</AffectedInjuryRateBeta>
+        <RedTagMedian>0</RedTagMedian>
+        <RedTagBeta>0</RedTagBeta>
+        <CostConsequence>
+          <LowerQuantity>3</LowerQuantity>
+          <MaxAmount>910</MaxAmount>
+          <UpperQuantity>10</UpperQuantity>
+          <MinAmount>560</MinAmount>
+          <Uncertainty>0.8015</Uncertainty>
+          <CurveType>LogNormal</CurveType>
+        </CostConsequence>
+        <TimeConsequence>
+          <LowerQuantity>3</LowerQuantity>
+          <MaxAmount>1.0037</MaxAmount>
+          <UpperQuantity>10</UpperQuantity>
+          <MinAmount>0.6177</MinAmount>
+          <Uncertainty>0.8396</Uncertainty>
+          <CurveType>LogNormal</CurveType>
+        </TimeConsequence>
+      </ConsequenceGroup>
+      <Median>0.005</Median>
+      <Beta>0.6</Beta>
+    </DamageState>
+    <DamageState>
+      <Name></Name>
+      <Description>Buckling of steel, weld cracking.</Description>
+      <DamageImageName>C2011.001a-DS2-1.jpg</DamageImageName>
+      <ConsequenceGroup>
+        <RepairMeasures>Removal and replacement of damaged components.  Field repair of damage (such as welding).</RepairMeasures>
+        <TagState>Red</TagState>
+        <UseCasualty>false</UseCasualty>
+        <LongLeadFlag>false</LongLeadFlag>
+        <AffectedFloorArea />
+        <AffectedDeathRate>0</AffectedDeathRate>
+        <AffectedInjuryRate>0</AffectedInjuryRate>
+        <AffectedDeathRateBeta>0</AffectedDeathRateBeta>
+        <AffectedInjuryRateBeta>0</AffectedInjuryRateBeta>
+        <RedTagMedian>0.25</RedTagMedian>
+        <RedTagBeta>0.5</RedTagBeta>
+        <CostConsequence>
+          <LowerQuantity>3</LowerQuantity>
+          <MaxAmount>4440</MaxAmount>
+          <UpperQuantity>10</UpperQuantity>
+          <MinAmount>3145</MinAmount>
+          <Uncertainty>0.5694</Uncertainty>
+          <CurveType>LogNormal</CurveType>
+        </CostConsequence>
+        <TimeConsequence>
+          <LowerQuantity>3</LowerQuantity>
+          <MaxAmount>4.8971</MaxAmount>
+          <UpperQuantity>10</UpperQuantity>
+          <MinAmount>3.4688</MinAmount>
+          <Uncertainty>0.6218</Uncertainty>
+          <CurveType>LogNormal</CurveType>
+        </TimeConsequence>
+      </ConsequenceGroup>
+      <Median>0.017</Median>
+      <Beta>0.6</Beta>
+    </DamageState>
+    <DamageState>
+      <Name></Name>
+      <Description>Loss of live load capacity.  Connection and or weld fracture.</Description>
+      <DamageImageName>C2011.001a-DS2-1.jpg</DamageImageName>
+      <ConsequenceGroup>
+        <RepairMeasures>Replace stair.</RepairMeasures>
+        <TagState>Red</TagState>
+        <UseCasualty>false</UseCasualty>
+        <LongLeadFlag>false</LongLeadFlag>
+        <AffectedFloorArea />
+        <AffectedDeathRate>0</AffectedDeathRate>
+        <AffectedInjuryRate>0</AffectedInjuryRate>
+        <AffectedDeathRateBeta>0</AffectedDeathRateBeta>
+        <AffectedInjuryRateBeta>0</AffectedInjuryRateBeta>
+        <RedTagMedian>0.1</RedTagMedian>
+        <RedTagBeta>0.5</RedTagBeta>
+        <CostConsequence>
+          <LowerQuantity>3</LowerQuantity>
+          <MaxAmount>29940</MaxAmount>
+          <UpperQuantity>10</UpperQuantity>
+          <MinAmount>21207.5</MinAmount>
+          <Uncertainty>0.3432</Uncertainty>
+          <CurveType>Normal</CurveType>
+        </CostConsequence>
+        <TimeConsequence>
+          <LowerQuantity>3</LowerQuantity>
+          <MaxAmount>33.0221</MaxAmount>
+          <UpperQuantity>10</UpperQuantity>
+          <MinAmount>23.3906</MinAmount>
+          <Uncertainty>0.4246</Uncertainty>
+          <CurveType>Normal</CurveType>
+        </TimeConsequence>
+      </ConsequenceGroup>
+      <Median>0.028</Median>
+      <Beta>0.45</Beta>
+    </DamageState>
+  </DamageStates>
+</FragilityCurve>

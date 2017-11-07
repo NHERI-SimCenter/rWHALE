@@ -43,10 +43,10 @@ moc*
 # EXAMPLE & EXE
 *.out
 createBIM/createBIM
-createEVENT
-createEDP
-createSAM
-createLOSS
+createEVENT/createEVENT
+createEDP/createEDP
+createSAM/createSAM
+createDL/createLOSS
 createDL/DL-data.tar.gz
 mainPreprocessor
 mainPostprocessor

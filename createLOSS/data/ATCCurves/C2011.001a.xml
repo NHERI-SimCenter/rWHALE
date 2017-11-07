@@ -1,0 +1,150 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FragilityCurve FileVersion="2.0">
+  <UniqueID>40ad054a-140e-4464-bbf9-d10f337e4f50</UniqueID>
+  <ID>C2011.001a</ID>
+  <Description>Flexible stair with seismic interstory slip joint.  Steel prefab stringers, steel or concrete filled pan treads.</Description>
+  <BasicUnit>Each</BasicUnit>
+  <Name>Prefabricated steel stair with steel treads and landings with seismic joints that accommodate drift.</Name>
+  <Author>Not Given</Author>
+  <Correlation>0</Correlation>
+  <Directional>true</Directional>
+  <EDPType>
+    <Dimension>NumLevels</Dimension>
+    <TypeName>Story Drift Ratio</TypeName>
+    <DefaultUnits>Radian</DefaultUnits>
+    <UserDefined>false</UserDefined>
+  </EDPType>
+  <Ratings>
+    <DataQuality>Marginal</DataQuality>
+    <DataRelevance>Marginal</DataRelevance>
+    <Documentation>Average</Documentation>
+    <Rationality>NA</Rationality>
+  </Ratings>
+  <Official>true</Official>
+  <DateCreated>2016-09-23T16:14:43.4772325-07:00</DateCreated>
+  <Approved>true</Approved>
+  <Incomplete>true</Incomplete>
+  <Notes>User to provide median demand and dispersion values.  The values listed are default PACT values and do not represent the response of this component.
+Import errors:
+ Warning, Data missing: C2011.001a:DS1: Could not parse median - using 500
+Warning, Data missing: C2011.001a:DS1: Could not parse dispersion - using 0.5
+Warning, Data missing: C2011.001a:DS2: Could not parse median - using 500
+Warning, Data missing: C2011.001a:DS2: Could not parse dispersion - using 0.5
+Warning, Data missing: C2011.001a:DS3: Could not parse median - using 500
+Warning, Data missing: C2011.001a:DS3: Could not parse dispersion - using 0.5
+Warning, Data missing: C2011.001a: DS2 Damage State has median of Zero. - Add median value
+Warning, Data missing: C2011.001a: DS3 Damage State has median of Zero. - Add median value
+</Notes>
+  <UseEDPValueOfFloorAbove>false</UseEDPValueOfFloorAbove>
+  <DamageStates>
+    <DSGroupType>Sequential</DSGroupType>
+    <DamageState>
+      <Name></Name>
+      <Description>Non structural damage, local steel yielding.</Description>
+      <DamageImageName>C2011.001a-DS1-1.jpg</DamageImageName>
+      <ConsequenceGroup>
+        <RepairMeasures>Patch, paint.</RepairMeasures>
+        <TagState>0</TagState>
+        <UseCasualty>false</UseCasualty>
+        <LongLeadFlag>false</LongLeadFlag>
+        <AffectedFloorArea />
+        <AffectedDeathRate>0</AffectedDeathRate>
+        <AffectedInjuryRate>0</AffectedInjuryRate>
+        <AffectedDeathRateBeta>0</AffectedDeathRateBeta>
+        <AffectedInjuryRateBeta>0</AffectedInjuryRateBeta>
+        <RedTagMedian>0</RedTagMedian>
+        <RedTagBeta>0</RedTagBeta>
+        <CostConsequence>
+          <LowerQuantity>5</LowerQuantity>
+          <MaxAmount>1400</MaxAmount>
+          <UpperQuantity>10</UpperQuantity>
+          <MinAmount>420</MinAmount>
+          <Uncertainty>0.8015</Uncertainty>
+          <CurveType>LogNormal</CurveType>
+        </CostConsequence>
+        <TimeConsequence>
+          <LowerQuantity>5</LowerQuantity>
+          <MaxAmount>1.5442</MaxAmount>
+          <UpperQuantity>10</UpperQuantity>
+          <MinAmount>0.4633</MinAmount>
+          <Uncertainty>0.8396</Uncertainty>
+          <CurveType>LogNormal</CurveType>
+        </TimeConsequence>
+      </ConsequenceGroup>
+      <Median>500</Median>
+      <Beta>0.5</Beta>
+    </DamageState>
+    <DamageState>
+      <Name></Name>
+      <Description>Structural damage but live load capacity remains intact.  Buckling of steel, weld cracking.</Description>
+      <DamageImageName>C2011.001a-DS2-1.jpg</DamageImageName>
+      <ConsequenceGroup>
+        <RepairMeasures>Removal and replacement of damaged components.  Field repair of damage (such as welding).</RepairMeasures>
+        <TagState>Red</TagState>
+        <UseCasualty>false</UseCasualty>
+        <LongLeadFlag>false</LongLeadFlag>
+        <AffectedFloorArea />
+        <AffectedDeathRate>0</AffectedDeathRate>
+        <AffectedInjuryRate>0</AffectedInjuryRate>
+        <AffectedDeathRateBeta>0</AffectedDeathRateBeta>
+        <AffectedInjuryRateBeta>0</AffectedInjuryRateBeta>
+        <RedTagMedian>0.25</RedTagMedian>
+        <RedTagBeta>0.5</RedTagBeta>
+        <CostConsequence>
+          <LowerQuantity>5</LowerQuantity>
+          <MaxAmount>7400</MaxAmount>
+          <UpperQuantity>10</UpperQuantity>
+          <MinAmount>2220</MinAmount>
+          <Uncertainty>0.5694</Uncertainty>
+          <CurveType>LogNormal</CurveType>
+        </CostConsequence>
+        <TimeConsequence>
+          <LowerQuantity>5</LowerQuantity>
+          <MaxAmount>8.1618</MaxAmount>
+          <UpperQuantity>10</UpperQuantity>
+          <MinAmount>2.4485</MinAmount>
+          <Uncertainty>0.6218</Uncertainty>
+          <CurveType>LogNormal</CurveType>
+        </TimeConsequence>
+      </ConsequenceGroup>
+      <Median>500</Median>
+      <Beta>0.5</Beta>
+    </DamageState>
+    <DamageState>
+      <Name></Name>
+      <Description>Loss of live load capacity.  Connection and or weld fracture.</Description>
+      <DamageImageName>C2011.001a-DS2-1.jpg</DamageImageName>
+      <ConsequenceGroup>
+        <RepairMeasures>Replace stair.</RepairMeasures>
+        <TagState>Red</TagState>
+        <UseCasualty>false</UseCasualty>
+        <LongLeadFlag>false</LongLeadFlag>
+        <AffectedFloorArea />
+        <AffectedDeathRate>0</AffectedDeathRate>
+        <AffectedInjuryRate>0</AffectedInjuryRate>
+        <AffectedDeathRateBeta>0</AffectedDeathRateBeta>
+        <AffectedInjuryRateBeta>0</AffectedInjuryRateBeta>
+        <RedTagMedian>0.1</RedTagMedian>
+        <RedTagBeta>0.5</RedTagBeta>
+        <CostConsequence>
+          <LowerQuantity>5</LowerQuantity>
+          <MaxAmount>45900</MaxAmount>
+          <UpperQuantity>10</UpperQuantity>
+          <MinAmount>13770</MinAmount>
+          <Uncertainty>0.3613</Uncertainty>
+          <CurveType>Normal</CurveType>
+        </CostConsequence>
+        <TimeConsequence>
+          <LowerQuantity>5</LowerQuantity>
+          <MaxAmount>50.625</MaxAmount>
+          <UpperQuantity>10</UpperQuantity>
+          <MinAmount>15.1875</MinAmount>
+          <Uncertainty>0.4394</Uncertainty>
+          <CurveType>Normal</CurveType>
+        </TimeConsequence>
+      </ConsequenceGroup>
+      <Median>500</Median>
+      <Beta>0.5</Beta>
+    </DamageState>
+  </DamageStates>
+</FragilityCurve>

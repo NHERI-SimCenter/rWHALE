@@ -1,0 +1,246 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FragilityCurve FileVersion="2.0">
+  <UniqueID>57cd7d50-740b-4a2f-ab82-28cdb048bcb4</UniqueID>
+  <ID>B1035.051</ID>
+  <Description>Costing is on a per bay basis.  Costing does not include fireproofing removal or reapplication cost.</Description>
+  <BasicUnit>Each</BasicUnit>
+  <Name>Pre-Northridge WUF-B beam-column joint, beam both sides of column, beam depth &lt;= W27</Name>
+  <Author>Greg Deierlein</Author>
+  <Correlation>0</Correlation>
+  <Directional>true</Directional>
+  <EDPType>
+    <Dimension>NumLevels</Dimension>
+    <TypeName>Story Drift Ratio</TypeName>
+    <DefaultUnits>Radian</DefaultUnits>
+    <UserDefined>false</UserDefined>
+  </EDPType>
+  <Ratings>
+    <DataQuality>Average</DataQuality>
+    <DataRelevance>Average</DataRelevance>
+    <Documentation>Superior</Documentation>
+    <Rationality>Superior</Rationality>
+  </Ratings>
+  <Official>true</Official>
+  <DateCreated>2016-09-23T16:12:56.5875446-07:00</DateCreated>
+  <Approved>true</Approved>
+  <Incomplete>true</Incomplete>
+  <Notes>None
+Import errors:
+ Warning, Data missing: B1035.051:DS2:DS3:Time: Could not parse CurveType - Assuming Normal
+Warning, Data missing: B1035.051:DS2:DS3:Time: Could not parse Upper Quantity cost - Assuming 0
+Warning, Data missing: B1035.051:DS2:DS3:Time: Could not parse Lower Quantity cost - Assuming 0
+Warning, Data missing: B1035.051:DS2:DS3:Time: Could not parse Dispersion - Assuming 0.5
+Warning, Data missing: B1035.051:DS2:DS3:Cost: Could not parse CurveType - Assuming Normal
+Warning, Data missing: B1035.051:DS2:DS3:Cost: Could not parse Upper Quantity cost - Assuming 0
+Warning, Data missing: B1035.051:DS2:DS3:Cost: Could not parse Lower Quantity cost - Assuming 0
+Warning, Data missing: B1035.051:DS2:DS3:Cost: Could not parse Dispersion - Assuming 0.5
+Warning, Data missing: B1035.051:DS3:Time: Could not parse CurveType - Assuming Normal
+Warning, Data missing: B1035.051:DS3:Time: Could not parse Upper Quantity cost - Assuming 0
+Warning, Data missing: B1035.051:DS3:Time: Could not parse Lower Quantity cost - Assuming 0
+Warning, Data missing: B1035.051:DS3:Time: Could not parse Dispersion - Assuming 0.5
+Warning, Data missing: B1035.051:DS3:Cost: Could not parse CurveType - Assuming Normal
+Warning, Data missing: B1035.051:DS3:Cost: Could not parse Upper Quantity cost - Assuming 0
+Warning, Data missing: B1035.051:DS3:Cost: Could not parse Lower Quantity cost - Assuming 0
+Warning, Data missing: B1035.051:DS3:Cost: Could not parse Dispersion - Assuming 0.5
+</Notes>
+  <UseEDPValueOfFloorAbove>false</UseEDPValueOfFloorAbove>
+  <DamageStates>
+    <DSGroupType>Sequential</DSGroupType>
+    <DamageState>
+      <Name></Name>
+      <Description>Fracture of lower beam flange weld and failure of web bolts (shear tab connection), with fractures confined to the weld region. </Description>
+      <DamageImageName>B1035.041-DS1-1.JPG</DamageImageName>
+      <DamageStates>
+        <DSGroupType>MutuallyExclusive</DSGroupType>
+        <DamageState>
+          <Name></Name>
+          <Description>Fracture of lower beam flange weld and failure of web bolts (shear tab connection), with fractures confined to the weld region. </Description>
+          <DamageImageName>B1035.041-DS1-1.JPG</DamageImageName>
+          <ConsequenceGroup>
+            <RepairMeasures>Repair will typically require gouging out and re-welding of the beam flange weld, repair of shear tab, and replacing shear bolts.</RepairMeasures>
+            <TagState>Red</TagState>
+            <UseCasualty>false</UseCasualty>
+            <LongLeadFlag>false</LongLeadFlag>
+            <AffectedFloorArea />
+            <AffectedDeathRate>0</AffectedDeathRate>
+            <AffectedInjuryRate>0</AffectedInjuryRate>
+            <AffectedDeathRateBeta>0</AffectedDeathRateBeta>
+            <AffectedInjuryRateBeta>0</AffectedInjuryRateBeta>
+            <RedTagMedian>0.5</RedTagMedian>
+            <RedTagBeta>0.5</RedTagBeta>
+            <CostConsequence>
+              <LowerQuantity>2</LowerQuantity>
+              <MaxAmount>99120</MaxAmount>
+              <UpperQuantity>5</UpperQuantity>
+              <MinAmount>66080</MinAmount>
+              <Uncertainty>0.308</Uncertainty>
+              <CurveType>Normal</CurveType>
+            </CostConsequence>
+            <TimeConsequence>
+              <LowerQuantity>2</LowerQuantity>
+              <MaxAmount>65.5942</MaxAmount>
+              <UpperQuantity>5</UpperQuantity>
+              <MinAmount>43.7294</MinAmount>
+              <Uncertainty>0.3967</Uncertainty>
+              <CurveType>Normal</CurveType>
+            </TimeConsequence>
+          </ConsequenceGroup>
+          <Percent>0.75</Percent>
+        </DamageState>
+        <DamageState>
+          <Name></Name>
+          <Description>Similar to DS1, except that fracture propagates into column flanges.</Description>
+          <DamageImageName>B1035.041-DS2-1.JPG</DamageImageName>
+          <ConsequenceGroup>
+            <RepairMeasures>DESCRIPTION IS NOT COMPLETE:  In addition to column measures for DS1, repairs to column will be necessary that will involve replacing a portion of the ….</RepairMeasures>
+            <TagState>Red</TagState>
+            <UseCasualty>false</UseCasualty>
+            <LongLeadFlag>false</LongLeadFlag>
+            <AffectedFloorArea />
+            <AffectedDeathRate>0</AffectedDeathRate>
+            <AffectedInjuryRate>0</AffectedInjuryRate>
+            <AffectedDeathRateBeta>0</AffectedDeathRateBeta>
+            <AffectedInjuryRateBeta>0</AffectedInjuryRateBeta>
+            <RedTagMedian>0.5</RedTagMedian>
+            <RedTagBeta>0.5</RedTagBeta>
+            <CostConsequence>
+              <LowerQuantity>2</LowerQuantity>
+              <MaxAmount>109920</MaxAmount>
+              <UpperQuantity>5</UpperQuantity>
+              <MinAmount>73280</MinAmount>
+              <Uncertainty>0.2695</Uncertainty>
+              <CurveType>Normal</CurveType>
+            </CostConsequence>
+            <TimeConsequence>
+              <LowerQuantity>2</LowerQuantity>
+              <MaxAmount>72.7411</MaxAmount>
+              <UpperQuantity>5</UpperQuantity>
+              <MinAmount>48.4941</MinAmount>
+              <Uncertainty>0.3676</Uncertainty>
+              <CurveType>Normal</CurveType>
+            </TimeConsequence>
+          </ConsequenceGroup>
+          <Percent>0.25</Percent>
+        </DamageState>
+      </DamageStates>
+      <Median>0.017</Median>
+      <Beta>0.4</Beta>
+    </DamageState>
+    <DamageState>
+      <Name></Name>
+      <Description>Fracture of upper beam flange weld, without DS1 type damage.  Fracture is confined to beam flange region. </Description>
+      <DamageImageName></DamageImageName>
+      <DamageStates>
+        <DSGroupType>MutuallyExclusive</DSGroupType>
+        <DamageState>
+          <Name></Name>
+          <Description>Fracture of upper beam flange weld, without DS1 type damage.  Fracture is confined to beam flange region. </Description>
+          <DamageImageName></DamageImageName>
+          <ConsequenceGroup>
+            <RepairMeasures>Repairs will be similar to those required for DS1, except that access to weld will likely require removal of a portion of the floor slab above the weld.</RepairMeasures>
+            <TagState>Red</TagState>
+            <UseCasualty>false</UseCasualty>
+            <LongLeadFlag>false</LongLeadFlag>
+            <AffectedFloorArea />
+            <AffectedDeathRate>0</AffectedDeathRate>
+            <AffectedInjuryRate>0</AffectedInjuryRate>
+            <AffectedDeathRateBeta>0</AffectedDeathRateBeta>
+            <AffectedInjuryRateBeta>0</AffectedInjuryRateBeta>
+            <RedTagMedian>0.5</RedTagMedian>
+            <RedTagBeta>0.5</RedTagBeta>
+            <CostConsequence>
+              <LowerQuantity>2</LowerQuantity>
+              <MaxAmount>150360</MaxAmount>
+              <UpperQuantity>5</UpperQuantity>
+              <MinAmount>100240</MinAmount>
+              <Uncertainty>0.1949</Uncertainty>
+              <CurveType>Normal</CurveType>
+            </CostConsequence>
+            <TimeConsequence>
+              <LowerQuantity>2</LowerQuantity>
+              <MaxAmount>99.5029</MaxAmount>
+              <UpperQuantity>5</UpperQuantity>
+              <MinAmount>66.3353</MinAmount>
+              <Uncertainty>0.317</Uncertainty>
+              <CurveType>Normal</CurveType>
+            </TimeConsequence>
+          </ConsequenceGroup>
+          <Percent>0.75</Percent>
+        </DamageState>
+        <DamageState>
+          <Name></Name>
+          <Description>Similar to DS3, except that fracture propagates into column flanges.</Description>
+          <DamageImageName></DamageImageName>
+          <ConsequenceGroup>
+            <RepairMeasures>In addition to column measures for DS3, repairs to column will be necessary that will involve replacing a portion of the column flange.</RepairMeasures>
+            <TagState>Red</TagState>
+            <UseCasualty>false</UseCasualty>
+            <LongLeadFlag>false</LongLeadFlag>
+            <AffectedFloorArea />
+            <AffectedDeathRate>0</AffectedDeathRate>
+            <AffectedInjuryRate>0</AffectedInjuryRate>
+            <AffectedDeathRateBeta>0</AffectedDeathRateBeta>
+            <AffectedInjuryRateBeta>0</AffectedInjuryRateBeta>
+            <RedTagMedian>0.5</RedTagMedian>
+            <RedTagBeta>0.5</RedTagBeta>
+            <CostConsequence>
+              <LowerQuantity>1</LowerQuantity>
+              <MaxAmount>0</MaxAmount>
+              <UpperQuantity>1</UpperQuantity>
+              <MinAmount>0</MinAmount>
+              <Uncertainty>0.5</Uncertainty>
+              <CurveType>Normal</CurveType>
+            </CostConsequence>
+            <TimeConsequence>
+              <LowerQuantity>1</LowerQuantity>
+              <MaxAmount>0</MaxAmount>
+              <UpperQuantity>1</UpperQuantity>
+              <MinAmount>0</MinAmount>
+              <Uncertainty>0.5</Uncertainty>
+              <CurveType>Normal</CurveType>
+            </TimeConsequence>
+          </ConsequenceGroup>
+          <Percent>0.25</Percent>
+        </DamageState>
+      </DamageStates>
+      <Median>0.025</Median>
+      <Beta>0.4</Beta>
+    </DamageState>
+    <DamageState>
+      <Name></Name>
+      <Description>Fracture initiating at weld access hole and propagating through beam flange, possibly accompanied by local buckling deformations of web and flange. </Description>
+      <DamageImageName></DamageImageName>
+      <ConsequenceGroup>
+        <RepairMeasures>Repair is similar to that for DS1 except that a portion of the beam web and flange may need to be heat straightened or replaced.</RepairMeasures>
+        <TagState>Red</TagState>
+        <UseCasualty>false</UseCasualty>
+        <LongLeadFlag>false</LongLeadFlag>
+        <AffectedFloorArea />
+        <AffectedDeathRate>0</AffectedDeathRate>
+        <AffectedInjuryRate>0</AffectedInjuryRate>
+        <AffectedDeathRateBeta>0</AffectedDeathRateBeta>
+        <AffectedInjuryRateBeta>0</AffectedInjuryRateBeta>
+        <RedTagMedian>0.5</RedTagMedian>
+        <RedTagBeta>0.5</RedTagBeta>
+        <CostConsequence>
+          <LowerQuantity>1</LowerQuantity>
+          <MaxAmount>0</MaxAmount>
+          <UpperQuantity>1</UpperQuantity>
+          <MinAmount>0</MinAmount>
+          <Uncertainty>0.5</Uncertainty>
+          <CurveType>Normal</CurveType>
+        </CostConsequence>
+        <TimeConsequence>
+          <LowerQuantity>1</LowerQuantity>
+          <MaxAmount>0</MaxAmount>
+          <UpperQuantity>1</UpperQuantity>
+          <MinAmount>0</MinAmount>
+          <Uncertainty>0.5</Uncertainty>
+          <CurveType>Normal</CurveType>
+        </TimeConsequence>
+      </ConsequenceGroup>
+      <Median>0.03</Median>
+      <Beta>0.4</Beta>
+    </DamageState>
+  </DamageStates>
+</FragilityCurve>

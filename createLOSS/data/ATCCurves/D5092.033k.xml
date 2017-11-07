@@ -1,0 +1,216 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FragilityCurve FileVersion="2.0">
+  <UniqueID>f4f16ae0-e554-4b53-a9c2-ca1ff3d27579</UniqueID>
+  <ID>D5092.033k</ID>
+  <Description>Costing is per unit and is based upon 1500 kVa.</Description>
+  <BasicUnit>Each</BasicUnit>
+  <Name>Diesel generator - Capacity: 1200 to 2000 kVa - Equipment that is either hard anchored or is vibration isolated with seismic snubbers/restraints - Equipment fragility only</Name>
+  <Author>Not Given</Author>
+  <Correlation>0</Correlation>
+  <Directional>false</Directional>
+  <EDPType>
+    <Dimension>NumLevelsPlusOne</Dimension>
+    <TypeName>Acceleration</TypeName>
+    <DefaultUnits>g</DefaultUnits>
+    <UserDefined>false</UserDefined>
+  </EDPType>
+  <Ratings>
+    <DataQuality>Average</DataQuality>
+    <DataRelevance>Average</DataRelevance>
+    <Documentation>Superior</Documentation>
+    <Rationality>Superior</Rationality>
+  </Ratings>
+  <Official>true</Official>
+  <DateCreated>2016-09-23T16:17:40.2839114-07:00</DateCreated>
+  <Approved>true</Approved>
+  <Incomplete>true</Incomplete>
+  <Notes>None
+Import errors:
+ Warning, Data missing: D5092.033k:DS1:DS1:Time: Could not parse CurveType - Assuming Normal
+Warning, Data missing: D5092.033k:DS1:DS1:Time: Could not parse Upper Quantity cost - Assuming 0
+Warning, Data missing: D5092.033k:DS1:DS1:Time: Could not parse Lower Quantity cost - Assuming 0
+Warning, Data missing: D5092.033k:DS1:DS1:Time: Could not parse Dispersion - Assuming 0.5
+Warning, Data missing: D5092.033k:DS1:DS1:Cost: Could not parse CurveType - Assuming Normal
+Warning, Data missing: D5092.033k:DS1:DS1:Cost: Could not parse Upper Quantity cost - Assuming 0
+Warning, Data missing: D5092.033k:DS1:DS1:Cost: Could not parse Lower Quantity cost - Assuming 0
+Warning, Data missing: D5092.033k:DS1:DS1:Cost: Could not parse Dispersion - Assuming 0.5
+Warning, Data missing: D5092.033k:DS1:DS2:Time: Could not parse CurveType - Assuming Normal
+Warning, Data missing: D5092.033k:DS1:DS2:Time: Could not parse Upper Quantity cost - Assuming 0
+Warning, Data missing: D5092.033k:DS1:DS2:Time: Could not parse Lower Quantity cost - Assuming 0
+Warning, Data missing: D5092.033k:DS1:DS2:Time: Could not parse Dispersion - Assuming 0.5
+Warning, Data missing: D5092.033k:DS1:DS2:Cost: Could not parse CurveType - Assuming Normal
+Warning, Data missing: D5092.033k:DS1:DS2:Cost: Could not parse Upper Quantity cost - Assuming 0
+Warning, Data missing: D5092.033k:DS1:DS2:Cost: Could not parse Lower Quantity cost - Assuming 0
+Warning, Data missing: D5092.033k:DS1:DS2:Cost: Could not parse Dispersion - Assuming 0.5
+Warning, Data missing: D5092.033k:DS1:DS3:Time: Could not parse CurveType - Assuming Normal
+Warning, Data missing: D5092.033k:DS1:DS3:Time: Could not parse Upper Quantity cost - Assuming 0
+Warning, Data missing: D5092.033k:DS1:DS3:Time: Could not parse Lower Quantity cost - Assuming 0
+Warning, Data missing: D5092.033k:DS1:DS3:Time: Could not parse Dispersion - Assuming 0.5
+Warning, Data missing: D5092.033k:DS1:DS3:Cost: Could not parse CurveType - Assuming Normal
+Warning, Data missing: D5092.033k:DS1:DS3:Cost: Could not parse Upper Quantity cost - Assuming 0
+Warning, Data missing: D5092.033k:DS1:DS3:Cost: Could not parse Lower Quantity cost - Assuming 0
+Warning, Data missing: D5092.033k:DS1:DS3:Cost: Could not parse Dispersion - Assuming 0.5
+Warning, Data missing: D5092.033k:DS1:DS4:Time: Could not parse CurveType - Assuming Normal
+Warning, Data missing: D5092.033k:DS1:DS4:Time: Could not parse Upper Quantity cost - Assuming 0
+Warning, Data missing: D5092.033k:DS1:DS4:Time: Could not parse Lower Quantity cost - Assuming 0
+Warning, Data missing: D5092.033k:DS1:DS4:Time: Could not parse Dispersion - Assuming 0.5
+Warning, Data missing: D5092.033k:DS1:DS4:Cost: Could not parse CurveType - Assuming Normal
+Warning, Data missing: D5092.033k:DS1:DS4:Cost: Could not parse Upper Quantity cost - Assuming 0
+Warning, Data missing: D5092.033k:DS1:DS4:Cost: Could not parse Lower Quantity cost - Assuming 0
+Warning, Data missing: D5092.033k:DS1:DS4:Cost: Could not parse Dispersion - Assuming 0.5
+</Notes>
+  <UseEDPValueOfFloorAbove>false</UseEDPValueOfFloorAbove>
+  <DamageStates>
+    <DSGroupType>Sequential</DSGroupType>
+    <DamageState>
+      <Name></Name>
+      <Description>Damaged, inoperative but anchorage is OK. Pipes and nozzles damaged.</Description>
+      <DamageImageName>D5092.031b-DS1-1.JPG</DamageImageName>
+      <DamageStates>
+        <DSGroupType>MutuallyExclusive</DSGroupType>
+        <DamageState>
+          <Name></Name>
+          <Description>Damaged, inoperative but anchorage is OK. Pipes and nozzles damaged.</Description>
+          <DamageImageName>D5092.031b-DS1-1.JPG</DamageImageName>
+          <ConsequenceGroup>
+            <RepairMeasures>Repair fracture pipes and damaged nozzles.</RepairMeasures>
+            <TagState>0</TagState>
+            <UseCasualty>false</UseCasualty>
+            <LongLeadFlag>true</LongLeadFlag>
+            <AffectedFloorArea />
+            <AffectedDeathRate>0</AffectedDeathRate>
+            <AffectedInjuryRate>0</AffectedInjuryRate>
+            <AffectedDeathRateBeta>0</AffectedDeathRateBeta>
+            <AffectedInjuryRateBeta>0</AffectedInjuryRateBeta>
+            <RedTagMedian>0</RedTagMedian>
+            <RedTagBeta>0</RedTagBeta>
+            <CostConsequence>
+              <LowerQuantity>1</LowerQuantity>
+              <MaxAmount>0</MaxAmount>
+              <UpperQuantity>1</UpperQuantity>
+              <MinAmount>0</MinAmount>
+              <Uncertainty>0.5</Uncertainty>
+              <CurveType>Normal</CurveType>
+            </CostConsequence>
+            <TimeConsequence>
+              <LowerQuantity>1</LowerQuantity>
+              <MaxAmount>0</MaxAmount>
+              <UpperQuantity>1</UpperQuantity>
+              <MinAmount>0</MinAmount>
+              <Uncertainty>0.5</Uncertainty>
+              <CurveType>Normal</CurveType>
+            </TimeConsequence>
+          </ConsequenceGroup>
+          <Percent>0.7</Percent>
+        </DamageState>
+        <DamageState>
+          <Name></Name>
+          <Description>Damaged, inoperative but anchorage is OK. Drive shaft misalignment.</Description>
+          <DamageImageName></DamageImageName>
+          <ConsequenceGroup>
+            <RepairMeasures>Overhaul because of drive shaft misalignment.</RepairMeasures>
+            <TagState>0</TagState>
+            <UseCasualty>false</UseCasualty>
+            <LongLeadFlag>true</LongLeadFlag>
+            <AffectedFloorArea />
+            <AffectedDeathRate>0</AffectedDeathRate>
+            <AffectedInjuryRate>0</AffectedInjuryRate>
+            <AffectedDeathRateBeta>0</AffectedDeathRateBeta>
+            <AffectedInjuryRateBeta>0</AffectedInjuryRateBeta>
+            <RedTagMedian>0</RedTagMedian>
+            <RedTagBeta>0</RedTagBeta>
+            <CostConsequence>
+              <LowerQuantity>1</LowerQuantity>
+              <MaxAmount>0</MaxAmount>
+              <UpperQuantity>1</UpperQuantity>
+              <MinAmount>0</MinAmount>
+              <Uncertainty>0.5</Uncertainty>
+              <CurveType>Normal</CurveType>
+            </CostConsequence>
+            <TimeConsequence>
+              <LowerQuantity>1</LowerQuantity>
+              <MaxAmount>0</MaxAmount>
+              <UpperQuantity>1</UpperQuantity>
+              <MinAmount>0</MinAmount>
+              <Uncertainty>0.5</Uncertainty>
+              <CurveType>Normal</CurveType>
+            </TimeConsequence>
+          </ConsequenceGroup>
+          <Percent>0.1</Percent>
+        </DamageState>
+        <DamageState>
+          <Name></Name>
+          <Description>Damaged, inoperative but anchorage is OK. Minor electrical damage, e.g., failed relay.</Description>
+          <DamageImageName></DamageImageName>
+          <ConsequenceGroup>
+            <RepairMeasures>Minor electrical repair e.g., replace relay.</RepairMeasures>
+            <TagState>0</TagState>
+            <UseCasualty>false</UseCasualty>
+            <LongLeadFlag>true</LongLeadFlag>
+            <AffectedFloorArea />
+            <AffectedDeathRate>0</AffectedDeathRate>
+            <AffectedInjuryRate>0</AffectedInjuryRate>
+            <AffectedDeathRateBeta>0</AffectedDeathRateBeta>
+            <AffectedInjuryRateBeta>0</AffectedInjuryRateBeta>
+            <RedTagMedian>0</RedTagMedian>
+            <RedTagBeta>0</RedTagBeta>
+            <CostConsequence>
+              <LowerQuantity>1</LowerQuantity>
+              <MaxAmount>0</MaxAmount>
+              <UpperQuantity>1</UpperQuantity>
+              <MinAmount>0</MinAmount>
+              <Uncertainty>0.5</Uncertainty>
+              <CurveType>Normal</CurveType>
+            </CostConsequence>
+            <TimeConsequence>
+              <LowerQuantity>1</LowerQuantity>
+              <MaxAmount>0</MaxAmount>
+              <UpperQuantity>1</UpperQuantity>
+              <MinAmount>0</MinAmount>
+              <Uncertainty>0.5</Uncertainty>
+              <CurveType>Normal</CurveType>
+            </TimeConsequence>
+          </ConsequenceGroup>
+          <Percent>0.1</Percent>
+        </DamageState>
+        <DamageState>
+          <Name></Name>
+          <Description>Damaged, inoperative but anchorage is OK. Exhaust line disconnected at expansion bellows.</Description>
+          <DamageImageName></DamageImageName>
+          <ConsequenceGroup>
+            <RepairMeasures>Reconnect exhaust line.</RepairMeasures>
+            <TagState>0</TagState>
+            <UseCasualty>false</UseCasualty>
+            <LongLeadFlag>true</LongLeadFlag>
+            <AffectedFloorArea />
+            <AffectedDeathRate>0</AffectedDeathRate>
+            <AffectedInjuryRate>0</AffectedInjuryRate>
+            <AffectedDeathRateBeta>0</AffectedDeathRateBeta>
+            <AffectedInjuryRateBeta>0</AffectedInjuryRateBeta>
+            <RedTagMedian>0</RedTagMedian>
+            <RedTagBeta>0</RedTagBeta>
+            <CostConsequence>
+              <LowerQuantity>1</LowerQuantity>
+              <MaxAmount>0</MaxAmount>
+              <UpperQuantity>1</UpperQuantity>
+              <MinAmount>0</MinAmount>
+              <Uncertainty>0.5</Uncertainty>
+              <CurveType>Normal</CurveType>
+            </CostConsequence>
+            <TimeConsequence>
+              <LowerQuantity>1</LowerQuantity>
+              <MaxAmount>0</MaxAmount>
+              <UpperQuantity>1</UpperQuantity>
+              <MinAmount>0</MinAmount>
+              <Uncertainty>0.5</Uncertainty>
+              <CurveType>Normal</CurveType>
+            </TimeConsequence>
+          </ConsequenceGroup>
+          <Percent>0.1</Percent>
+        </DamageState>
+      </DamageStates>
+      <Median>2</Median>
+      <Beta>0.2</Beta>
+    </DamageState>
+  </DamageStates>
+</FragilityCurve>
