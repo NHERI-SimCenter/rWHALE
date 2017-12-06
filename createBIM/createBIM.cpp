@@ -625,11 +625,14 @@ double getAverageArea()
         return 0.0;
 }
 
-
+//This method calculates the replacement cost for the specified buiding type or returns the default one
 double getReplacementcost(int building_type, std::map<int, ReplacementCost> replacementCostsMap, ReplacementCost defaultReplacementCost)
 {
     double cost = 0.0;
-    ReplacementCost replacmentCost = replacementCostsMap[building_type];
+    ReplacementCost replacmentCost = defaultReplacementCost;
+    if(replacementCostsMap.end() != replacementCostsMap.find(building_type))
+        replacmentCost = replacementCostsMap[building_type];
+    
     cost = replacmentCost.UnitCost * (1 + replacmentCost.ContentsFactor);
 
     return cost;
