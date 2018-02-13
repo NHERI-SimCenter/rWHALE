@@ -20,7 +20,7 @@ if [[ $platform == 'Darwin' ]]; then
     source $HOME/.profile
 elif [[ $platform == 'Linux' ]]; then
     export DAKOTA_PATH=$HOME/dakota/dakota-6.5/bin
-    export LD_LIBRARY_PATH=$HOME/dakota/dakota-6.5/lib
+    export LD_LIBRARY_PATH=$HOME/dakota/dakota-6.5/lib:$LD_LIBRARY_PATH
     export OPENSEES_PATH=$HOME/bin
     export PATH=$PATH:$OPENSEES_PATH:$DAKOTA_PATH
     source $HOME/.bashrc
@@ -45,7 +45,10 @@ outName=$7
 scriptDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 echo $scriptDIR
-scriptDIR="/Users/simcenter/NHERI/Workflow1.1/"
+scriptDIR="$(dirname "$scriptDIR")"
+scriptDIR+="/"
+echo $scriptDIR
+#scriptDIR="/Users/simcenter/NHERI/Workflow1.1/"
 numSamples=5
 
 
@@ -53,7 +56,7 @@ numSamples=5
 #  note: done in python
 #
 
-python preprocessJson.py $bimName $evtName $samName $edpName $simName $scriptDIR 
+python preprocessJSON.py $bimName $evtName $samName $edpName $simName $scriptDIR 
 
 #
 # create a dir templatedir to place all files needed by a dakota run

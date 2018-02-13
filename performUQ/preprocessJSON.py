@@ -224,6 +224,6 @@ f.close()
 f = open('finishUP.sh', 'w')
 f.write('#!/bin/bash\n')
 f.write(workflowDIR + 'performUQ/extractEDP ' + edpName + ' results.out \n')
-f.write(workflowDIR + 'performUQ/postprocessDakota ' + str(numRandomVariables) + ' ' + str(numSamples) + ' ' +  edpName + ' dakotaTab.out \n')
+f.write(workflowDIR + 'performUQ/postprocessDAKOTA ' + str(numRandomVariables) + ' ' + str(numSamples) + ' ' +  edpName + ' dakotaTab.out \n')
 
 f.close();
