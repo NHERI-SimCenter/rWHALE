@@ -30,6 +30,8 @@ public:
   ~HazusSAM_Generator();
   
   void CalcBldgPara(Building *bldg);
+  double GetAlpha1(int n);
+  double GetAlpha2(int n);
   
  private:
   map<string, HazusData> *hazus;

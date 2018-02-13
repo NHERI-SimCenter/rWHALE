@@ -94,6 +94,7 @@ void HazusSAM_Generator::CalcBldgPara(Building *bldg)
     */
     bldg->T0=bldg->nStory*hazus[codelevel][strucType].T1;
     bldg->T2=bldg->T0*hazus[codelevel][strucType].T2;
+    double alpha1=GetAlpha1(bldg->nStory);
     for (int i=0;i<bldg->nStory;++i)
     {
         bldg->floorParams[i].floor=i+1;
@@ -102,7 +103,7 @@ void HazusSAM_Generator::CalcBldgPara(Building *bldg)
         bldg->interstoryParams[i].K0=4.0*PI*PI*bldg->lambda(bldg->nStory)*bldg->floorParams[i].mass/bldg->T0/bldg->T0;
 
         double r = 1.0-double(i+1)*double(i)/double(bldg->nStory)/double(bldg->nStory+1);
-        bldg->interstoryParams[i].Sy=hazus[codelevel][strucType].Props[1]*bldg->floorParams[i].mass*9.8*double(bldg->nStory)*r;
+        bldg->interstoryParams[i].Sy=hazus[codelevel][strucType].Props[1]*alpha1*bldg->floorParams[i].mass*9.8*double(bldg->nStory)*r;
         bldg->interstoryParams[i].eta=hazus[codelevel][strucType].Props[2];
         bldg->interstoryParams[i].C=hazus[codelevel][strucType].Props[3];
         bldg->interstoryParams[i].gamma=hazus[codelevel][strucType].Props[4];
@@ -112,4 +113,32 @@ void HazusSAM_Generator::CalcBldgPara(Building *bldg)
         bldg->interstoryParams[i].a_k=hazus[codelevel][strucType].Props[8];
         bldg->interstoryParams[i].omega=hazus[codelevel][strucType].Props[9];
     }
+}
+
+double HazusSAM_Generator::GetAlpha1(int n)
+{
+   // calculate the modal mass coefficient for the first natural mode
+   // assuming shear deformation and the k and m are identical for each story.
+   if(n<=1)
+       return 1.0;
+   double a=0.09117;
+   double b=-0.3037;
+   double c=0.402;
+   double d=0.8106;
+   double m=(double)n;
+   return a/(m*m*m) +b/(m*m) +c/m +d ;
+}
+
+double HazusSAM_Generator::GetAlpha2(int n)
+{
+   // calculate the hight coefficient for the first natural mode
+   // assuming shear deformation and the k and m are identical for each story.
+   if(n<=1)
+       return 1.0;
+   double a=-0.1052;
+   double b=0.3104 ;
+   double c=0.009591;
+   double d=0.7852;
+   double m=(double)n;
+   return a/(m*m*m) +b/(m*m) +c/m +d ;
 }
