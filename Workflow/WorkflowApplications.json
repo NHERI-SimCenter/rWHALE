@@ -1,0 +1,283 @@
+{
+  "BuildingApplications": {
+    "API": {
+      "Outputs": [
+      {
+          "id": "buildingFile",
+          "type": "string",
+          "description": "name of JSON file containing an array of id,filename pairs. for each building id the aplication creates a BIM file with name filename",
+          "default": "buildingsFile.txt"
+      }
+      ]
+    },
+    "Applications": [
+      {
+        "Name": "UrbanSimDatabase",
+        "ExecutablePath": "/Users/fmckenna/NHERI/Workflow1.1/CreateBIM/UrbanSimDatabase",
+        "ApplicationSpecificInputs": [
+		{ "id":"Min",
+		  "type":"int",
+	          "description":"min id of building to obtain BIM for",
+	          "default":1
+	        },
+	        { "id":"Max",
+	          "type":"int",
+	          "description":"max id of building to obtain BIM for",
+	          "default":10
+	        }
+        ]
+      }
+    ]
+  },
+  "EventApplications": {
+    "API": {
+      "Inputs": [
+      {
+          "id": "filenameBIM",
+          "type": "string",
+          "description": "name of bim file",
+          "default": "BIM.json"
+      }
+      ],
+      "Outputs": [
+      {
+          "id": "filenameEVENT",
+          "type": "string",
+          "description": "name of file containing the event data",
+          "default": "EVENT.json"
+      }
+      ]
+    },
+    "Applications": [
+      {
+        "Name": "LLNL-SW4",
+        "ExecutablePath": "/Users/fmckenna/NHERI/Workflow1.1/createEvent/LLNL_SW4",
+        "ApplicationSpecificInputs": [
+		{ "id":"pathSW4results",
+	          "type":"string",
+	          "description":"path to directory containig output point files"
+		},
+		{ "id":"filenameHFmeta",
+	          "type":"string",
+	          "description":"path to file containing loacation information on each ouput point file"
+		}
+	]
+      }
+    ]
+  },
+  "ModelingApplications": {
+    "API": {
+      "Inputs": [
+      {
+          "id": "filenameBIM",
+          "type": "string",
+          "description": "name of bim file",
+          "default": "BIM.json"
+      },
+      {
+          "id": "filenameEVENT",
+          "type": "string",
+          "description": "name of file containing the event data",
+          "default": "EVENT.json"
+      }
+      ],
+      "Outputs": [
+      {
+          "id": "filenameSAM",
+          "type": "string",
+          "description": "name of file containing the outputted SAM",
+          "default": "SAM.json"
+      }
+      ]
+    },
+    "Applications": [
+      {
+        "Name": "MDOF-LU",
+        "ExecutablePath": "/Users/fmckenna/NHERI/Workflow1.1/createSAM/MDOF-LU",
+        "ApplicationSpecificInputs": []
+      }
+    ]
+  },
+  "EDP": {
+    "API": {
+      "Inputs": [
+      {
+          "id": "filenameBIM",
+          "type": "string",
+          "description": "name of bim file",
+          "default": "BIM.json"
+      },
+      {
+          "id": "filenameEVENT",
+          "type": "string",
+          "description": "name of file containing the event data",
+          "default": "EVENT.json"
+      },
+      {
+          "id": "filenameSAM",
+          "type": "string",
+          "description": "name of file containing the SAM",
+          "default": "SAM.json"
+      }
+      ],
+      "Outputs": [
+      {
+          "id": "filenameEDP",
+          "type": "string",
+          "description": "name of file containing the EDP to be determined from the analysis",
+          "default": "EDP.json"
+      }
+      ]
+    },
+    "Applications": [
+      {
+        "Name": "StandardEarthquakeEDP",
+        "ExecutablePath": "/Users/fmckenna/NHERI/Workflow1.1/createEDP/StandardEarthquakeEDP",
+        "ApplicationSpecificInputs": []
+      }
+    ]
+  },
+  "SimulationApplications": {
+    "API": {
+      "Inputs": [
+      {
+          "id": "filenameBIM",
+          "type": "string",
+          "description": "name of file containing the BIM",
+          "default": "BIM.json"
+      },
+      {
+          "id": "filenameSAM",
+          "type": "string",
+          "description": "name of file containing the SAM",
+          "default": "SAM.json"
+      },
+      {
+          "id": "filenameEVENT",
+          "type": "string",
+          "description": "name of file containing the event data",
+          "default": "EVENT.json"
+      }
+      ],
+      "Outputs": [
+      {
+          "id": "filenameEDP",
+          "type": "string",
+          "description": "name of EDP file to be added to",
+          "default": "EDP.json"
+      }
+      ]
+    },
+    "Applications": [
+      {
+        "Name": "OpenSees",
+        "ExecutablePath": "/Users/fmckenna/NHERI/Workflow1.1/performSIMULATION/OpenSeesSimulation.sh"
+      }
+    ]
+  },
+  "UQApplications": {
+    "API": {
+      "Inputs": [
+      {
+          "id": "filenameBIM",
+          "type": "string",
+          "description": "name of file containing the BIM",
+          "default": "BIM.json"
+      },
+      {
+          "id": "filenameSAM",
+          "type": "string",
+          "description": "name of file containing the SAM",
+          "default": "SAM.json"
+      },
+      {
+          "id": "filenameEVENT",
+          "type": "string",
+          "description": "name of file containing the event data",
+          "default": "EVENT.json"
+      },
+      {
+          "id": "filenameSIM",
+          "type": "string",
+          "description": "name of file containing the event data",
+          "default": "EVENT.json"
+      },
+      {
+          "id": "filenameEDP",
+          "type": "string",
+          "description": "name of file containing the event data",
+          "default": "EVENT.json"
+      },
+      {
+          "id": "filenameDRIVER",
+          "type": "string",
+          "description": "name of file containing the simulation driver",
+          "default": "EVENT.json"
+      }
+      ],
+      "Outputs": [
+      {
+          "id": "filenameEDP",
+          "type": "string",
+          "description": "name of EDP file to be added to",
+          "default": "EDP.json"
+      }
+      ]
+    },
+    "Applications": [
+      {
+        "Name": "Dakota-FEM",
+        "ExecutablePath": "/Users/fmckenna/NHERI/Workflow1.1/performUQ/Dakota-FEM-Simulation.sh"
+      }
+    ]
+  },
+  "DamageAndLossApplications": {
+    "API": {
+      "Inputs": [
+      {
+          "id": "filenameBIM",
+          "type": "string",
+          "description": "name of file containing the BIM",
+          "default": "BIM.json"
+      },
+      {
+          "id": "filenameEDP",
+          "type": "string",
+          "description": "name of EDP file to be added to",
+          "default": "EDP.json"
+      }
+      ],
+      "Outputs": [
+      {
+          "id": "filenameLOSS",
+          "type": "string",
+          "description": "name of LOSS ouput file",
+          "default": "LOSS.json"
+      }
+      ]
+    },
+    "Applications": [
+      {
+        "Name": "FemaP58-LU",
+        "ExecutablePath": "/Users/fmckenna/NHERI/Workflow1.1/createLOSS/FEMAP58_LU",
+        "ApplicationSpecificInputs": [
+		{ "id":"pathCurves",
+		  "type":"string",
+	          "description":"path to fragility and loss curves",
+	          "default":1
+	        },
+	        { "id":"filenameSettings",
+	          "type":"string",
+	          "description":"full path to file cntaining the application settings",
+	          "default":10
+	        },
+	        { "id":"pathNormative",
+	          "type":"string",
+	          "description":"full path to file cntaining the normative building data",
+	          "default":10
+	        }
+        ]
+      }
+    ]
+  }
+}
