@@ -32,6 +32,7 @@ class OpenSeesPreprocessor {
   int processSections(ofstream &out);
   int processNodes(ofstream &out);
   int processElements(ofstream &out);
+  int processDamping(ofstream &out);
   int processEvents(ofstream &s);
   int processEvent(ofstream &s, 
 		   json_t *event, 
@@ -56,6 +57,7 @@ class OpenSeesPreprocessor {
   int analysisType;
   int numSteps;
   double dT;
+  int nStory;   //number of stories
 
   int NDM;
   int NDF;

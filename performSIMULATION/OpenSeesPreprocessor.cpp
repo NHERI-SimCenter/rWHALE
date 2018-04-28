@@ -8,7 +8,7 @@
 
 OpenSeesPreprocessor::OpenSeesPreprocessor()
   :filenameBIM(0),filenameSAM(0),filenameEVENT(0),filenameEDP(0),
-   filenameTCL(0), filenameUQ(0), analysisType(-1), numSteps(0), dT(0.0)
+   filenameTCL(0), filenameUQ(0), analysisType(-1), numSteps(0), dT(0.0), nStory(0)
 {
 
 }
@@ -121,6 +121,7 @@ OpenSeesPreprocessor::createInputFile(const char *BIM,
   processNodes(tclFile);
   processMaterials(tclFile);
   processElements(tclFile);
+  processDamping(tclFile);
 
   rootEVENT = json_load_file(filenameEVENT, 0, &error);
   rootEDP = json_load_file(filenameEDP, 0, &error);
@@ -233,8 +234,11 @@ OpenSeesPreprocessor::processMaterials(ofstream &s){
       //$s1n $e1n $s2n $e2n <$s3n $e3n> $pinchX $pinchY $damage1 $damage2 <$beta>
       s << "uniaxialMaterial Hysteretic " << tag << " " << Sy << " " << Sy/K0
         << " " << alpha*Sy << " " << Sy/K0+(alpha-1)*Sy/eta/K0
+        << " " << alpha*Sy << " " << 1.0
         << " " << -beta*Sy << " " << -beta*Sy/K0 << " " << -beta*(alpha*Sy)
-        << " " << -(beta*Sy/K0 + beta*(alpha-1)*Sy/eta/K0) << " " << gamma
+        << " " << -(beta*Sy/K0 + beta*(alpha-1)*Sy/eta/K0)
+        << " " << -beta*(alpha*Sy) << " " << -1.0
+        << " " << gamma
         << " " << gamma << " " << 0.0 << " " << 0.0 << " " << a_k << "\n";
     }
   }
@@ -260,6 +264,7 @@ OpenSeesPreprocessor::processNodes(ofstream &s){
   json_array_foreach(nodes, index, node) {
 
     int tag = json_integer_value(json_object_get(node,"name"));
+    if(nStory<tag)  nStory=tag;
     json_t *crds = json_object_get(node,"crd");
     int sizeCRD = json_array_size(crds);
     int ndf = json_integer_value(json_object_get(node,"ndf"));
@@ -288,6 +293,13 @@ OpenSeesPreprocessor::processNodes(ofstream &s){
 
     s << "\n";
   }
+
+  int nodeTag = getNode(1,1);
+  s << "fix " << nodeTag;
+  for (int i=0; i<NDF; i++)
+     s << " " << 1;
+  s << "\n";
+
   return 0;
 }
 
@@ -330,6 +342,42 @@ OpenSeesPreprocessor::processElements(ofstream &s){
   }
   return 0;
 }
+
+
+int
+OpenSeesPreprocessor::processDamping(ofstream &s){
+    json_t *propertiesObject = json_object_get(rootSAM,"Properties");
+    double damping = json_real_value(json_object_get(propertiesObject,"dampingRatio"));
+    s << "set xDamp " << damping << ";\n"
+      << "set MpropSwitch 1.0;\n"
+      << "set KcurrSwitch 0.0;\n"
+      << "set KinitSwitch 0.0;\n"
+      << "set KcommSwitch 1.0;\n"
+      << "set nEigenI 1;\n";
+
+    json_t *geometry = json_object_get(rootSAM,"Geometry");
+    json_t *nodes = json_object_get(geometry,"nodes");
+    int nStory = json_array_size(nodes)-1;
+    int nEigenJ=0;
+    if(nStory<=2)
+        nEigenJ=nStory*2;   //first mode or second mode
+    else
+        nEigenJ=3*2;          //third mode
+
+     s << "set nEigenJ "<<nEigenJ<<";\n"
+       << "set lambdaN [eigen -fullGenLapack "<< nStory*2 <<"];\n"
+       << "set lambdaI [lindex $lambdaN [expr $nEigenI-1]];\n"
+       << "set lambdaJ [lindex $lambdaN [expr $nEigenJ-1]];\n"
+       << "set omegaI [expr pow($lambdaI,0.5)];\n"
+       << "set omegaJ [expr pow($lambdaJ,0.5)];\n"
+       << "set alphaM [expr $MpropSwitch*$xDamp*(2*$omegaI*$omegaJ)/($omegaI+$omegaJ)];\n"
+       << "set betaKcurr [expr $KcurrSwitch*2.*$xDamp/($omegaI+$omegaJ)];\n"
+       << "set betaKinit [expr $KinitSwitch*2.*$xDamp/($omegaI+$omegaJ)];\n"
+       << "set betaKcomm [expr $KcommSwitch*2.*$xDamp/($omegaI+$omegaJ)];\n"
+       << "rayleigh $alphaM $betaKcurr $betaKinit $betaKcomm;\n";
+  return 0;
+}
+
 
 int 
 OpenSeesPreprocessor::processEvents(ofstream &s){
@@ -566,11 +614,7 @@ OpenSeesPreprocessor::processEvent(ofstream &s,
     }
   }
 
-  int nodeTag = getNode(1,1);
-  s << "fix " << nodeTag;
-  for (int i=0; i<NDF; i++)
-    s << " " << 1;
-  s << "\n";
+
   
   //  printf("%d %d %f\n",analysisType, numSteps, dT);
 

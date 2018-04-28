@@ -85,7 +85,7 @@ void Building::readBIM(const char *path)
     json_t *aType = json_object_get(GI,"area");
     json_t *nType = json_object_get(GI,"numStory");
     json_t *hType = json_object_get(GI,"height");
-    json_t *yType = json_object_get(GI,"yBuilt");
+    json_t *yType = json_object_get(GI,"yearBuilt");
     json_t *oType = json_object_get(GI,"occupancy");
     json_t *rType = json_object_get(GI,"replacementCost");
     json_t *tType = json_object_get(GI,"replacementTime");
