@@ -14,11 +14,16 @@ int main(int argc, char **argv)
     exit(0);
   }
 
+
   char *filenameBIM = argv[1];
   char *filenameSAM = argv[2];
   char *filenameEVENT = argv[3];
   char *filenameSIMULATION = argv[4];
 
+  std::cerr << "filaneBIM: " << argv[1] << "\n";
+  std::cerr << "filaneSAM: " << argv[2] << "\n";
+  std::cerr << "filaneEVENT: " << argv[3] << "\n";
+  std::cerr << "filanemSIMULATION: " << argv[4] << "\n";
 
   OpenSeesPreprocessor *thePreprocessor = new OpenSeesPreprocessor();
   thePreprocessor->writeRV(filenameBIM, 

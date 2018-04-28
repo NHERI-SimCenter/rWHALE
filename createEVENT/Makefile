@@ -7,8 +7,9 @@ LDLIBS=/usr/local/jansson/lib/libjansson.a
 
 SRCS=csvparser.c createEVENT.cpp
 OBJS=csvparser.o createEVENT.o
+OBJS1=csvparser.o LLNL_SW4.o
 
-all: createEVENT
+all: createEVENT LLNL_SW4
 
 csvParser.o: csvparser.cpp csvparser.h
 
@@ -16,6 +17,9 @@ createEVENT.o: createEVENT.cpp
 
 createEVENT: $(OBJS)
 	$(CXX) $(LDFLAGS) -o createEVENT $(OBJS) $(LDLIBS)
+
+LLNL_SW4: $(OBJS1)
+	$(CXX) $(LDFLAGS) -o LLNL_SW4 $(OBJS1) $(LDLIBS)
 
 clean:
 	$(RM) $(OBJS) *~ \#*

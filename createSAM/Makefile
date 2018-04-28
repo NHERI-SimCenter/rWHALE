@@ -15,7 +15,7 @@ SRCS=createSAM.cpp \
 OBJS= FloorParam.o InterstoryParam.o Building.o \
 	HazusSAM_Generator.o 
 
-all: createSAM processSAM
+all: createSAM processSAM MDOF
 
 Building.o: Building.cpp Building.h
 
@@ -35,10 +35,13 @@ createSAM: $(OBJS) createSAM.o
 processSAM: $(OBJS) processSAM.o
 	$(CXX) $(LDFLAGS) -o processSAM processSAM.o $(OBJS) $(LDLIBS)
 
+MDOF: $(OBJS) MDOF_ShearBuildingModel.o
+	$(CXX) $(LDFLAGS) -o MDOF-LU MDOF_ShearBuildingModel.o $(OBJS) $(LDLIBS)
+
 clean:
 	$(RM) $(OBJS) *~ \#* processSAM.o
 
 distclean: clean
-	$(RM) createSAM processSAM
+	$(RM) createSAM processSAM MDOF-LU
 
 

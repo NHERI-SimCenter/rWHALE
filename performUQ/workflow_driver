@@ -1,9 +1,0 @@
-dpreproSimCenter $1 exampleBIM.json exampleBIM.json.out
-dpreproSimCenter $1 exampleSIMULATION.json exampleSIMULATION.json.out
-dpreproSimCenter $1 exampleSAM.json exampleSAM.json.out
-/Users/simcenter/NHERI/Workflow1.1/createSAM/processSAM exampleBIM.json.out exampleEVENT.json exampleSAM.json.out
-/Users/simcenter/NHERI/Workflow1.1/createEDP/createEDP exampleBIM.json.out exampleSAM.json.out exampleEVENT.json exampleEDP.json
-/Users/simcenter/NHERI/Workflow1.1/performSIMULATION/mainPreprocessor exampleBIM.json.out exampleSAM.json.out exampleEVENT.json exampleEDP.json example.tcl exampleSIMULATION.json.out
-OpenSees example.tcl
-/Users/simcenter/NHERI/Workflow1.1/performSIMULATION/mainPostprocessor exampleBIM.json.out exampleSAM.json.out exampleEVENT.json exampleEDP.json
-/Users/simcenter/NHERI/Workflow1.1/performUQ/extractEDP exampleEDP.json results.out 

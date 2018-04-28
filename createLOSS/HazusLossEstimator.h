@@ -25,8 +25,8 @@ using namespace std;
 class HazusLossEstimator
 {
 public:
-    HazusLossEstimator();
-    ~HazusLossEstimator();
+  HazusLossEstimator(const char *fileHazusData =0, const char *fragilityCurvesPath = 0, const char *pathNormative = 0);
+  ~HazusLossEstimator();
 
     int determineLOSS(const char *filenameBIM,
                       const char *filenameEDP,
@@ -63,6 +63,12 @@ private:
     FragilityCurve::Tag _SimulateBldgTag();
     void _GenRealizations(Building *bldg);
     void _SimulateDS(Component *cpn, double edp);    //simulate damage state, given an edp
+
+ private:
+  string pathHazusData;
+  string fragilityCurvesPath;
+  string normativePath;
+
 };
 
 

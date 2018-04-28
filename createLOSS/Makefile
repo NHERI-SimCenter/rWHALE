@@ -14,7 +14,7 @@ SRCS=	 main.cpp \
 	NormativeQty.cpp \
 	NormativeQtyStr.cpp
 
-OBJS= main.o \
+OBJS= \
 	HazusLossEstimator.o \
 	Building.o \
 	Component.o \
@@ -25,14 +25,16 @@ OBJS= main.o \
 
 otherOBJS = ./include/inifile.o ./include/tinyxml2.o
 
-all: createLOSS
+all: createLOSS FEMA-P58
 
-HazusLossEstimator.o: HazusLossEstimator.cpp HazusLossEstimator.h
-
-
-createLOSS: $(OBJS)
+createLOSS: $(OBJS) main.o
 	cd include; make
-	$(CXX) $(LDFLAGS) -o createLOSS $(OBJS) $(otherOBJS) $(LDLIBS)
+	$(CXX) $(LDFLAGS) -o createLOSS main.o $(OBJS) $(otherOBJS) $(LDLIBS)
+
+FEMA-P58: $(OBJS) FEMAP58_LU.o
+		cd include; make
+		$(CXX) $(LDFLAGS) -o FEMAP58_LU FEMAP58_LU.o $(OBJS) $(otherOBJS) $(LDLIBS)
+
 
 clean:
 	cd include; make clean

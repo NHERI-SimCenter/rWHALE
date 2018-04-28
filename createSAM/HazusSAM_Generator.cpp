@@ -12,9 +12,16 @@ using namespace std;
 
 #include <jansson.h>  // for Json
 
-HazusSAM_Generator::HazusSAM_Generator()
+HazusSAM_Generator::HazusSAM_Generator(const char *path)
 {
-    ReadHazusData();
+  if (path == 0) {
+    pathHazusData = "data/HazusData.txt";
+  } else {
+    char *data = new char[strlen(path+1)];
+    // strcpy(path, data)
+    pathHazusData = path;
+  }
+  ReadHazusData();
 }
 
 HazusSAM_Generator::~HazusSAM_Generator()
@@ -31,11 +38,12 @@ void HazusSAM_Generator::ReadHazusData()
     hazus = new map<string, HazusData>[nCodeLevel];
 
     string temps="";
-    string path="data/HazusData.txt";
-    ifstream fHazus(path.c_str());
+    //    string path="data/HazusData.txt";
+
+    ifstream fHazus(pathHazusData.c_str());
     if( !fHazus.is_open() )
     {
-        cout << "Error opening file "<<path.c_str()<<"!\n";
+        cout << "Error opening file "<<pathHazusData.c_str()<<"!\n";
         exit(1);
     }
     for (int i=0;i<nCodeLevel;++i)

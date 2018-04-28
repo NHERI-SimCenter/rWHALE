@@ -10,7 +10,7 @@ using namespace tinyxml2;
 class FragilityCurve
 {
 public:
-    FragilityCurve();
+    FragilityCurve(const char * =0);
     enum DamageStateType{sequential, mutually_exclusive, simultaneous};
     enum EDPType{story_drift_ratio,peak_floor_acceleration};
     enum CurveType{normal, lognormal};
@@ -67,6 +67,8 @@ public:
 private:
     double toDoubleofXML(XMLElement * node,string s);
     DamageState _SetDamageState(XMLElement * dsNode);
+
+    string path;
 
 };
 

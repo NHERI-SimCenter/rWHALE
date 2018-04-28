@@ -8,14 +8,19 @@ LDLIBS=/usr/local/jansson/lib/libjansson.a
 SRCS=createEDP.cpp HazusLossEstimator.cpp
 OBJS=createEDP.o HazusLossEstimator.o
 
-all: createEDP
+all: createEDP StandardEarthquakeEDP
 
 HazusLossEstimator.o: HazusLossEstimator.cpp HazusLossEstimator.h
+
+StandardEarthquakeEDP.o : StandardEarthquakeEDP.cpp
 
 createEDP.o: createEDP.cpp HazusLossEstimator.h
 
 createEDP: $(OBJS)
 	$(CXX) $(LDFLAGS) -o createEDP $(OBJS) $(LDLIBS)
+
+StandardEarthquakeEDP: StandardEarthquakeEDP.o
+	$(CXX) $(LDFLAGS) -o StandardEarthquakeEDP StandardEarthquakeEDP.o $(LDLIBS)
 
 clean:
 	$(RM) $(OBJS) *~ \#*

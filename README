@@ -3,8 +3,8 @@
 # Description: Contains applications neeed for a regional loss estimaion
 # due to an earthquake event. Applications in subdirectories:
 
-1. createBIM - given UrbanSim data generate BIM models
-2. createEVENT - given BIM model get input motion for building (the EVENT)
+1. UrbanSimDatabase - given UrbanSim data generate BIM models
+2. LLNL-SW4 - given BIM model get input motion for building from a directory containing results of a simulated event
 3. createSAM -  given BIM and EVENT use Hazus data to generate a shear model - AI-M-3 application!
 4. createEDP - given the inputs so far generate the EDP demands
 5. performSIMULATION - given all, pre and post processors to fill the EDP with data

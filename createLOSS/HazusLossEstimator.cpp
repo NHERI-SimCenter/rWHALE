@@ -6,8 +6,18 @@ HazusLossEstimator::~HazusLossEstimator()
     delete stat;
 }
 
-HazusLossEstimator::HazusLossEstimator()
+HazusLossEstimator::HazusLossEstimator(const char *path, const char *curvesPath, const char *nPath)
 {
+  if (path == 0) {
+    pathHazusData = "data/HazusData.txt";
+    fragilityCurvesPath = "data/ATCCurves/";
+  } else {
+    pathHazusData = path;
+    fragilityCurvesPath = curvesPath;
+    normativePath = nPath;
+  }
+
+
     stat=new Stat();
 
     fragilityLib.clear();
@@ -39,8 +49,7 @@ int HazusLossEstimator::determineLOSS(const char *filenameBIM,
         vTagProb.push_back(bldg->redTagProb);
     }
 
-
-    double lossratio=stat->getMedian(vLoss)/bldg->replacementCost;
+  double lossratio=stat->getMedian(vLoss)/bldg->replacementCost;
     json_t *root = json_object();
     json_t *dl = json_object();
     json_object_set(dl,"MedianLossRatio",json_real(lossratio));
@@ -49,7 +58,6 @@ int HazusLossEstimator::determineLOSS(const char *filenameBIM,
     json_object_set(dl,"StdRepairCost",json_real(stat->getStd(vLoss)));
     json_object_set(dl,"10PercentileLoss",json_real(stat->getPercentile(vLoss,10)));
     json_object_set(dl,"90PercentileLoss",json_real(stat->getPercentile(vLoss,90)));
-
     json_object_set(root,"EconomicLoss",dl);
     json_t *repairTime = json_object();
     json_object_set(repairTime,"MedianRepairTime",json_real(stat->getMedian(vRpTime)));
@@ -61,7 +69,6 @@ int HazusLossEstimator::determineLOSS(const char *filenameBIM,
         json_object_set(tag,"Tag",json_string("none"));
     json_object_set(tag,"RedTagProbability",json_real(stat->getMean(vTagProb)));
     json_object_set(root,"UnsafePlacards",tag);
-
 
     json_object_set(root,"Name",json_string(bldg->name.c_str()));
     json_object_set(root,"MaxPGA",json_real(bldg->edp.PFA[0]));
@@ -76,7 +83,7 @@ int HazusLossEstimator::determineLOSS(const char *filenameBIM,
 int HazusLossEstimator::_Init()
 {
     inifile::IniFile ini;
-    if(ini.load("data/settings.ini")!=0)
+    if(ini.load(pathHazusData.c_str())!=0)
     {
         cout<<"Failed to open settings.ini file!\n";
         return -1;
@@ -108,22 +115,18 @@ int HazusLossEstimator::_Init()
     value_d=ini.getDoubleValue("parameters","max_worker_per_square_meter",ret);
     if(ret==0 && value_d!=0)
         max_worker_per_square_meter=value_d;
-
     return 0;
 }
 
 int HazusLossEstimator::_LoadNormativeQty()
 {
-    //nonstructural and contents
-    string path="";
-    string pathStr="";
-
-    path="data/NormativeQty.csv";
-    pathStr="data/NormativeQtyStr.csv";
+  //nonstructural and contents
+  string path1=normativePath + "NormativeQuantity.csv";
+  string pathStr=normativePath + "NormativeQtyStr.csv";
 
     try
     {
-        io::CSVReader<18> in(path);
+        io::CSVReader<18> in(path1);
         in.next_line();
         in.read_header(io::ignore_extra_column, "fid", "unit", "q1", "beta1",
                        "q2", "beta2", "q3", "beta3", "q4", "beta4", "q5", "beta5",
@@ -158,7 +161,7 @@ int HazusLossEstimator::_LoadNormativeQty()
 
             if(fragilityLib.find(fid)==fragilityLib.end())
             {
-                FragilityCurve fc;
+	      FragilityCurve fc(fragilityCurvesPath.c_str());
                 fc.ID=fid;
                 fc.LoadFragility();
                 fragilityLib.insert(make_pair(fid,fc));
@@ -221,7 +224,7 @@ int HazusLossEstimator::_LoadNormativeQty()
 
             if(fragilityLib.find(fid)==fragilityLib.end())
             {
-                FragilityCurve fc;
+	      FragilityCurve fc(fragilityCurvesPath.c_str());
                 fc.ID=fid;
                 fc.LoadFragility();
                 fragilityLib.insert(make_pair(fid,fc));
@@ -233,7 +236,6 @@ int HazusLossEstimator::_LoadNormativeQty()
         cout<<e.what();
         return -1;
     }
-
     return 0;
 }
 
@@ -285,7 +287,6 @@ void HazusLossEstimator::_AutoCalcTotalValueAndDowntime(Building *bldg)
             double currPGDowntime=unitDowntime*bldg->components[i][j].qmedian;
             double unitCost=fc->dsGroups.back().dstates.back().cost.maxAmount;
             bldg->replacementCost+=unitCost*bldg->components[i][j].qmedian;
-            cout<<"\n"<<bldg->components[i][j].ID<<"\t"<<unitCost*bldg->components[i][j].qmedian;
             currPGDowntime=currPGDowntime/bldg->workers;
             currFloorDowntime+=currPGDowntime;
         }
@@ -338,7 +339,6 @@ void HazusLossEstimator::_AutoGenComponents(Building *bldg)
                 bldg->components[i].push_back(cmp);
         }
     }
-
 }
 
 
@@ -499,7 +499,6 @@ void HazusLossEstimator::_CalcBldgConseqScenario(Building *bldg)
     _qRepair[cpn->ID].q+=cpn->q[currRealization];
     for(unsigned int i=0;i<cpn->q_ds.size();i++)
         _qRepair[cpn->ID].q_ds[i]+=cpn->q_ds[i];
-
  }
 
 void HazusLossEstimator::_SimulateDS(Component *cpn, double edp)
@@ -642,7 +641,6 @@ double HazusLossEstimator::_SimulateConseq(double q, double q_total,const Fragil
     {
         conseq=0.0;
     }
-
     return conseq;
 }
 

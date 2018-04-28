@@ -26,12 +26,14 @@ public:
     double hos;		  //story height
   };
   
-  HazusSAM_Generator();
+  HazusSAM_Generator(const char *fileHazusData =0);
   ~HazusSAM_Generator();
   
   void CalcBldgPara(Building *bldg);
   
  private:
+  string pathHazusData;
+
   map<string, HazusData> *hazus;
   void ReadHazusData();       //Load Hazus database
 };

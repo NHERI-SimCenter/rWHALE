@@ -6,6 +6,7 @@
 #include <string>
 #include <sstream>
 #include <vector>
+#include <iostream>
 
 OpenSeesPostprocessor::OpenSeesPostprocessor()
   :filenameEDP(0), filenameBIM(0)
@@ -110,6 +111,10 @@ OpenSeesPostprocessor::processEDPs(){
 	    abs1Value = abs2Value;
 
 	  json_object_set(response,"scalar_data",json_real(abs2Value));
+	  /*
+	  json_t *scalarValues = json_object_get(response,"scalar_data");
+	  json_array_append(scalarValues,json_real(abs2Value));
+	  */
 
 	} else if (strcmp(type,"max_drift") == 0) {
 
@@ -158,6 +163,11 @@ OpenSeesPostprocessor::processEDPs(){
 	    absValue = absMax;
 
 	  json_object_set(response,"scalar_data",json_real(absValue));
+	  /*
+	  json_t *scalarValues = json_object_get(response,"scalar_data");
+	  json_array_append(scalarValues,json_real(absValue));
+	  json_object_set(response,"scalar_data",scalarValues);
+	  */
 	}
 
 	else if (strcmp(type,"residual_disp") == 0) {
@@ -194,6 +204,10 @@ OpenSeesPostprocessor::processEDPs(){
 	  }
 	  
 	  json_object_set(response,"scalar_data",json_real(num));
+	  /*
+	  json_t *scalarValues = json_object_get(response,"scalar_data");
+	  json_array_append(scalarValues,json_real(num));
+	  */
 	}
       }
     }

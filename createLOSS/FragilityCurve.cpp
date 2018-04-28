@@ -2,14 +2,21 @@
 
 using namespace tinyxml2;
 
-FragilityCurve::FragilityCurve()
+FragilityCurve::FragilityCurve(const char *dataPath)
 {
+  if (dataPath == 0)
+    path="data/ATCCurves/";
+  else
+    path = dataPath;
+
+  std::cerr << "FC: path" << path;
+
 }
 
 void FragilityCurve::LoadFragility()
 {
     XMLDocument doc;
-    string path="data/ATCCurves/";
+    //    string path="data/ATCCurves/";
     path=path+ID+".xml";
     if(doc.LoadFile(path.c_str())!=0)
     {

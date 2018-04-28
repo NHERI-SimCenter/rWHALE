@@ -108,6 +108,9 @@ HazusLossEstimator::createEDP(const char *filenameBIM,
 	  json_object_set(response,"type",json_string("max_abs_acceleration"));      
 	  json_object_set(response,"cline",json_integer(cline));
 	  json_object_set(response,"floor",json_integer(floor));
+	  json_t *dataArray = json_array(); 
+	  json_object_set(response,"scalar_values",dataArray);
+
 	  json_array_append(responsesArray,response);
 	  numEDP++;
 	}
@@ -119,6 +122,8 @@ HazusLossEstimator::createEDP(const char *filenameBIM,
       json_object_set(response,"cline",json_integer(1));
       json_object_set(response,"floor1",json_integer(i+1));
       json_object_set(response,"floor2",json_integer(i+2));
+      json_t *dataArray = json_array(); 
+      json_object_set(response,"scalar_values",dataArray);
       json_array_append(responsesArray,response);
       numEDP++;
     }
@@ -127,6 +132,8 @@ HazusLossEstimator::createEDP(const char *filenameBIM,
     json_object_set(response,"type",json_string("residual_disp"));      
     json_object_set(response,"cline",json_integer(1));
     json_object_set(response,"floor",json_integer(numStory+1));
+    json_t *dataArray = json_array(); 
+    json_object_set(response,"scalar_values",dataArray);
     json_array_append(responsesArray,response);
     numEDP++;
 
@@ -134,7 +141,7 @@ HazusLossEstimator::createEDP(const char *filenameBIM,
       
     json_array_append(eventArray,eventObj);
   }
- json_object_set(rootEDP,"total_number_edp",json_integer(numEDP));  
+  json_object_set(rootEDP,"total_number_edp",json_integer(numEDP));  
   json_object_set(rootEDP,"EngineeringDemandParameters",eventArray);  
 
   //

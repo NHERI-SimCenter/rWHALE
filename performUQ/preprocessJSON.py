@@ -9,7 +9,10 @@ evtName=sys.argv[2];#'exampleEVENT.json'
 samName=sys.argv[3];#'exampleSAM.json'
 edpName=sys.argv[4];#'exampleEDP.json'
 simName=sys.argv[5];#'exampleSIMULATION.json'
-workflowDIR=sys.argv[6];#'/Users/simcenter/NHERI/Workflow1.1/'
+driverFile = sys.argv[6]
+scriptDIR = sys.argv[7]
+
+#workflowDIR=sys.argv[6];#'/Users/simcenter/NHERI/Workflow1.1/'
 
 #later
 #dakotaName=sys.argv[7]
@@ -75,8 +78,10 @@ def parseFileForRV(fileName):
 
 
 parseFileForRV(bimName)
+parseFileForRV(evtName)
 parseFileForRV(samName)
-parseFileForRV(simName)
+#parseFileForRV(simName)
+parseFileForRV(edpName)
 
 #
 # Write the input file: dakota.in 
@@ -193,28 +198,22 @@ f.close()  # you can omit in most cases as the destructor will call it
 #
 # Write the workflow driver
 #
+
 f = open('workflow_driver', 'w')
 
 # want to dprepro the files with the random variables
-f.write('dpreproSimCenter $1 ' + bimName + ' ' + bimName + '.out\n')
-f.write('dpreproSimCenter $1 ' + simName + ' ' + simName + '.out\n')
-f.write('dpreproSimCenter $1 ' + samName + ' ' + samName + '.out\n')
+f.write('dpreproSimCenter $1 bim.j ' + bimName + '\n')
+f.write('dpreproSimCenter $1 sam.j ' + samName + '\n')
+f.write('dpreproSimCenter $1 evt.j ' + evtName + '\n')
+f.write('dpreproSimCenter $1 edp.j ' + edpName + '\n')
 
-f.write(workflowDIR + 'createSAM/processSAM ' + bimName + '.out ' + evtName  + ' ' + samName + '.out\n')
+with open(driverFile) as fp:
+    for line in fp:
+        f.write(line)
+        print(line)
 
-f.write(workflowDIR + 'createEDP/createEDP ' + bimName + '.out ' + samName + '.out ' + evtName + ' ' + edpName + '\n')
-
-f.write(workflowDIR + 'performSIMULATION/mainPreprocessor ' + bimName + '.out ' + samName + '.out ' + evtName + ' ' + edpName + ' example.tcl ' + simName + '.out\n')
-
-#f.write(workflowDIR + 'performSIMULATION/mainPreprocessor ' + bimName + '.out ' + samName + '.out ' + evtName + ' ' + edpName + '  example.tcl\n')
-
-f.write('OpenSees example.tcl\n')
-
-
-f.write(workflowDIR + 'performSIMULATION/mainPostprocessor ' + bimName + '.out ' + samName + '.out ' + evtName + ' ' + edpName + '\n')
-
-f.write(workflowDIR + 'performUQ/extractEDP ' + edpName + ' results.out \n')
-#/Users/simcenter/NHERI/Workflow1.1/dakota/extractEDP exampleEDP.json
+f.write('\n')
+f.write(scriptDIR + '/extractEDP ' + edpName + ' results.out \n')
 
 # Run 
 #f.write('rm -f *.com *.done *.dat *.log *.sta *.msg')
@@ -223,7 +222,8 @@ f.close()
 
 f = open('finishUP.sh', 'w')
 f.write('#!/bin/bash\n')
-f.write(workflowDIR + 'performUQ/extractEDP ' + edpName + ' results.out \n')
-f.write(workflowDIR + 'performUQ/postprocessDakota ' + str(numRandomVariables) + ' ' + str(numSamples) + ' ' +  edpName + ' dakotaTab.out \n')
+#f.write(scriptDIR + '/extractEDP ' + edpName + ' results.out \n')
+f.write(scriptDIR + '/postprocessDakota ' + str(numRandomVariables) + ' ' + str(numSamples) + ' ' +  edpName + ' dakotaTab.out \n')
+f.write('rm -fr templatedir workdir.* dakota.* LHS* dakotaTab.*')
 
 f.close();
