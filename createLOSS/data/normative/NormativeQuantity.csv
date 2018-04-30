@@ -1,0 +1,35 @@
+,,office,,education,,healthcare,,hospitality,,residence,,retail,,warehouse,,research,,,
+fid,unit,q1,beta1,q2,beta2,q3,beta3,q4,beta4,q5,beta5,q6,beta6,q7,beta7,q8,beta8,notes,description
+B2022.001,30,3.22917,0.6,1.184029,0.8,1.506946,0.7,1.291668,0.3,1.614585,0.6,0.645834,0.3,0.0107639,0.2,1.614585,0.8,,B2022.001    Curtain Walls - Generic Midrise Stick-Built Curtain wall; Config: Monolithic; Lamination: Unknown; Glass Type: Unknown; Details: Aspect ratio = 6:5;  Other details Unknown
+B3011.011,100,2.906253,1.3,7.319452,0.6,3.121531,1,2.15278,0,3.444448,0.9,5.38195,0,10.7639,0,2.6371555,0,,B3011.011    Concrete tile roof; tiles secured and compliant with UBC94
+C1011.001c,100,1.07639,0.2,0.6027784,0.5,1.1302095,0.2,0.645834,0.2,1.291668,0.3,0.107639,0.2,0.0322917,0.2,0.9149315,0.2,,C1011.001c    Wall Partition; Type: Gypsum with metal studs; Full Height; Fixed Below; Slip Track Above with returns
+C2011.001b,1,0.00107639,0.2,0.000753473,0.2,0.000861112,0.1,0.001184029,0.1,0.001291668,0.1,0.00107639,0.3,,,0.00107639,0.2,,C2011.001b    Prefabricated steel stair with steel treads and landings with no seismic joint.
+C3011.001b,100,0.081375084,0.7,0.152675158,0.7,0.136593891,0.6,0.31000032,0.3,0.410750424,0.4,0.11625012,0.2,0.004650005,0.2,0.054250056,0.8,,C3011.001b    Wall Partition; Type: Gypsum + Wallpaper; Partial Height; Fixed Below; Lateral Braced Above
+C3027.001,100,8.072925,0.2,,,,,,,,,,,,,,,,C3027.001    Raised Access Floor; non seismically rated.
+C3032.001a,250,9.68751,0,10.225705,0,8.61112,0,1.614585,0,,,9.68751,0,0.538195,0,9.149315,0,,C3032.001a    Suspended Ceiling; SDC A;B; Area (A): A < 250; Vert support only
+C3034.001,1,0.1614585,0.3,0.1614585,0.2,0.1614585,0.2,,,,,0.1614585,0.2,0.1614585,0.3,0.1614585,0.2,,C3034.001    Independent Pendant Lighting - non seismic
+D1014.011,1,0.000301389,0.7,0.000215278,1.4,0.000301389,0.9,0.000161459,0.2,0.000365973,0.8,0.00107639,0.3,,,0.000182986,1.2,,D1014.011    Traction Elevator ¨C Applies to most California Installations 1976 or later; most western states installations 1982 or later and most other U.S installations 1998 or later.
+D2021.011a,1000,0.1614585,0.2,0.1614585,0.2,0.430556,0.2,0.1614585,0.2,0.1614585,0.2,0.1614585,0.2,0.1614585,0.2,0.215278,0.2,,D2021.011a    Cold Water Piping (dia > 2.5 inches); SDC A or B; PIPING FRAGILITY
+D2022.011a,1000,0.9041676,0.7,0.645834,0.3,2.368058,0.2,1.722224,0.3,2.2819468,0.4,0.645834,0.3,0.10333344,0.2,1.291668,0.3,,D2022.011a    Hot Water Piping - Small Diameter Threaded Steel - (2.5 inches in diameter or less); SDC A or B; PIPING FRAGILITY
+D2022.011a,1000,0.0538195,0.2,0.2690975,0.6,0.861112,0.2,0.0538195,0.2,0.0538195,0.2,0.2690975,0.6,0.0538195,0.2,0.861112,0.2,,D2022.011a    Hot Water Piping - Small Diameter Threaded Steel - (2.5 inches in diameter or less); SDC A or B; PIPING FRAGILITY
+D2022.021a,1000,0.322917,0.2,0.322917,0.2,0.861112,0.2,0.322917,0.2,0.322917,0.2,0.322917,0.2,0.322917,0.2,0.430556,0.4,,D2022.021a    Hot Water Piping - Large Diameter Welded Steel - (greater than 2.5 inches in diameter); SDC A or B; PIPING FRAGILITY
+D2022.021a,1000,0.0538195,0.2,0.0538195,0.2,0.322917,0.2,0.0538195,0.2,0.0538195,0.2,0.0538195,0.2,0.0538195,0.2,0.322917,0.2,,D2022.021a    Hot Water Piping - Large Diameter Welded Steel - (greater than 2.5 inches in diameter); SDC A or B; PIPING FRAGILITY
+D2061.011a,1000,,,,,0.215278,0.2,,,,,,,,,0.107639,0.2,,D2061.011a    Steam Piping - Small Diameter Threaded Steel - (2.5 inches in diameter or less); SDC A or B; PIPING FRAGILITY
+D2061.023a,1000,,,,,0.322917,0.2,,,,,0.0538195,0.2,,,0.215278,0.2,,D2061.023a    Steam Piping - Large Diameter Welded Steel - (greater than 2.5 inches in diameter); SDC D; E; or F; PIPING FRAGILITY
+D3031.011a,75,0.030677115,0.1,,,0.034982675,0.1,,,,,,,,,0.034982675,0.1,,D3031.011a    Chiller - Capacity: < 100 Ton - Unanchored equipment that is not vibration isolated - Equipment fragility only
+D3031.021a,75,0.030677115,0.1,,,0.034982675,0.1,,,,,,,,,0.034982675,0.1,,D3031.021a    Cooling Tower - Capacity: < 100 Ton - Unanchored equipment that is not vibration isolated - Equipment fragility only
+D3041.011a,1000,0.8072925,0.2,0.538195,0.6,0.8072925,0.2,0.538195,0.6,0.538195,0.6,0.0538195,0.2,,,1.07639,0.2,,D3041.011a    HVAC Galvanized Sheet Metal Ducting less than 6 sq. ft in cross sectional area; SDC A or B
+D3041.012a,1000,0.215278,0.2,,,0.3767365,0.2,,,,,0.538195,0.6,0.430556,0.6,0.538195,0.3,,D3041.012a    HVAC Galvanized Sheet Metal Ducting -  6 sq. ft cross sectional area or greater; SDC A or B
+D3041.031a,10,0.0968751,0.5,0.0538195,0.6,0.215278,0.1,0.0861112,0.4,0.0861112,0.4,,,0.0322917,0.4,0.1722224,0.2,,D3041.031a    HVAC Drops / Diffusers in suspended ceilings - No independent safety wires; SDC A or B
+D3041.041a,10,0.0538195,0.2,0.0430556,0,0.0538195,0.2,0.0645834,0,0.0430556,0,0.0430556,0,,,0.0215278,0.2,,D3041.041a    Variable Air Volume (VAV) box with in-line coil; SDC A or B
+D3041.041a,10,0.0215278,0.5,0.0538195,0.2,0.0538195,0.2,,,,,,,,,0.00322917,0.7,,D3041.041a    Variable Air Volume (VAV) box with in-line coil; SDC A or B
+D3052.011a,4000,7.53473,0.2,,,10.7639,0.2,,,,,,,2.15278,0.8,13.454875,0.2,,D3052.011a    Air Handling Unit - Capacity: <5000 CFM - Unanchored equipment that is not vibration isolated - Equipment fragility only
+D4011.021a,1000,2.15278,0.1,1.937502,0.1,2.368058,0.1,2.368058,0.1,2.368058,0.1,1.937502,0.1,1.184029,0.1,2.15278,0.1,,D4011.021a    Fire Sprinkler Water Piping - Horizontal Mains and Branches - Old Style Victaulic - Thin Wall Steel - No bracing; SDC A or B; PIPING FRAGILITY
+D4011.032a,100,0.0968751,0.2,0.0861112,0.2,0.1291668,0.1,0.1291668,0.1,0.1291668,0.1,0.0861112,0.2,0.0861112,0.2,0.107639,0.2,,D4011.031a    Fire Sprinkler Drop Standard Threaded Steel - Dropping into unbraced lay-in tile SOFT ceiling - 6 ft. long drop maximum; SDC A or B
+D5012.013a,1,0.000430556,0.5,0.000430556,0.5,0.000538195,0.4,,,,,,,,,0.000430556,0.5,,D5012.013a    Motor Control Center - Capacity: all - Unanchored equipment that is not vibration isolated - Equipment fragility only
+D5012.021a,225,0.00322917,0.4,0.00322917,0.4,0.00322917,0.4,0.00322917,0.4,0.00861112,0.3,0.00322917,0.4,0.00107639,0.5,0.00322917,0.4,,D5012.021a    Low Voltage Switchgear - Capacity: 100 to <350 Amp - Unanchored equipment that is not vibration isolated - Equipment fragility only
+D5092.031a,250,,,,,0.0538195,0.7,,,,,,,,,0.0538195,0.7,,D5092.031a    Diesel generator - Capacity: 100 to <350 kVA - Unanchored equipment that is not vibration isolated - Equipment fragility only
+F1012.001,50,,,,,,,,,,,,,1.07639,0.4,,,,F1012.001    Storage racks designed and installed before 2007; big box retail (12' to 15' tall)
+E2022.001u,1,0.0753473,0.2,,,,,,,,,,,,,,,,E2022.001    User-defined Modular office work stations.  
+E2022.022u,1,0.19,0.6,0.04,0.6,0.04,0.6,0.04,0.6,0.04,0.6,0.04,0.6,0.04,0.6,0.19,0.6,,User-defined contents representing electrical appliances
+E2022.020u,1,0.11,0.6,0.25,0.6,0.25,0.6,0.25,0.6,0.25,0.6,0.25,0.6,0.25,0.6,0.11,0.6,,User-defined contents representing furniture

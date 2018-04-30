@@ -1,0 +1,8 @@
+,,wood,,masonry,,RC-frame,,RC-shearwall,,Steel-frame,,,
+fid,unit,q1,beta1,q2,beta2,q3,beta3,q4,beta4,q5,beta5,note,description
+B1041.041a,1,,,,,0.08,0.6,,,,,,"B1041.041a ACI 318 OMF with weak joints and column flexural response; Conc Col & Bm = 24"" x 24""; Beam one side"
+B1044.091,16.722,,,,,,,0.035,0.6,,,quantity is wall ratio *0.5 (wall section area divided by floor area; *0.5 for two directions),"B1044.091 Slender Concrete Wall; 12"" thick; 12' high; 15' long"
+B1035.001,1,,,,,,,,,0.0172,0.6,,B1035.001 Post-Northridge RBS connection with welded web; beam one side of column only; beam depth <= W27
+B1035.011,1,,,,,,,,,0.0536,0.6,,B1035.011 Post-Northridge RBS connection with welded web; beams both sides of column; beam depth <= W27
+B1052.011,12.38357,,,0.046,0.6,,,,,,,quantity is wall ratio *0.5 (wall section area divided by floor area; *0.5 for two directions),"B1052.011 Special reinforced masonry walls with fully grouted cells; 16"" thick; shear dominated; up to 12' tall"
+B1071.001,9.29,1,0.6,,,,,,,,,quantity is calculated in the program,B1071.001 Light framed wood walls with structural panel sheathing; gypsum wallboard no hold-downs
