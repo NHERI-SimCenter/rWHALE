@@ -8,7 +8,7 @@
 #include <cctype>
 #include "HazusSAM_Generator.h"
 #include "Building.h"
-
+#include <cstring>
 
 int main(int argc, char **argv)
 {

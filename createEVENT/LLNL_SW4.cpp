@@ -13,6 +13,7 @@
 
 #include <map>
 #include <string>
+#include <cstring>
 
 using namespace nanoflann;
 

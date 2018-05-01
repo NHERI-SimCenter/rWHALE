@@ -222,7 +222,7 @@ f.close()
 
 f = open('finishUP.sh', 'w')
 f.write('#!/bin/bash\n')
-f.write(scriptDIR + '/postprocessDakota ' + str(numRandomVariables) + ' ' + str(numSamples) + ' ' +  edpName + ' dakotaTab.out \n')
+f.write(scriptDIR + '/postprocessDAKOTA ' + str(numRandomVariables) + ' ' + str(numSamples) + ' ' +  edpName + ' dakotaTab.out \n')
 f.write('rm -fr templatedir workdir.* dakota.* LHS* dakotaTab.*')
 
 f.close();

@@ -8,6 +8,8 @@
 #include <algorithm>
 #include "Building.h"
 #include <cmath>
+#include <cstring>
+
 using namespace std;
 
 #include <jansson.h>  // for Json
@@ -65,6 +67,7 @@ void HazusSAM_Generator::ReadHazusData()
             }
             fHazus>>hd.T1>>hd.T2>>hd.hos>>hd.damp;
             hazus[i].insert(pair<string,HazusData>(type,hd));
+            fHazus >> std::ws;//to ignore any remaining white space and move to the next line
         }
     }
     fHazus.close();
