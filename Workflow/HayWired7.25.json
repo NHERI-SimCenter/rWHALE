@@ -1,0 +1,60 @@
+{
+	"AppConfig":
+	{
+		"EQHazardPath":"../../Simcenter-EQSS/EQScenario/build/EQScenario.jar",
+		"SimulateIMPath":"../../Simcenter-EQSS/build/SimulateGM/SimulateGM",
+		"SelectRecordPath":"../../Simcenter-EQSS/build/SelectGM/SelectGM",
+		"RecordsFolder":"../createEVENT/NGAWest2Records/"
+	},
+    "Site": {
+		"Type": "Grid",
+		"Grid": {
+			"Latitude": {
+				"Min": 37.0,
+				"Max": 38.2,
+				"Divisions": 25
+			},
+			"Longitude": {
+				"Min": -122.6,
+				"Max": -121.9,
+				"Divisions": 25
+			}
+		}
+	},
+	"EqRupture": {
+		"Type": "ERF",
+		"RuptureForecast": "WGCEP (2007) UCERF2 - Single Branch",
+		"SourceIndex": 28,
+		"RuptureIndex": 7
+	},
+	"GMPE": {
+		"Type": "Boore, Stewart, Seyhan & Atkinson (2014)"
+	},
+	"IntensityMeasure": {
+		"Type": "SA",
+		"Periods": [0.05, 0.10, 0.2, 0.5, 1.0, 2.0, 5.0, 10.0]
+	},
+	"RecordSelection":{
+		"Target": {
+			"Type": "SimulatedSpectrum"
+		},
+		"Database": {
+			"Type": "CSV",
+			"File": "../../Simcenter-EQSS/build/SelectGM/NGAWest2-1000.csv"
+		},
+		"Criteria": {
+			"Magnitude": {
+				"Min": 6.0,
+				"Max": 8.0
+			},
+			"Distance": {
+				"Min": 0.0,
+				"Max": 50.0
+			},
+			"Vs30": {
+				"Min": 400.0,
+				"Max": 800.0
+			}
+		}
+	}
+}

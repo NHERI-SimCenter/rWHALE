@@ -361,10 +361,15 @@ def main():
 
         # get RV for event
         eventAppDataList = [eventAppExe,'-filenameBIM',bimFILE,'-filenameEVENT',eventFILE]
+        if(eventAppExe.endswith(".py")):
+            eventAppDataList.insert(0, "python")
 
         for key in eventAppData.keys():
             eventAppDataList.append("-"+key.encode('ascii', 'ignore'))
-            eventAppDataList.append(eventAppData.get(key).encode('ascii', 'ignore'))
+            value = eventAppData.get(key)
+            if(os.path.exists(value)):
+                value = os.path.abspath(value)
+            eventAppDataList.append(value.encode('ascii', 'ignore'))
 
         for item in eventAppDataList:
             driverFILE.write("%s " % item)

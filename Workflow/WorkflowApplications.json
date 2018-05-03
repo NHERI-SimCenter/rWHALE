@@ -62,6 +62,16 @@
 	          "description":"path to file containing loacation information on each ouput point file"
 		}
 	]
+      },
+      {
+        "Name": "SHA-GM",
+        "ExecutablePath": "/home/elhaddad/SourceTree/WorkflowRegionalEarthquake/createEVENT/SHA-GM.py",
+        "ApplicationSpecificInputs":[{
+            "id": "scenarioConfig",
+            "type": "path",
+            "description":"Configuration file of the earthquake scenario including rupture, site grid, GMPE, IM and records selection"
+          }
+        ]
       }
     ]
   },
