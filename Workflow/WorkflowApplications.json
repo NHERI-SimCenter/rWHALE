@@ -13,7 +13,7 @@
     "Applications": [
       {
         "Name": "UrbanSimDatabase",
-        "ExecutablePath": "/Users/fmckenna/NHERI/Workflow1.1/CreateBIM/UrbanSimDatabase",
+        "ExecutablePath": "/Users/fmckenna/NHERI/WorkflowRegionalEarthquake/CreateBIM/UrbanSimDatabase",
         "ApplicationSpecificInputs": [
 		{ "id":"Min",
 		  "type":"int",
@@ -24,6 +24,47 @@
 	          "type":"int",
 	          "description":"max id of building to obtain BIM for",
 	          "default":10
+	        },
+	        { "id":"parcelsFile",
+	          "type":"string",
+	          "description":"path to parcels file",
+	          "default":""
+	        },
+	        { "id":"buildingsFile",
+	          "type":"string",
+	          "description":"path to buildings file",
+	          "default":""
+	        }
+        ]
+      },
+      {
+        "Name": "RandomUrbanSimDatabase",
+        "ExecutablePath": "/Users/fmckenna/NHERI/WorkflowRegionalEarthquake/CreateBIM/RandomUrbanSimDatabase",
+        "ApplicationSpecificInputs": [
+		{ "id":"Min",
+		  "type":"int",
+	          "description":"min id of building to obtain BIM for",
+	          "default":1
+	        },
+	        { "id":"Max",
+	          "type":"int",
+	          "description":"max id of building to obtain BIM for",
+	          "default":10
+	        },
+	        { "id":"parcelsFile",
+	          "type":"string",
+	          "description":"path to parcels file",
+	          "default":""
+	        },
+	        { "id":"buildingsFile",
+	          "type":"string",
+	          "description":"path to buildings file",
+	          "default":""
+	        },
+	        { "id":"sampleFile",
+	          "type":"string",
+	          "description":"path to sample file, containg list of integers",
+	          "default":""
 	        }
         ]
       }
@@ -51,7 +92,7 @@
     "Applications": [
       {
         "Name": "LLNL-SW4",
-        "ExecutablePath": "/Users/fmckenna/NHERI/Workflow1.1/createEvent/LLNL_SW4",
+        "ExecutablePath": "/Users/fmckenna/NHERI/WorkflowRegionalEarthquake/createEvent/LLNL_SW4",
         "ApplicationSpecificInputs": [
 		{ "id":"pathSW4results",
 	          "type":"string",
@@ -103,7 +144,7 @@
     "Applications": [
       {
         "Name": "MDOF-LU",
-        "ExecutablePath": "/Users/fmckenna/NHERI/Workflow1.1/createSAM/MDOF-LU",
+        "ExecutablePath": "/Users/fmckenna/NHERI/WorkflowRegionalEarthquake/createSAM/MDOF-LU",
         "ApplicationSpecificInputs": []
       }
     ]
@@ -142,7 +183,7 @@
     "Applications": [
       {
         "Name": "StandardEarthquakeEDP",
-        "ExecutablePath": "/Users/fmckenna/NHERI/Workflow1.1/createEDP/StandardEarthquakeEDP",
+        "ExecutablePath": "/Users/fmckenna/NHERI/WorkflowRegionalEarthquake/createEDP/StandardEarthquakeEDP",
         "ApplicationSpecificInputs": []
       }
     ]
@@ -181,7 +222,7 @@
     "Applications": [
       {
         "Name": "OpenSees",
-        "ExecutablePath": "/Users/fmckenna/NHERI/Workflow1.1/performSIMULATION/OpenSeesSimulation.sh"
+        "ExecutablePath": "/Users/fmckenna/NHERI/WorkflowRegionalEarthquake/performSIMULATION/OpenSeesSimulation.sh"
       }
     ]
   },
@@ -237,7 +278,7 @@
     "Applications": [
       {
         "Name": "Dakota-FEM",
-        "ExecutablePath": "/Users/fmckenna/NHERI/Workflow1.1/performUQ/Dakota-FEM-Simulation.sh"
+        "ExecutablePath": "/Users/fmckenna/NHERI/WorkflowRegionalEarthquake/performUQ/Dakota-FEM-Simulation.sh"
       }
     ]
   },
@@ -269,7 +310,7 @@
     "Applications": [
       {
         "Name": "FemaP58-LU",
-        "ExecutablePath": "/Users/fmckenna/NHERI/Workflow1.1/createLOSS/FEMAP58_LU",
+        "ExecutablePath": "/Users/fmckenna/NHERI/WorkflowRegionalEarthquake/createLOSS/FEMAP58_LU",
         "ApplicationSpecificInputs": [
 		{ "id":"pathCurves",
 		  "type":"string",

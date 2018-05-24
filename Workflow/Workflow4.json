@@ -1,0 +1,53 @@
+{
+   "Name": "Workflow 1",
+   "Author": "fmk",
+   "WorkflowType": "Regional Simulation",
+   "buildingFile":"buildings.json",
+   "Applications": {
+      "Buildings": {
+         "BuildingApplication": "RandomUrbanSimDatabase",
+         "ApplicationData": {
+	    "sampleFile":"/Users/fmckenna/NHERI/WorkflowRegionalEarthquake/createBIM/randomValuesTest.txt",
+	    "parcelsFile":"/Users/fmckenna/NHERI/parcels.csv",
+	    "buildingsFile":"/Users/fmckenna/NHERI/buildings2010.csv"
+         }
+      },
+      "Events": [
+         {
+            "EventClassification": "Earthquake",
+            "EventApplication": "LLNL-SW4",
+            "ApplicationData": {
+               "pathSW4results": "/Users/fmckenna/NHERI/Hayward7.0/",
+   	       "filenameHFmeta":"/Users/fmckenna/NHERI/Workflow1.1/createEVENT/HFmeta"
+            }
+         }
+      ],
+      "Modeling": {
+            "ModelingApplication": "MDOF-LU",
+            "ApplicationData": {
+   	       "hazusData":"/Users/fmckenna/NHERI/Workflow1.1/createSAM/data/HazusData.txt"
+	    }
+      },
+      "EDP": {
+            "EDPApplication": "StandardEarthquakeEDP",
+            "ApplicationData": {}
+      },
+      "Simulation": {
+         "SimulationApplication": "OpenSees",
+         "ApplicationData": {}
+      },
+      "UQ-Simulation": {
+         "UQApplication": "Dakota-FEM",
+         "ApplicationData": {}
+      },
+      "Damage&Loss": {
+         "Damage&LossApplication": "FemaP58-LU",
+         "ApplicationData": {
+	    "filenameSettings":"/Users/fmckenna/NHERI/WorkflowRegionalEarthquake/createLOSS/data/settings.ini",
+   	    "pathCurves":"/Users/fmckenna/NHERI/WorkflowRegionalEarthquake/createLOSS/data/ATCCurves/",
+   	    "pathNormative":"/Users/fmckenna/NHERI/WorkflowRegionalEarthquake/createLOSS/data/normative/"
+         }
+      }
+   }
+}
+
