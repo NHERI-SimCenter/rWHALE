@@ -24,14 +24,11 @@ const char* deteroccupancy(int building_type);
 double replacementcost(int building_type);
 json_t *deterStructtype(int year, int bldtypeid, int story);
 
-int 
-main(int argc, const char **argv) {
+int main(int argc, const char **argv) {
 
   //
   // parse inputs
   //
-  int minRow = -1;
-  int maxRow = -1;
   bool getRV = false;
 
   const char*outputFilename = argv[1];
@@ -39,31 +36,26 @@ main(int argc, const char **argv) {
   const char*buildingsFilename = 0;
   const char*buildingsConfigFile = 0;
   const char*filenameBIM = 0;
+  const char*filenameSample = 0;
 
   int arg = 2;
+
   while(arg < argc) {
-    if (strcmp(argv[arg], "-Min") ==0) {
+    if (strcmp(argv[arg], "-sampleFile") ==0) {
       arg++;
-      minRow = atoi(argv[arg]);
-    }
-    else if (strcmp(argv[arg], "-Max") ==0) {
-      arg++;
-      maxRow = atoi(argv[arg]);
+      filenameSample = argv[arg];
     }
     else if (strcmp(argv[arg], "-parcelsFile") ==0) {
       arg++;
       parcelsFilename = argv[arg];
-      std::cerr << "PARCELS: " << parcelsFilename;    
     }
     else if (strcmp(argv[arg], "-buildingsFile") ==0) {
       arg++;
       buildingsFilename = argv[arg];
-      std::cerr << "BUILDING: " << buildingsFilename;    
     }
     else if (strcmp(argv[arg], "-filenameBIM") ==0) {
       arg++;
       filenameBIM = argv[arg];
-      std::cerr << "BUILDING: " << buildingsFilename;    
     }
     else if (strcmp(argv[arg], "-getRV") ==0) {
       getRV = true;
@@ -76,22 +68,21 @@ main(int argc, const char **argv) {
     return 0;
   }
 
-  // check for need to swap as someone will be an idiot
-  if (minRow > maxRow) {
-    int tmp = minRow;
-    minRow = maxRow;
-    maxRow = tmp;
-  }
+  //
+  // open sample file
+  // 
 
-  if (minRow == -1 || maxRow == -1 || parcelsFilename == 0 || buildingsFilename == 0) {
-    std::cerr << "INVALID INPUT\n";    
-    exit(-1);
+  ifstream inputSampleFile;
+  inputSampleFile.open(filenameSample);
+  if (!inputSampleFile) {
+    cerr << "Unable to open file sample data file " << filenameSample << "\n";
+    exit(1);   // call system to stop
   }
-  std::cerr << "UrbanSimDatabase: min: " << minRow << " max: " << maxRow << "\n";
 
   //
   // json array containing output
   // 
+
   json_t *rootBuildings = json_object();
   json_t *buildingsArray=json_array();
     
@@ -211,151 +202,171 @@ main(int argc, const char **argv) {
     //      printf("TITLE: %d %s\n", i, headerFields[i]);
   }
   
-  int currentRow = 1;
-  
   json_t *root = json_object();
+
+  int currentRow = 1;
+  int nextRow;
+  bool done = false;
+
+  // 
+  // read in next sample row
+  //
+
+  while (inputSampleFile >> nextRow) {
+
+    //
+    // read from building file until reach that row
+    //
+
+    bool rowFound = false;
+    while (rowFound == false && (row = CsvParser_getRow(csvparser))) {
+
+
+      //
+      // if row found, read args & write the bim file
+      //
+
+      if (currentRow == nextRow) {
+
   
-
-
-  while ((row = CsvParser_getRow(csvparser))) {
-    if (currentRow >= minRow && currentRow <= maxRow) {
-      const char **rowFields = CsvParser_getFields(row);
-      char *pEnd;
-
-      json_t *GI = json_object();
-      json_t *distribution=json_array();
-      json_t *structtype = json_object();
-      json_t *height = json_object();
-      json_t *values=json_array();
-      json_t *valuenames=json_array();
-
-      const char *name = rowFields[0];
-      int numStory = atoi(rowFields[10]);
-      double area=strtod(rowFields[8],&pEnd)/10.764/(double)numStory;
-      if (area <= 0)
-        area = averageArea;
-
-      json_object_set(GI,"area",json_real(area));
-      //json_object_set(GI,"structType",json_string("UNKNOWN"));
-      //json_object_set(GI,"structType",json_string(deterStructtype(atoi(rowFields[11]),atoi(rowFields[2]),atoi(rowFields[10]))));
-
-      json_object_set(GI,"name",json_string(name));
-      //json_object_set(GI,"area",json_real(strtod(rowFields[8],&pEnd)));
-      json_object_set(GI,"numStory",json_integer(numStory));
-      json_object_set(GI,"yearBuilt",json_integer(atoi(rowFields[11])));
-
-
-      //values=deterStructtype(atoi(rowFields[11]),atoi(rowFields[2]),atoi(rowFields[10]));
-      int yearBuilt = atoi(rowFields[11]);
-      int buildingTypeId = atoi(rowFields[15]);
-      json_t* structTypeIdMappings = json_object_get(pJsonConfig, "StructTypeIdMappings");
-
-      values = getStructType(yearBuilt, buildingTypeId, numStory, structTypeIdMappings);
-
-      int numValues = json_array_size(values);
-      if (numValues == 1) {
-	    json_t *index = json_array_get(values, 0);
-	    //json_object_set(GI,"structType",json_string(valuename[json_integer_value(index)-1].c_str())); //Old code
-	    json_object_set(GI,"structType",json_string(structTypesMap[json_integer_value(index)]));
-
-      } else {
-
-	json_object_set(GI,"structType",json_string("RV.structType"));
-
-	//size_t index;
-	//json_t *value;
-	//json_array_foreach(values, index, value) {
-	//    json_array_append(valuenames, json_string(valuename[index].c_str()));
-	//}
-	for(i = 0; i < json_array_size(values); i++) {
+	const char **rowFields = CsvParser_getFields(row);
+	char *pEnd;
+	
+	json_t *GI = json_object();
+	json_t *distribution=json_array();
+	json_t *structtype = json_object();
+	json_t *height = json_object();
+	json_t *values=json_array();
+	json_t *valuenames=json_array();
+	
+	const char *name = rowFields[0];
+	int numStory = atoi(rowFields[10]);
+	double area=strtod(rowFields[8],&pEnd)/10.764/(double)numStory;
+	if (area <= 0)
+	  area = averageArea;
+	
+	json_object_set(GI,"area",json_real(area));
+	//json_object_set(GI,"structType",json_string("UNKNOWN"));
+	//json_object_set(GI,"structType",json_string(deterStructtype(atoi(rowFields[11]),atoi(rowFields[2]),atoi(rowFields[10]))));
+	
+	json_object_set(GI,"name",json_string(name));
+	//json_object_set(GI,"area",json_real(strtod(rowFields[8],&pEnd)));
+	json_object_set(GI,"numStory",json_integer(numStory));
+	json_object_set(GI,"yearBuilt",json_integer(atoi(rowFields[11])));
+	
+	
+	//values=deterStructtype(atoi(rowFields[11]),atoi(rowFields[2]),atoi(rowFields[10]));
+	int yearBuilt = atoi(rowFields[11]);
+	int buildingTypeId = atoi(rowFields[15]);
+	json_t* structTypeIdMappings = json_object_get(pJsonConfig, "StructTypeIdMappings");
+	
+	values = getStructType(yearBuilt, buildingTypeId, numStory, structTypeIdMappings);
+	
+	int numValues = json_array_size(values);
+	if (numValues == 1) {
+	  json_t *index = json_array_get(values, 0);
+	  //json_object_set(GI,"structType",json_string(valuename[json_integer_value(index)-1].c_str())); //Old code
+	  json_object_set(GI,"structType",json_string(structTypesMap[json_integer_value(index)]));
+	  
+	} else {
+	  
+	  json_object_set(GI,"structType",json_string("RV.structType"));
+	  
+	  //size_t index;
+	  //json_t *value;
+	  //json_array_foreach(values, index, value) {
+	  //    json_array_append(valuenames, json_string(valuename[index].c_str()));
+	  //}
+	  for(i = 0; i < json_array_size(values); i++) {
 	    json_t *index = json_array_get(values, i);
 	    json_array_append(valuenames, json_string(valuename[json_integer_value(index)-1].c_str()));
+	  }
+	  
+	  json_object_set(structtype,"distribution",json_string("discrete_design_set_string"));
+	  json_object_set(structtype,"name",json_string("structType"));
+	  json_object_set(structtype,"value",json_string("RV.structType"));
+	  //	json_object_set(structtype,"values",values);
+	  json_object_set(structtype,"elements",valuenames);
+	  
+	  json_array_append(distribution, structtype);	
 	}
-
-	json_object_set(structtype,"distribution",json_string("discrete_design_set_string"));
-	json_object_set(structtype,"name",json_string("structType"));
-	json_object_set(structtype,"value",json_string("RV.structType"));
-	//	json_object_set(structtype,"values",values);
-	json_object_set(structtype,"elements",valuenames);
-
-	json_array_append(distribution, structtype);	
-      }
-
-      // unknown
-      //json_object_set(GI,"occupancy",json_string("office"));
-      //deteroccupancy(atoi(rowFields[15]), buildoccupancy, replacementcost);
-      //json_object_set(GI,"occupancy",json_string(deteroccupancy(atoi(rowFields[15]))));//Old code
-      json_object_set(GI,"occupancy",json_string(getOccupancy(atoi(rowFields[15]), occupancyMap, defaultOccupancy)));
-
-      json_object_set(GI,"height",json_string("RV.height"));
-      //json_object_set(GI,"replacementCost",json_real(replacementcost(atoi(rowFields[15]))*strtod(rowFields[8],&pEnd)));
-      double replacementCost = getReplacementcost(atoi(rowFields[15]), replacementCostsMap, defaultReplacementCost);
-      json_object_set(GI,"replacementCost",json_real(replacementCost * strtod(rowFields[8],&pEnd)));
-
-
-      double replacementTime = 180.0;      
-      json_t* pReplacementTime = json_object_get(pJsonConfig, "ReplacementTime");
-      if(NULL != pReplacementTime)
-        replacementTime = json_real_value(pReplacementTime);
-
-      json_object_set(GI,"replacementTime",json_real(replacementTime));
-      //json_object_set(GI,"structType",json_string("C2"));
-      
-      int parcelID = atoi(rowFields[1]);
-      parcelIter = parcelLocations.find(parcelID);
-      if (parcelIter != parcelLocations.end()) {
-	//	double x = parcelIter->second.x;
-	json_t *location = json_object();
-	json_object_set(location,"latitude",json_real(parcelIter->second.y));
-	json_object_set(location,"longitude",json_real(parcelIter->second.x));
-	json_object_set(GI,"location",location);
-      }
-
-      json_object_set(height,"distribution",json_string("normal"));
-      json_object_set(height,"name",json_string("height"));
-      json_object_set(height,"value",json_string("RV.height"));
-      double storyHeightMean = 3.0;
-      double storyHeightStdDev = 0.16667;
-      json_t* pStoryHeight = json_object_get(pJsonConfig, "StoryHeight");
-      if(NULL != pStoryHeight)
-      {
-          json_t* mean = json_object_get(pStoryHeight, "Mean");
-          storyHeightMean = json_real_value(mean);
-          json_t* stdDev = json_object_get(pStoryHeight, "StdDev");
-          storyHeightStdDev = json_real_value(stdDev);
-      }
-
-      json_object_set(height,"mean",json_real(numStory * storyHeightMean));
-      json_object_set(height,"stdDev",json_real(storyHeightStdDev * double(numStory)));
-
-      json_array_append(distribution, height);
-
-      json_object_set(root,"RandomVariables",distribution);
-      json_object_set(root,"GI",GI);
-      std::string filename;
-      filename = "exampleBIM.json";
-
-      if (argc > 1) {
-	filename = std::string(name) + std::string("-BIM.json");
-      }
-
-      json_t *bldg = json_object();
-      json_object_set(bldg,"id",json_string(name));
-      json_object_set(bldg,"file",json_string(filename.c_str()));
-      json_array_append(buildingsArray, bldg);
 	
-      // write the file & clean memory
-      json_dump_file(root,filename.c_str(),0);
-      json_object_clear(root);
-      CsvParser_destroy_row(row);
-    }
+	// unknown
+	//json_object_set(GI,"occupancy",json_string("office"));
+	//deteroccupancy(atoi(rowFields[15]), buildoccupancy, replacementcost);
+	//json_object_set(GI,"occupancy",json_string(deteroccupancy(atoi(rowFields[15]))));//Old code
+	json_object_set(GI,"occupancy",json_string(getOccupancy(atoi(rowFields[15]), occupancyMap, defaultOccupancy)));
+	
+	json_object_set(GI,"height",json_string("RV.height"));
+	//json_object_set(GI,"replacementCost",json_real(replacementcost(atoi(rowFields[15]))*strtod(rowFields[8],&pEnd)));
+	double replacementCost = getReplacementcost(atoi(rowFields[15]), replacementCostsMap, defaultReplacementCost);
+	json_object_set(GI,"replacementCost",json_real(replacementCost * strtod(rowFields[8],&pEnd)));
+	
+	
+	double replacementTime = 180.0;      
+	json_t* pReplacementTime = json_object_get(pJsonConfig, "ReplacementTime");
+	if(NULL != pReplacementTime)
+	  replacementTime = json_real_value(pReplacementTime);
+	
+	json_object_set(GI,"replacementTime",json_real(replacementTime));
+	//json_object_set(GI,"structType",json_string("C2"));
+	
+	int parcelID = atoi(rowFields[1]);
+	parcelIter = parcelLocations.find(parcelID);
+	if (parcelIter != parcelLocations.end()) {
+	  //	double x = parcelIter->second.x;
+	  json_t *location = json_object();
+	  json_object_set(location,"latitude",json_real(parcelIter->second.y));
+	  json_object_set(location,"longitude",json_real(parcelIter->second.x));
+	  json_object_set(GI,"location",location);
+	}
+	
+	json_object_set(height,"distribution",json_string("normal"));
+	json_object_set(height,"name",json_string("height"));
+	json_object_set(height,"value",json_string("RV.height"));
+	double storyHeightMean = 3.0;
+	double storyHeightStdDev = 0.16667;
+	json_t* pStoryHeight = json_object_get(pJsonConfig, "StoryHeight");
+	if(NULL != pStoryHeight)
+	  {
+	    json_t* mean = json_object_get(pStoryHeight, "Mean");
+	    storyHeightMean = json_real_value(mean);
+	    json_t* stdDev = json_object_get(pStoryHeight, "StdDev");
+	    storyHeightStdDev = json_real_value(stdDev);
+	  }
+	
+	json_object_set(height,"mean",json_real(numStory * storyHeightMean));
+	json_object_set(height,"stdDev",json_real(storyHeightStdDev * double(numStory)));
+	
+	json_array_append(distribution, height);
+	
+	json_object_set(root,"RandomVariables",distribution);
+	json_object_set(root,"GI",GI);
+	std::string filename;
+	filename = "exampleBIM.json";
+	
+	if (argc > 1) {
+	  filename = std::string(name) + std::string("-BIM.json");
+	}
+	
+	json_t *bldg = json_object();
+	json_object_set(bldg,"id",json_string(name));
+	json_object_set(bldg,"file",json_string(filename.c_str()));
+	json_array_append(buildingsArray, bldg);
+	
+	// write the file & clean memory
+	json_dump_file(root,filename.c_str(),0);
+	json_object_clear(root);
+	CsvParser_destroy_row(row);
 
-
-    currentRow++;
+	// mark row found so read next sample
+	rowFound = true;
+      }
     
-    if (currentRow > maxRow)
-      break;
+      currentRow++;
+    }
   }
+
 
   json_dump_file(buildingsArray, outputFilename,0);
 
@@ -682,14 +693,14 @@ json_t *deterStructtype(int year, int bldtypeid, int story)
 
         }
         else if(story>3&&story<8){
-	  if((bldtypeid< 7 && bldtypeid>0 )|| (bldtypeid>9&&bldtypeid<15)){
+	  if((bldtypeid < 7 && bldtypeid>0) || (bldtypeid>9 && bldtypeid<15)){
                 json_array_append(value, json_integer(1));
                 json_array_append(value, json_integer(2));
                 json_array_append(value, json_integer(3));
                 json_array_append(value, json_integer(4));
                 json_array_append(value, json_integer(5));
             }
-            else if(bldtypeid<10&&bldtypeid>6){
+            else if(bldtypeid<10 && bldtypeid>6){
                 json_array_append(value, json_integer(2));
                 json_array_append(value, json_integer(3));
                 json_array_append(value, json_integer(4));

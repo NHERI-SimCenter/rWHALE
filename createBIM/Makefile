@@ -5,9 +5,9 @@ CPPFLAGS= -I /usr/local/jansson/include
 LDFLAGS= 
 LDLIBS=/usr/local/jansson/lib/libjansson.a
 
-OBJS=csvparser.o UrbanSimDatabase.o
+OBJS=csvparser.o 
 
-all: urbanSimDatabase
+all: urbanSimDatabase randomUrbanSimDatabase
 
 csvParser.o: csvparser.cpp csvparser.h
 
@@ -18,8 +18,13 @@ countStory.o: countStory.cpp
 count: countStory.o
 	$(CXX) $(LDFLAGS) -o createBIM countStory.o csvparser.o $(LDLIBS)
 
-urbanSimDatabase: $(OBJS)
-	$(CXX) $(LDFLAGS) -o UrbanSimDatabase $(OBJS) $(LDLIBS)
+urbanSimDatabase: $(OBJS) UrbanSimDatabase.o
+	$(CXX) $(LDFLAGS) -o UrbanSimDatabase $(OBJS) UrbanSimDatabase.o $(LDLIBS)
+
+randomUrbanSimDatabase: $(OBJS) RandomUrbanSimDatabase.o
+	$(CXX) $(LDFLAGS) -o RandomUrbanSimDatabase RandomUrbanSimDatabase.o $(OBJS) $(LDLIBS)
+
+
 
 clean:
 	$(RM) $(OBJS) *~ \#* *.o
