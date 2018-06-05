@@ -367,7 +367,7 @@ def main():
         for key in eventAppData.keys():
             eventAppDataList.append("-"+key.encode('ascii', 'ignore'))
             value = eventAppData.get(key)
-            if(os.path.exists(value)):
+            if(os.path.exists(value) and  not os.path.isabs(value)):
                 value = os.path.abspath(value)
             eventAppDataList.append(value.encode('ascii', 'ignore'))
 

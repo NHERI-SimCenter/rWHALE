@@ -7,7 +7,7 @@ LDLIBS=/usr/local/jansson/lib/libjansson.a
 
 OBJS=csvparser.o 
 
-all: urbanSimDatabase randomUrbanSimDatabase
+all: urbanSimDatabase randomUrbanSimDatabase GenericBimDatabase
 
 csvParser.o: csvparser.cpp csvparser.h
 
@@ -24,7 +24,7 @@ urbanSimDatabase: $(OBJS) UrbanSimDatabase.o
 randomUrbanSimDatabase: $(OBJS) RandomUrbanSimDatabase.o
 	$(CXX) $(LDFLAGS) -o RandomUrbanSimDatabase RandomUrbanSimDatabase.o $(OBJS) $(LDLIBS)
 
-
+GenericBimDatabase: $(OBJS) GenericBimDatabase.cpp
 
 clean:
 	$(RM) $(OBJS) *~ \#* *.o
