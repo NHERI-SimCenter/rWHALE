@@ -239,7 +239,7 @@ OpenSeesPreprocessor::processMaterials(ofstream &s){
 
       double e2n = -(beta*Sy/K0 + beta*(alpha-1)*Sy/eta/K0);
       double e3n = -1.0;
-      if(e3n <= -1.0)
+      if(e2n <= -1.0)
         e3n = 10.0 * e2n;
 
       s << "uniaxialMaterial Hysteretic " << tag << " " << Sy << " " << Sy/K0
