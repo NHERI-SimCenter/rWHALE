@@ -67,6 +67,27 @@
 	          "default":""
 	        }
         ]
+      },
+      {
+        "Name": "GenericBimDatabase",
+        "ExecutablePath": "/home/elhaddad/SourceTree/WorkflowRegionalEarthquake/createBIM/GenericBimDatabase",
+        "ApplicationSpecificInputs": [
+          { "id":"Min",
+            "type":"int",
+            "description":"min id of building to obtain BIM for",
+            "default":1
+	        },
+	        { "id":"Max",
+	          "type":"int",
+	          "description":"max id of building to obtain BIM for",
+	          "default":10
+	        },
+	        { "id":"buildingsFile",
+	          "type":"string",
+	          "description":"path to buildings file",
+	          "default":""
+	        }
+        ]
       }
     ]
   },
