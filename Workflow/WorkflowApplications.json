@@ -13,7 +13,7 @@
     "Applications": [
       {
         "Name": "UrbanSimDatabase",
-        "ExecutablePath": "/Users/fmckenna/NHERI/WorkflowRegionalEarthquake/CreateBIM/UrbanSimDatabase",
+        "ExecutablePath": "../CreateBIM/UrbanSimDatabase",
         "ApplicationSpecificInputs": [
 		{ "id":"Min",
 		  "type":"int",
@@ -39,7 +39,7 @@
       },
       {
         "Name": "RandomUrbanSimDatabase",
-        "ExecutablePath": "/Users/fmckenna/NHERI/WorkflowRegionalEarthquake/CreateBIM/RandomUrbanSimDatabase",
+        "ExecutablePath": "../CreateBIM/RandomUrbanSimDatabase",
         "ApplicationSpecificInputs": [
 		{ "id":"Min",
 		  "type":"int",
@@ -70,7 +70,7 @@
       },
       {
         "Name": "GenericBimDatabase",
-        "ExecutablePath": "/home/elhaddad/SourceTree/WorkflowRegionalEarthquake/createBIM/GenericBimDatabase",
+        "ExecutablePath": "../createBIM/GenericBimDatabase",
         "ApplicationSpecificInputs": [
           { "id":"Min",
             "type":"int",
@@ -113,7 +113,7 @@
     "Applications": [
       {
         "Name": "LLNL-SW4",
-        "ExecutablePath": "/Users/fmckenna/NHERI/WorkflowRegionalEarthquake/createEvent/LLNL_SW4",
+        "ExecutablePath": "../createEvent/LLNL_SW4",
         "ApplicationSpecificInputs": [
 		{ "id":"pathSW4results",
 	          "type":"string",
@@ -127,7 +127,7 @@
       },
       {
         "Name": "SHA-GM",
-        "ExecutablePath": "/home/elhaddad/SourceTree/WorkflowRegionalEarthquake/createEVENT/SHA-GM.py",
+        "ExecutablePath": "../createEVENT/SHA-GM.py",
         "ApplicationSpecificInputs":[{
             "id": "scenarioConfig",
             "type": "path",
@@ -165,7 +165,7 @@
     "Applications": [
       {
         "Name": "MDOF-LU",
-        "ExecutablePath": "/Users/fmckenna/NHERI/WorkflowRegionalEarthquake/createSAM/MDOF-LU",
+        "ExecutablePath": "../createSAM/MDOF-LU",
         "ApplicationSpecificInputs": []
       }
     ]
@@ -204,7 +204,7 @@
     "Applications": [
       {
         "Name": "StandardEarthquakeEDP",
-        "ExecutablePath": "/Users/fmckenna/NHERI/WorkflowRegionalEarthquake/createEDP/StandardEarthquakeEDP",
+        "ExecutablePath": "../createEDP/StandardEarthquakeEDP",
         "ApplicationSpecificInputs": []
       }
     ]
@@ -243,7 +243,7 @@
     "Applications": [
       {
         "Name": "OpenSees",
-        "ExecutablePath": "/Users/fmckenna/NHERI/WorkflowRegionalEarthquake/performSIMULATION/OpenSeesSimulation.sh"
+        "ExecutablePath": "../performSIMULATION/OpenSeesSimulation.sh"
       }
     ]
   },
@@ -299,7 +299,7 @@
     "Applications": [
       {
         "Name": "Dakota-FEM",
-        "ExecutablePath": "/Users/fmckenna/NHERI/WorkflowRegionalEarthquake/performUQ/Dakota-FEM-Simulation.sh"
+        "ExecutablePath": "../performUQ/Dakota-FEM-Simulation.sh"
       }
     ]
   },
@@ -331,7 +331,7 @@
     "Applications": [
       {
         "Name": "FemaP58-LU",
-        "ExecutablePath": "/Users/fmckenna/NHERI/WorkflowRegionalEarthquake/createLOSS/FEMAP58_LU",
+        "ExecutablePath": "../createLOSS/FEMAP58_LU",
         "ApplicationSpecificInputs": [
 		{ "id":"pathCurves",
 		  "type":"string",
