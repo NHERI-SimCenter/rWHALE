@@ -98,8 +98,8 @@ const char* defaultConfig = MULTILINE(
 					"BuildingIdMaps": [{
 							"BuildingIds": [1, 2, 3, 4, 5, 6, 10, 11, 12, 13, 14],
 							"StructureTypeId": {
-								" Type ": "Random_Discrete_Uniform",
-								" Values ": [1, 2, 3, 4, 5]
+								"Type": "Random_Discrete_Uniform",
+								"Values": [1, 2, 3, 4, 5]
 							},
 							"Description": "Residential & Commercial"
 						}, {
@@ -122,8 +122,8 @@ const char* defaultConfig = MULTILINE(
 			],
 			"DefaultMapping": {
 				"StructureTypeId": {
-					" Type ": " Random_Discrete_Uniform ",
-					" Values ": [2, 3, 4, 5]
+					"Type": "Random_Discrete_Uniform",
+					"Values": [2, 3, 4, 5]
 				},
 				"Description": "Other"
 			}
