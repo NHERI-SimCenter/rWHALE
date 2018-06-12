@@ -75,9 +75,13 @@ while (<DAKOTA_PARAMS>) { # read each line of file, one at a time
       # No longer convert exponents as dprepro mainly intended for Dakota
       # and not compatible with string-valued variables
       #$value =~ s/[dD]/e/o;      # convert any F77 dbl prec exponents
-      if ( $value =~ m/^\"*($t)\"*$/o ) {
-        $value = $1;  # remove quotes that appeared in the params file
-      }
+      
+      #For the SimCenter applications, we will replace strings with quotes in Json files
+      #So the next few lines are commented to keep the quotes
+      #if ( $value =~ m/^\"*($t)\"*$/o ) {
+      #  $value = $1;  # remove quotes that appeared in the params file
+      #}
+
       $values_p1{$tag} = $value; # store in hash
     }
   }
