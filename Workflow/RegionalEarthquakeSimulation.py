@@ -9,15 +9,46 @@ import subprocess
 from pprint import pprint
 
 # function to return result of invoking an application
-def runApplication(application, args):
-    argsPopen=[];
-    argsPopen.append(application)
-    argsPopen.extend(args);
+# def runApplication(application, args):
+#     argsPopen=[];
+#     argsPopen.append(application)
+#     argsPopen.extend(args);
+#
+#     p = subprocess.Popen(argsPopen, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+#     for line in p.stdout.readlines():
+#         print line
+#     retval = p.wait()
 
-    p = subprocess.Popen(argsPopen, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-    for line in p.stdout.readlines():
-        print line
-    retval = p.wait()    
+
+def add_full_path(possible_filename):
+    if type(possible_filename) != type(u' '):
+        return possible_filename
+    if (os.path.exists(possible_filename)):
+        if os.path.isdir(possible_filename):
+            return os.path.abspath(possible_filename) + '/'
+        else:
+            return os.path.abspath(possible_filename)
+    else:
+        return possible_filename
+
+
+def recursive_iter(obj):
+    if isinstance(obj, dict):
+        for k, v in obj.items():
+            if isinstance(v, basestring):
+                obj[k] = add_full_path(v)
+            else:
+                recursive_iter(v)
+    elif any(isinstance(obj, t) for t in (list, tuple)):
+        for idx, item in enumerate(obj):
+            if isinstance(item, basestring):
+                obj[idx] = add_full_path(item)
+            else:
+                recursive_iter(item)
+
+
+def relative2fullpath(json_object):
+    recursive_iter(json_object)
 
 
 def main():
@@ -33,6 +64,8 @@ def main():
 
     with open(applicationsRegistry, 'r') as data_file: 
         registryData = json.load(data_file)
+        # convert all relative paths to full paths
+        relative2fullpath(registryData)
 
 
     buildingApplications = dict()
@@ -112,6 +145,8 @@ def main():
 
     with open(inputFile, 'r') as data_file:    
         data = json.load(data_file)
+        # convert all relative paths to full paths
+        relative2fullpath(data)
 
     #
     # get all application data, quit if error
