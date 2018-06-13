@@ -1,0 +1,19 @@
+#!/usr/bin/env python
+
+import json
+import sys
+
+bid = sys.argv[1]
+
+# read from Pegasus.json
+f = open('Pegasus.json')
+data = json.load(f)
+f.close()
+
+# update min/max
+data['Applications']['Buildings']['ApplicationData']['Min'] = bid
+data['Applications']['Buildings']['ApplicationData']['Max'] = bid
+
+# write to stdout
+print(json.dumps(data, indent=4))
+

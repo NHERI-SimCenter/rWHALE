@@ -13,7 +13,9 @@
     "Applications": [
       {
         "Name": "UrbanSimDatabase",
-        "ExecutablePath": "../CreateBIM/UrbanSimDatabase",
+
+        "ExecutablePath": "../createBIM/UrbanSimDatabase",
+
         "ApplicationSpecificInputs": [
 		{ "id":"Min",
 		  "type":"int",
@@ -39,7 +41,7 @@
       },
       {
         "Name": "RandomUrbanSimDatabase",
-        "ExecutablePath": "../CreateBIM/RandomUrbanSimDatabase",
+        "ExecutablePath": "../createBIM/RandomUrbanSimDatabase",
         "ApplicationSpecificInputs": [
 		{ "id":"Min",
 		  "type":"int",
@@ -113,7 +115,7 @@
     "Applications": [
       {
         "Name": "LLNL-SW4",
-        "ExecutablePath": "../createEvent/LLNL_SW4",
+        "ExecutablePath": "../createEVENT/LLNL_SW4",
         "ApplicationSpecificInputs": [
 		{ "id":"pathSW4results",
 	          "type":"string",

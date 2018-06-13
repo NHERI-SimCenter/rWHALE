@@ -1,0 +1,53 @@
+{
+    "Name": "Pegasus",
+    "Author": "Mats Rynge",
+    "WorkflowType": "Regional Simulation",
+    "buildingFile":"buildings.json",
+    "Applications": {
+        "Buildings": {
+            "BuildingApplication": "GenericBimDatabase",
+            "ApplicationData": {
+                "Min": "286",
+                "Max":"286",
+                "buildingsFile":"../GenericBim2010.csv"
+            }
+        },
+        "Events": [
+        {
+            "EventClassification": "Earthquake",
+            "EventApplication": "LLNL-SW4",
+            "ApplicationData": {
+                "pathSW4results": "../motions/",
+                "filenameHFmeta":"../createEVENT/HFmeta"
+            }
+        }
+        ],
+            "Modeling": {
+                "ModelingApplication": "MDOF-LU",
+                "ApplicationData": {
+                    "hazusData":"../createSAM/data/HazusData.txt"
+                }
+            },
+            "EDP": {
+                "EDPApplication": "StandardEarthquakeEDP",
+                "ApplicationData": {}
+            },
+            "Simulation": {
+                "SimulationApplication": "OpenSees",
+                "ApplicationData": {}
+            },
+            "UQ-Simulation": {
+                "UQApplication": "Dakota-FEM",
+                "ApplicationData": {}
+            },
+            "Damage&Loss": {
+                "Damage&LossApplication": "FemaP58-LU",
+                "ApplicationData": {
+                    "filenameSettings":"../createLOSS/data/settings.ini",
+                    "pathCurves":"../createLOSS/data/ATCCurves/",
+                    "pathNormative":"../createLOSS/data/normative/"
+                }
+            }
+    }
+}
+
