@@ -1,0 +1,73 @@
+#!/bin/bash
+
+# send stderr to stdout
+exec 2>&1
+
+set -e
+
+BUILDING_LINE=$1
+BID=$2
+
+# untar motions files
+(
+    # Wait for lock on .untarlock (fd 200) for 1 hour
+    flock -x -w 3600 200
+
+    # only untar once
+    if [ ! -e ".codes-untared-stamp" ]; then
+        touch .codes-untared-stamp
+        tar xzf codes.tar.gz
+        # save some disk space
+        rm -f codes.tar.gz
+    fi
+
+    # only untar once
+    if [ ! -e ".motions-untared-stamp" ]; then
+        touch .motions-untared-stamp
+        tar xzf motions.tar.gz
+        # save some diskspace
+        rm -f motions.tar.gz
+    fi
+    
+    # only untar once
+    if [ ! -e ".dakota-untared-stamp" ]; then
+        touch .dakota-untared-stamp
+        tar xzf dakota-6.8-release-public-rhel7.x86_64.tar.gz
+        # save some diskspace
+        rm -f dakota-6.8-release-public-rhel7.x86_64.tar.gz
+    fi
+) 200>.untarlock
+
+# expected output files
+touch $BID-BIM.json
+touch $BID-EDP.json
+touch $BID-DL.json
+
+# set up Dakota
+export LD_LIBRARY_PATH=$PWD/dakota-6.8.0.Linux.x86_64/lib:$PWD/dakota-6.8.0.Linux.x86_64/bin
+export PATH=$PWD/dakota-6.8.0.Linux.x86_64/bin:$PATH
+
+# set up OpenSEES
+export PATH=$PWD/Pegasus/task-files/uq:$PATH
+
+cd Workflow
+
+# delete old leftovers
+rm -f $BID-*
+
+# create a bid specific json driver
+../Pegasus/task-files/uq/update-workflow-json $BUILDING_LINE >$BID-Pegasus.json
+
+python ./RegionalEarthquakeSimulation.py $BID-Pegasus.json
+
+# create the DL csv
+../finalProcessing/readDLs $BID $BID $BID-DL.csv
+
+# put the files in the expected location
+cp $BID-BIM.json ../
+cp $BID-EDP.json ../
+cp $BID-DL.json ../
+cp $BID-DL.csv ../
+
+
+

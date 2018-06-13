@@ -7,6 +7,7 @@ all:
 	cd performSIMULATION; make
 	cd performUQ; make
 	cd createLOSS; make
+	cd finalProcessing; make
 
 HazusLossEstimator.o: HazusLossEstimator.cpp HazusLossEstimator.h
 
@@ -22,6 +23,7 @@ clean:
 	cd createEDP; make clean
 	cd performSIMULATION; make clean
 	cd createLOSS; make clean
+	cd finalProcessing; make clean
 	$(RM) $(OBJS) *~ \#*
 
 distclean: clean
@@ -31,5 +33,6 @@ distclean: clean
 	cd createEDP; make distclean
 	cd performSIMULATION; make distclean
 	cd createLOSS; make distclean
+	cd finalProcessing; make distclean
 
 

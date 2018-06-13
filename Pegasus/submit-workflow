@@ -1,0 +1,395 @@
+#!/usr/bin/env python
+
+# generates a hierarchical workflow
+
+from Pegasus.DAX3 import *
+
+import datetime
+import getpass
+import math
+import os
+import re
+import socket
+import sys
+import time
+
+from subprocess import call
+
+
+def add_executables(dax):
+    '''
+    adds executables for out wrappers in ./wrappers/
+    '''
+
+    # Add executables to the DAX-level replica catalog
+    for exe_name in os.listdir(top_dir + '/Pegasus/wrappers/'):
+        exe = Executable(name=exe_name, arch='x86_64', installed=False)
+        exe.addPFN(local_pfn(top_dir + '/Pegasus/wrappers/' + exe_name))
+    
+        #if exe_name == 'BIM':
+        #    # BIM requires some extra memory
+        #    exe.addProfile(Profile(Namespace.CONDOR, 
+        #                           key='request_memory',
+        #                           value='3 GB'))
+        #elif exe_name == 'EVENT':
+        #    # EVENT requires some extra disk
+        #    exe.addProfile(Profile(Namespace.CONDOR, 
+        #                           key='request_disk',
+        #                           value='30 GB'))
+
+        dax.addExecutable(exe)
+
+
+def add_task_files(task_files, dax, job, lfn, base_dir, recursed=False):
+    '''
+    add a set of input files from the task-files dir to a task
+    '''
+
+    task_name = job.name
+
+    if task_name not in task_files:
+        task_files[task_name] = {}
+
+    pfn = base_dir + '/' + lfn
+
+    # do we have a directory or file?
+    if os.path.isdir(pfn):
+        # add all the entries
+        for entry in os.listdir(pfn):
+            new_lfn = lfn + '/' + entry
+            add_task_files(task_files, dax, job, new_lfn, base_dir, True)
+    else:
+        # file
+        if not os.path.isfile(pfn):
+            print 'ERROR: Input file does not exist: ' + pfn
+            sys.exit(1)
+        if lfn not in task_files[task_name]:
+            # do we already have the lfn registered for another task?
+            f = None
+            for tname in task_files:
+                if lfn in task_files[tname]:
+                    f = task_files[tname][lfn]
+                    break
+            if f is not None:
+                task_files[task_name][lfn] = f
+            else:
+                task_files[task_name][lfn] = File(lfn)
+                task_files[task_name][lfn].addPFN(local_pfn(pfn))
+                #print(' ... registering input lfn/pfn: ' + lfn + '  (' + pfn + ')')
+                dax.addFile(task_files[task_name][lfn])
+
+
+def local_pfn(path):
+    ''' generates a full pfn given a local path '''
+    pfn = None
+    if exec_site == 'condorpool':
+        pfn = PFN('file://' + path, 'local')
+    else:
+        pfn = PFN('scp://' + getpass.getuser() + '@' + socket.gethostname() + '/' + path, 'local')
+    return pfn
+
+
+def get_building_ids(loc):
+    '''
+    finds the number of buildings from inputs/GenericBim2010.csv
+    '''
+    ids = []
+    f = open(loc)
+    for line in f:
+        field = re.sub(',.*', '', line)
+        try:
+            field = int(field)
+        except:
+            continue
+        if field > 0:
+            ids.append(field)
+    f.close
+    return ids
+
+
+def add_combine_job(dax, prefix, chunk, level, job_number, final):
+    '''
+    adds a combine job
+    '''
+    j = Job(name='COMBINE')
+    out_file = File('%s-combined-%d-%d.csv' %(prefix, level, job_number))
+    if final:
+        out_file = File(prefix + '-combined.csv')
+    j.uses(out_file, link=Link.OUTPUT, transfer=final, register=False)
+    j.addArguments(out_file)
+    for f in chunk:
+        j.uses(f, link=Link.INPUT)
+        j.addArguments(f)
+    dax.addJob(j)
+    return out_file
+
+
+def combine_outputs(dax, prefix, outputs, level):
+    '''
+    creates a set of small jobs to combine the results
+    '''
+    max_files = 50
+    new_outputs = []
+
+    output_chunks = [outputs[i:i + max_files] for i in xrange(0, len(outputs), max_files)]
+
+    job_count = 0
+    for chunk in output_chunks:
+        job_count = job_count + 1
+        f = add_combine_job(dax, prefix, chunk, level, job_count, False)
+        new_outputs.append(f)
+
+    # end condition - only one chunk
+    if len(new_outputs) <= max_files:
+        return add_combine_job(dax, prefix, new_outputs, level + 1, 1, True)
+
+    return combine_outputs(dax, prefix, new_outputs, level + 1)
+
+
+def generate_subwf(wfid, bid_list):
+
+    global run_dir
+    global building_line
+
+    task_files = {}
+
+    # Create a abstract dag
+    dax = ADAG('%06d' %(wfid))
+
+    add_executables(dax)
+    
+    count = 0
+    count_label = 0
+
+    dls_to_combine = []
+
+    # small workflows do not merge
+    small_wf = len(bid_list) <= 50
+
+    # make one event job run before the rest to make sure the code works
+    test_job = None
+    
+    for building_id in bid_list:
+
+        # label based clustering - these tasks are so short we want to
+        # bundle a bunch of buildings together
+        if not small_wf:
+            # large workflows - be aggressive
+            if count % 200 == 0:
+                count_label += 1
+            label = "sim%05d" %(count_label)
+
+        count += 1
+        building_line += 1
+   
+        ###################################################################
+        # UQ
+    
+        uq = Job(name='UQ')
+        if small_wf:
+            uq.profile(namespace='condor', key='jobprio', value='1000')
+        else:
+            uq.profile(namespace='pegasus', key='label', value=label)
+        add_task_files(task_files, dax, uq, 'codes.tar.gz', run_dir)
+        add_task_files(task_files, dax, uq, 'motions.tar.gz', input_dir)
+        add_task_files(task_files, dax, uq, 'HazusData.txt', input_dir)
+        add_task_files(task_files, dax, uq, 'HFmeta', input_dir)
+        add_task_files(task_files, dax, uq, 'parcels.csv', input_dir)
+        add_task_files(task_files, dax, uq, 'GenericBim2010.csv', input_dir)
+        add_task_files(task_files, dax, uq, 'dakota-6.8-release-public-rhel7.x86_64.tar.gz', input_dir)
+        add_task_files(task_files, dax, uq, 'OpenSees', top_dir + '/Pegasus/task-files/uq')
+        uq.addArguments(str(building_line), str(building_id))
+
+        # inputs
+        for f in task_files["UQ"]:
+            uq.uses(f, link=Link.INPUT)
+
+        # outputs
+        bim_json = File('%d-BIM.json' %(building_id))
+        uq.uses(bim_json, link=Link.OUTPUT, transfer=True, register=False)
+        edp_json = File('%d-EDP.json' %(building_id))
+        uq.uses(edp_json, link=Link.OUTPUT, transfer=True, register=False)
+        dl_json = File('%d-DL.json' %(building_id))
+        uq.uses(dl_json, link=Link.OUTPUT, transfer=True, register=False)
+        dl_csv = File('%d-DL.csv' %(building_id))
+        uq.uses(dl_csv, link=Link.OUTPUT, transfer=True, register=False)
+    
+        dax.addJob(uq)
+
+        # make one event job run before the rest to make sure the code works
+        #if test_job is not None:
+        #    dax.depends(parent=test_job, child=uq)
+        #else:
+        #    test_job = uq
+        
+        # keep track of outputs so we can combine
+        dls_to_combine.append(dl_csv)
+
+    # combine the outputs
+    final_out_file = combine_outputs(dax, '%06d'%(wfid), dls_to_combine, 0) 
+    
+    # Write the DAX
+    f = open('%s/%06d.xml' %(run_dir, wfid), 'w')
+    dax.writeXML(f)
+    f.close()
+
+
+def generate_combine_wf(num_wfs):
+
+    global run_dir
+
+    task_files = {}
+
+    # Create a abstract dag
+    dax = ADAG('combine')
+    
+    add_executables(dax)
+
+    input_files = []
+    for i in range(1, num_wfs + 1):
+        f = File('%06d-subwf-result' %(i))
+        f.addPFN(local_pfn('%s/outputs/%06d-combined.csv' %(run_dir, i)))
+        dax.addFile(f)
+        input_files.append(f)
+
+    combine_outputs(dax, 'final', input_files, 0)
+
+    # Write the DAX
+    f = open('%s/combine.xml' %(run_dir), 'w')
+    dax.writeXML(f)
+    f.close()
+
+
+# TODO: better way to specify inputs
+exec_site = sys.argv[1]
+input_dir = sys.argv[2]
+
+# we need the top dir to the git checkout
+top_dir = os.path.dirname(sys.argv[0])
+top_dir = os.path.abspath(top_dir + '/..')
+
+# check inputs
+if not os.path.exists(top_dir + '/Pegasus/sites/' + exec_site + '/sites.xml'):
+    print('Please specify a valid exec environment. Example: ./submit-workflow condorpool')
+    sys.exit(1)
+if not os.path.exists(input_dir + '/GenericBim2010.csv'):
+    print('Please put a GenericBim2010.csv file in the inputs directory')
+    sys.exit(1)
+if not os.path.exists(input_dir + '/parcels.csv'):
+    print('Please put a parcels.csv file in the inputs directory')
+    sys.exit(1)
+
+# set up run id and work dir
+run_id = datetime.datetime.now().strftime('%Y%m%d%H%M%S')
+run_dir = '/local-scratch/' + getpass.getuser() + '/workflows/' + run_id
+os.makedirs(run_dir)
+
+# run make, create tarball
+print('Running "make" to ensure all the binaries are current...')
+cmd = 'cd ' + top_dir + ' && make >/dev/null && tar czf ' + run_dir + '/codes.tar.gz .'
+call(cmd, shell=True)
+
+# pegasus files
+os.environ['RUN_DIR'] = run_dir
+cmd = 'envsubst <' + top_dir + '/Pegasus/sites/' + exec_site + '/sites.xml >' + run_dir + '/sites.xml'
+call(cmd, shell=True)
+
+cmd = 'cp ' + top_dir + '/Pegasus/sites/' + exec_site + '/pegasus.conf ' + run_dir
+call(cmd, shell=True)
+
+bids = get_building_ids(input_dir + '/GenericBim2010.csv')[0:100000]
+buildings_per_subwf = 50000
+building_line = 0
+
+print('Generating a hierarchical workflow for %d buildings...' %(len(bids)))
+    
+# Create a abstract dag
+dax = ADAG('simcenter')
+
+# email notificiations for when the state of the workflow changes
+email_cmd = '/usr/share/pegasus/notification/email'
+if getpass.getuser() == 'rynge':
+    email_cmd = email_cmd + ' --to rynge@isi.edu'
+dax.invoke('all',  email_cmd)
+
+# Add executables to the DAX-level replica catalog
+add_executables(dax)
+
+task_files = {}
+
+subwfs = []
+subwf_id = 1
+
+# generate sub workflows for each range
+for subwf_list in [bids[i:i + buildings_per_subwf] for i in xrange(0, len(bids), buildings_per_subwf)]:
+
+    print('... adding sub workflow for %d .. %d' %(subwf_list[0], subwf_list[-1]))
+
+    generate_subwf(subwf_id, subwf_list)
+
+    subwf_dax = File('%06d.xml' %(subwf_id))
+    subwf_dax.addPFN(PFN('%s/%06d.xml' %(run_dir, subwf_id), 'local'))
+    dax.addFile(subwf_dax)
+
+    job = DAX('%06d.xml' %(subwf_id))
+    job.addProfile(Profile('dagman', 'CATEGORY', 'subwf'))
+    job.uses(subwf_dax)
+    job.addArguments('-Dpegasus.catalog.site.file=%s/sites.xml' % (run_dir),
+                     '--sites', 'compute',
+                     '--output-site', 'local',
+                     '--basename', '%06d' %(subwf_id),
+                     '--cluster', 'label',
+                     '--cleanup', 'inplace',
+                     '--force')
+    dax.addDAX(job)
+
+    subwfs.append(job)
+
+    subwf_id += 1
+
+# we need one more sub workflow to do the final combining
+generate_combine_wf(len(subwfs))
+    
+subwf_dax = File('combine.xml')
+subwf_dax.addPFN(PFN('%s/combine.xml' %(run_dir), 'local'))
+dax.addFile(subwf_dax)
+
+job = DAX('combine.xml')
+job.uses(subwf_dax)
+job.addArguments('-Dpegasus.catalog.site.file=%s/sites.xml' % (run_dir),
+                 '--sites', 'compute',
+                 '--output-site', 'local',
+                 '--basename', 'combine',
+                 '--cleanup', 'inplace',
+                 '--force')
+dax.addDAX(job)
+# all other sub workflows are parents
+for p in subwfs:
+    dax.depends(parent=p, child=job)
+
+# Write the DAX 
+f = open('%s/dax.xml' %(run_dir), 'w')
+dax.writeXML(f)
+f.close()
+
+print('')
+print('Outputs will show up in: ' + run_dir + '/outputs/')
+print('')
+
+# environment needed for the site catalog
+os.environ['RUN_DIR'] = run_dir
+
+cmd = 'pegasus-plan ' + \
+      ' -Dpegasus.catalog.site.file=' + run_dir + '/sites.xml' + \
+      ' --conf ' + run_dir + '/pegasus.conf' + \
+      ' --relative-dir ' + run_id + \
+      ' --sites compute' + \
+      ' --output-site local' + \
+      ' --cleanup leaf' + \
+      ' --dir ' + run_dir + \
+      ' --dax ' + run_dir + '/dax.xml' + \
+      ' --submit'
+call(cmd, shell=True)
+
+sys.exit(0)
+

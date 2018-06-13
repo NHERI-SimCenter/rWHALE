@@ -1,0 +1,11 @@
+#!/bin/bash
+
+set -e
+
+# first argument is the output filename, the rest inputs
+OUTPUT=$1
+shift
+INPUTS="$@"
+
+cat $INPUTS >$OUTPUT
+

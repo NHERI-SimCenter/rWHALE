@@ -1,0 +1,11 @@
+#
+# files to do the finalProcessing.
+#
+# output files:
+#   X-DL.json name, where X = 1 through num Buildings.
+#   temp files created by readDLs:
+#      have name Y.out, Y in range 1 through num blocks
+   
+
+# application 1: readDLs startNum endNum Y.out
+# application 2: gatherOutputs.sh startY endY

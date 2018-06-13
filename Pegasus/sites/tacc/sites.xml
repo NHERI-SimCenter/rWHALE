@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sitecatalog xmlns="http://pegasus.isi.edu/schema/sitecatalog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://pegasus.isi.edu/schema/sitecatalog http://pegasus.isi.edu/schema/sc-4.0.xsd" version="4.0">
+
+    <site  handle="local" arch="x86_64">
+        <directory type="shared-scratch" path="${RUN_DIR}/scratch">
+            <file-server operation="all" url="scp://rynge@workflow.isi.edu${RUN_DIR}/scratch"/>
+        </directory>
+        <directory type="local-storage" path="${RUN_DIR}/outputs">
+            <file-server operation="all" url="scp://rynge@workflow.isi.edu${RUN_DIR}/outputs"/>
+        </directory>
+        <profile namespace="pegasus" key="SSH_PRIVATE_KEY">/nfs/asd2/rynge/.ssh/workflow</profile>
+    </site>
+
+    <site  handle="compute" arch="x86_64" os="LINUX">
+        <directory type="shared-scratch" path="/gpfs/flash/users/rynge/wf-scratch">
+            <file-server operation="all" url="file:///gpfs/flash/users/rynge/wf-scratch"/>
+        </directory>
+        <profile namespace="pegasus" key="style" >condor</profile>
+        <profile namespace="condor" key="universe" >vanilla</profile>
+        <profile namespace="condor" key="request_cpus" >1</profile>
+        <profile namespace="condor" key="request_memory" >1 GB</profile>
+        <profile namespace="condor" key="request_disk" >500 MB</profile>
+        <profile namespace="condor" key="+WantSimCenterTACC" >True</profile>
+        <profile namespace="condor" key="requirements" >regexp("tacc.utexas.edu", TARGET.FileSystemDomain)</profile>
+        <profile namespace="env" key="PEGASUS_HOME" >/gpfs/flash/users/rynge/software/pegasus-4.8.0</profile>
+    </site>
+    
+</sitecatalog>
+

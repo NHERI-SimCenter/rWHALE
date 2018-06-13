@@ -1,0 +1,32 @@
+#!/bin/bash
+
+set -e
+
+BID=$1
+
+# expected output files - touch so that job does not go into
+# hold on failures
+touch $BID-DL.json
+
+(
+    # Wait for lock on .untarlock (fd 200) for 15 minutes
+    flock -x -w 900 200
+
+    # only untar once
+    if [ ! -e ".codes-untared-stamp" ]; then
+        touch .codes-untared-stamp
+        tar xzf codes.tar.gz
+    fi
+
+) 200>.untarlock
+
+
+$PWD/createLOSS/FEMAP58_LU \
+    -filenameBIM $BID-BIM.json \
+    -filenameEDP $BID-EDP.json \
+    -filenameLOSS $BID-DL.json \
+    -filenameSettings $PWD/createLOSS/data/settings.ini \
+    -pathNormative $PWD/createLOSS/data/normative/ \
+    -pathCurves $PWD/createLOSS/data/ATCCurves/
+
+

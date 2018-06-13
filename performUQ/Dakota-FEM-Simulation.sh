@@ -6,13 +6,18 @@
 #
 # written: fmk
 
+# make sure we catch errors!
+set -e
+
 # need to ensure OpenSees and dakota can be called
 
 platform='Darwin'
 
 platform=$(uname)
 
-if [[ $platform == 'Darwin' ]]; then
+if [ "x$PEGASUS_WF_UUID" != "x" ]; then
+    echo "Pegasus job detected - Pegasus will set up the env"
+elif [[ $platform == 'Darwin' ]]; then
     export DAKOTA_PATH=$HOME/dakota/bin
     export OPENSEES_PATH=$HOME/bin
     export PATH=$PATH:$OPENSEES_PATH:$DAKOTA_PATH    
