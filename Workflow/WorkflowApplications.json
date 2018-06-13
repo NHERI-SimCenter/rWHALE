@@ -13,7 +13,9 @@
     "Applications": [
       {
         "Name": "UrbanSimDatabase",
+
         "ExecutablePath": "../createBIM/UrbanSimDatabase",
+
         "ApplicationSpecificInputs": [
 		{ "id":"Min",
 		  "type":"int",
