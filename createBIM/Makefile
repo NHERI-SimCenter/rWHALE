@@ -24,7 +24,7 @@ urbanSimDatabase: $(OBJS) UrbanSimDatabase.o
 randomUrbanSimDatabase: $(OBJS) RandomUrbanSimDatabase.o
 	$(CXX) $(LDFLAGS) -o RandomUrbanSimDatabase RandomUrbanSimDatabase.o $(OBJS) $(LDLIBS)
 
-GenericBimDatabase: $(OBJS) GenericBimDatabase.cpp
+GenericBimDatabase: $(OBJS) GenericBimDatabase.h GenericBimDatabase.cpp
 
 clean:
 	$(RM) $(OBJS) *~ \#* *.o
