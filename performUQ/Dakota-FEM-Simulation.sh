@@ -41,8 +41,9 @@ bimName=$2
 samName=$4
 evtName=$6
 edpName=$8
-simName=${10}
-driverFile=${12}
+lossName=${10}
+simName=${12}
+driverFile=${14}
 
 #dakotaName=$6
 #outName=$7
@@ -54,8 +55,8 @@ numSamples=5
 # parse json file, creating dakota input and other files
 #  note: done in python
 
-echo $scriptDIR/preprocessJSON.py $bimName $evtName $samName $edpName $simName $driverFile
-python $scriptDIR/preprocessJSON.py $bimName $evtName $samName $edpName $simName $driverFile $scriptDIR
+echo $scriptDIR/preprocessJSON.py $bimName $evtName $samName $edpName $lossName $simName $driverFile
+python $scriptDIR/preprocessJSON.py $bimName $evtName $samName $edpName $lossName $simName $driverFile $scriptDIR
 
 #
 # create a dir templatedir to place all files needed by a dakota run

@@ -8,9 +8,10 @@ bimName=sys.argv[1];#'exampleBIM.json'
 evtName=sys.argv[2];#'exampleEVENT.json'
 samName=sys.argv[3];#'exampleSAM.json'
 edpName=sys.argv[4];#'exampleEDP.json'
-simName=sys.argv[5];#'exampleSIMULATION.json'
-driverFile = sys.argv[6]
-scriptDIR = sys.argv[7]
+lossName=sys.argv[5];#'exampleDL.json'
+simName=sys.argv[6];#'exampleSIMULATION.json'
+driverFile = sys.argv[7]
+scriptDIR = sys.argv[8]
 
 #workflowDIR=sys.argv[6];#'/Users/simcenter/NHERI/Workflow1.1/'
 
@@ -222,7 +223,7 @@ f.close()
 
 f = open('finishUP.sh', 'w')
 f.write('#!/bin/bash\n')
-f.write(scriptDIR + '/postprocessDAKOTA ' + str(numRandomVariables) + ' ' + str(numSamples) + ' ' +  edpName + ' dakotaTab.out \n')
+f.write(scriptDIR + '/postprocessDAKOTA ' + str(numRandomVariables) + ' ' + str(numSamples) + ' ' + bimName + ' ' +  edpName  + ' ' + lossName + ' ' + ' dakotaTab.out \n')
 f.write('rm -fr templatedir workdir.* dakota.* LHS* dakotaTab.*')
 
 f.close();

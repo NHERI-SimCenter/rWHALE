@@ -38,7 +38,8 @@ int HazusLossEstimator::determineLOSS(const char *filenameBIM,
     _GenRealizations(bldg);
 
     int numResponses=bldg->getNumResponses(filenameEDP);
-    vector<double> vLoss,vRpTime,vTagProb;
+    vector<double> vLoss,vRpTime;
+    vector<FragilityCurve::Tag> vTags;
     for(int i=0;i<numResponses;++i)
     {
         bldg->readEDP(filenameEDP,i);
@@ -46,7 +47,7 @@ int HazusLossEstimator::determineLOSS(const char *filenameBIM,
 
         vLoss.insert(vLoss.end(),bldg->totalLoss.begin(),bldg->totalLoss.end());
         vRpTime.insert(vRpTime.end(),bldg->totalDowntime.begin(),bldg->totalDowntime.end());
-        vTagProb.push_back(bldg->redTagProb);
+        vTags.insert(vTags.end(), bldg->redTag.begin(), bldg->redTag.end());
     }
 
   double lossratio=stat->getMedian(vLoss)/bldg->replacementCost;
@@ -63,15 +64,35 @@ int HazusLossEstimator::determineLOSS(const char *filenameBIM,
     json_object_set(repairTime,"MedianRepairTime",json_real(stat->getMedian(vRpTime)));
     json_object_set(root,"RepairTime",repairTime);
     json_t *tag = json_object();
-    if(stat->getMean(vTagProb)>0.5)
+    if(bldg->redTagProb > 0.5)
         json_object_set(tag,"Tag",json_string("red"));
     else
         json_object_set(tag,"Tag",json_string("none"));
-    json_object_set(tag,"RedTagProbability",json_real(stat->getMean(vTagProb)));
+    json_object_set(tag,"RedTagProbability",json_real(bldg->redTagProb));
     json_object_set(root,"UnsafePlacards",tag);
 
     json_object_set(root,"Name",json_string(bldg->name.c_str()));
     json_object_set(root,"MaxPGA",json_real(bldg->edp.PFA[0]));
+
+    //Exporting Samples, this is necessary to be able to calculate proper stats after dakota runs
+    //For Building models with uncertianties
+    json_t* samplesJson = json_object();
+    json_t* lossSamplesJson = json_array();
+    json_object_set(samplesJson, "Loss", lossSamplesJson);
+    for (int i = 0; i < vLoss.size(); i++)
+        json_array_append(lossSamplesJson, json_real(vLoss[i]));
+
+    json_t* repairTimeSamplesJson = json_array();
+    json_object_set(samplesJson, "RepairTime", repairTimeSamplesJson);
+    for (int i = 0; i < vRpTime.size(); i++)
+        json_array_append(repairTimeSamplesJson, json_real(vRpTime[i]));
+
+    json_t* redTagSampleJson = json_array();
+    json_object_set(samplesJson, "RedTags", redTagSampleJson);
+    for (int i = 0; i < vTags.size(); i++)
+        json_array_append(redTagSampleJson, json_integer(vTags[i]));
+
+    json_object_set(root, "Samples", samplesJson);
 
     json_dump_file(root,filenameLOSS,0);
     json_object_clear(root);

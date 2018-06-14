@@ -11,8 +11,6 @@
 class Stat
 {
 public:
-    Stat();
-
     void SetSeed(int seed);
     double random(double min=0.0, double max=1.0);
     int round(double r);    //round to an integer
