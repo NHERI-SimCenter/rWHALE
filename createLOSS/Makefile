@@ -27,6 +27,9 @@ otherOBJS = ./include/inifile.o ./include/tinyxml2.o
 
 all: createLOSS FEMA-P58
 
+debug: CPPFLAGS += -DDEBUG -g
+debug: all
+
 createLOSS: $(OBJS) main.o
 	cd include; make
 	$(CXX) $(LDFLAGS) -o createLOSS main.o $(OBJS) $(otherOBJS) $(LDLIBS)

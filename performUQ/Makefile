@@ -10,6 +10,9 @@ OBJS=extractEDP.o  postprocessDakota.o
 
 all: extractEDP postprocessDAKOTA
 
+debug: CPPFLAGS += -DDEBUG -g
+debug: all
+
 extractEDP.o: extractEDP.cpp 
 
 postprocessDakota.o: postprocessDakota.cpp ../createLOSS/Stat.h

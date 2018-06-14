@@ -10,6 +10,9 @@ OBJS=createEDP.o HazusLossEstimator.o
 
 all: createEDP StandardEarthquakeEDP
 
+debug: CPPFLAGS += -DDEBUG -g
+debug: all
+
 HazusLossEstimator.o: HazusLossEstimator.cpp HazusLossEstimator.h
 
 StandardEarthquakeEDP.o : StandardEarthquakeEDP.cpp

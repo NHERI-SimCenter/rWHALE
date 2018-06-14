@@ -10,6 +10,9 @@ OBJS=readDLs.o
 
 all: readDLs
 
+debug: CPPFLAGS += -DDEBUG -g
+debug: all
+
 readDLs.o: readDLs.cpp
 
 readDLs: $(OBJS)

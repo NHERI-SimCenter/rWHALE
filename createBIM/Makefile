@@ -9,6 +9,9 @@ OBJS=csvparser.o
 
 all: urbanSimDatabase randomUrbanSimDatabase GenericBimDatabase
 
+debug: CPPFLAGS += -DDEBUG -g
+debug: all
+
 csvParser.o: csvparser.cpp csvparser.h
 
 randomCreateBIM.o: randomCreateBIM.cpp

@@ -17,6 +17,9 @@ OBJS= FloorParam.o InterstoryParam.o Building.o \
 
 all: createSAM processSAM MDOF
 
+debug: CPPFLAGS += -DDEBUG -g
+debug: all
+
 Building.o: Building.cpp Building.h
 
 HazusSAM_Generator.o: HazusSAM_Generator.cpp
