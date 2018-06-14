@@ -1,10 +1,5 @@
 #include "Stat.h"
 
-Stat::Stat()
-{
-
-}
-
 void Stat::SetSeed(int seed)
 {
     _seed=seed;

@@ -365,6 +365,8 @@ def main():
     buildingAppDataList.append('-getRV')
     subprocess.call(buildingAppDataList)
 
+    del buildingAppDataList[-1]
+
     # 
     # now we need to open buildingsfile and for each building
     #  - get RV for EVENT file for building
@@ -389,7 +391,6 @@ def main():
 
         # open driver file & write building app (minus the -getRV) to it
         driverFILE = open(driverFile,'w')
-        del buildingAppDataList[-1]
         for item in buildingAppDataList:
             driverFILE.write("%s " % item)
         driverFILE.write("\n")
@@ -455,10 +456,20 @@ def main():
         simAppDataList.append('-getRV')
         subprocess.call(simAppDataList)
 
+        # Adding CreateLoss to Dakota Driver
+        dlAppDataList = [dlAppExe,'-filenameBIM',bimFILE,'-filenameEDP',edpFILE,'-filenameLOSS',dlFILE]
+        
+        for key in dlAppData.keys():
+            dlAppDataList.append("-"+key.encode('ascii', 'ignore'))
+            dlAppDataList.append(dlAppData.get(key).encode('ascii', 'ignore'))
+        
+        for item in dlAppDataList:
+            driverFILE.write("%s " % item)
+
         # perform the simulation
         driverFILE.close()
 
-        uqAppDataList = [uqAppExe,'-filenameBIM',bimFILE,'-filenameSAM',samFILE,'-filenameEVENT',eventFILE,'-filenameEDP',edpFILE,'-filenameSIM',simFILE,'driverFile',driverFile]
+        uqAppDataList = [uqAppExe,'-filenameBIM',bimFILE,'-filenameSAM',samFILE,'-filenameEVENT',eventFILE,'-filenameEDP',edpFILE,'-filenameLOSS',dlFILE,'-filenameSIM',simFILE,'driverFile',driverFile]
 
         for key in uqAppData.keys():
             uqAppDataList.append("-"+key.encode('ascii', 'ignore'))
@@ -467,16 +478,6 @@ def main():
         print(uqAppDataList)
 
         subprocess.call(uqAppDataList)
-
-        # compute damage and oss
-        dlAppDataList = [dlAppExe,'-filenameBIM',bimFILE,'-filenameEDP',edpFILE,'-filenameLOSS',dlFILE]
-
-        for key in dlAppData.keys():
-            dlAppDataList.append("-"+key.encode('ascii', 'ignore'))
-            dlAppDataList.append(dlAppData.get(key).encode('ascii', 'ignore'))
-
-        print(dlAppDataList)
-        subprocess.call(dlAppDataList)
 
 
 if __name__ == "__main__":
