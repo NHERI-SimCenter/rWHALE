@@ -3,25 +3,47 @@
 import json
 import os
 import sys
-import stat
-import shutil
 import subprocess
-from pprint import pprint
+from time import gmtime, strftime
+
+divider = '#' * 80
+log_output = []
+
+class WorkFlowInputError(Exception):
+    def __init__(self, value):
+        self.value = value
+
+    def __str__(self):
+        return repr(self.value)
+
+
+def workflow_log(msg):
+    # ISO-8601 format, e.g. 2018-06-16T20:24:04Z
+    print '%s %s' % (strftime('%Y-%m-%dT%H:%M:%SZ', gmtime()), msg)
+
 
 # function to return result of invoking an application
-# def runApplication(application, args):
-#     argsPopen=[];
-#     argsPopen.append(application)
-#     argsPopen.extend(args);
-#
-#     p = subprocess.Popen(argsPopen, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-#     for line in p.stdout.readlines():
-#         print line
-#     retval = p.wait()
+def runApplication(application_plus_args):
+    try:
+        result = subprocess.check_output(' '.join(application_plus_args), stderr=subprocess.STDOUT, shell=True)
+        # for line in result.split('\n'):
+        # pass
+        # print(line)
+        returncode = 0
+    except subprocess.CalledProcessError as e:
+        result = e.output
+        returncode = e.returncode
+
+    if returncode != 0:
+        workflow_log('NON-ZERO RETURN CODE!')
+    workflow_log('%s =  %s' % (returncode, application_plus_args[0]))
+    #workflow_log('args: %s' % ' '.join(application_plus_args[1:]))
+    log_output.append([' '.join(application_plus_args), result])
+    return result, returncode
 
 
 def add_full_path(possible_filename):
-    if type(possible_filename) != type(u' '):
+    if not isinstance(possible_filename, basestring):
         return possible_filename
     if (os.path.exists(possible_filename)):
         if os.path.isdir(possible_filename):
@@ -51,434 +73,432 @@ def relative2fullpath(json_object):
     recursive_iter(json_object)
 
 
-def main():
-    inputArgs = sys.argv
+def main(run_type, inputFile, applicationsRegistry):
+    # the whole workflow is wrapped within a 'try' block.
+    # a number of exceptions (files missing, explicit application failures, etc.) are
+    # handled explicitly to aid the user.
+    # But unhandled exceptions case the workflow to stop with an error, handled in the
+    # exception block way at the bottom of this main() function
+    try:
 
-    inputFile = inputArgs[1]
-    applicationsRegistry = "WorkflowApplications.json"
-
-    #
-    # first we parse the applications registry to load all possible applications
-    #  - for each application type we place in a dictionary key being name, value containing path to executable
-    #
-
-    with open(applicationsRegistry, 'r') as data_file: 
-        registryData = json.load(data_file)
-        # convert all relative paths to full paths
-        relative2fullpath(registryData)
+        workflow_log(divider)
+        workflow_log('Start of run')
+        workflow_log(divider)
+        workflow_log('workflow input file:       %s' % inputFile)
+        workflow_log('application registry file: %s' % applicationsRegistry)
+        workflow_log('runtype:                   %s' % run_type)
+        workflow_log(divider)
 
 
-    buildingApplications = dict()
-    eventApplications = dict()
-    modelingApplications = dict()
-    edpApplications = dict()
-    simulationApplications = dict()
-    uqApplications = dict()
-    dlApplications = dict()
+        #
+        # first we parse the applications registry to load all possible applications
+        #  - for each application type we place in a dictionary key being name, value containing path to executable
+        #
+        with open(applicationsRegistry, 'r') as data_file:
+            registryData = json.load(data_file)
+            # convert all relative paths to full paths
+            relative2fullpath(registryData)
 
-    if 'BuildingApplications' in registryData:
-        buildingApplicationData = registryData["BuildingApplications"]
-        applicationsData = buildingApplicationData["Applications"]
+        A = 'Applications'
+        Applications = dict()
+        appList = 'Building Event Modeling EDP Simulation UQ DamageAndLoss'.split(' ')
+        appList = [a + A for a in appList]
 
-        for app in applicationsData:
-            appName = app["Name"]
-            appExe = app["ExecutablePath"]
-            buildingApplications[appName] = appExe
+        for app_type in appList:
 
-    if 'EventApplications' in registryData:
-        eventApplicationData = registryData["EventApplications"]
-        applicationsData = eventApplicationData["Applications"]
+            if app_type in registryData:
+                xApplicationData = registryData[app_type]
+                applicationsData = xApplicationData['Applications']
 
-        for app in applicationsData:
-            appName = app["Name"]
-            appExe = app["ExecutablePath"]
-            eventApplications[appName] = appExe
+                for app in applicationsData:
+                    appName = app['Name']
+                    appExe = app['ExecutablePath']
+                    if not app_type in Applications:
+                        Applications[app_type] = dict()
+                    Applications[app_type][appName] = appExe
 
-    if 'ModelingApplications' in registryData:
-        modelingApplicationData = registryData["ModelingApplications"]
-        applicationsData = modelingApplicationData["Applications"]
+        #
+        # open input file, and parse json into data
+        #
 
-        for app in applicationsData:
-            appName = app["Name"]
-            appExe = app["ExecutablePath"]
-            modelingApplications[appName] = appExe
+        with open(inputFile, 'r') as data_file:
+            data = json.load(data_file)
+            # convert all relative paths to full paths
+            relative2fullpath(data)
 
-    if 'EDP' in registryData:
-        edpApplicationData = registryData["EDP"]
-        applicationsData = edpApplicationData["Applications"]
+        #
+        # get all application data, quit if error
+        #
 
-        for app in applicationsData:
-            appName = app["Name"]
-            appExe = app["ExecutablePath"]
-            edpApplications[appName] = appExe
-
-    if 'SimulationApplications' in registryData:
-        simApplicationData = registryData["SimulationApplications"]
-        applicationsData = simApplicationData["Applications"]
-
-        for app in applicationsData:
-            appName = app["Name"]
-            appExe = app["ExecutablePath"]
-            simulationApplications[appName] = appExe
-
-    if 'UQApplications' in registryData:
-        uqApplicationData = registryData["UQApplications"]
-        applicationsData = uqApplicationData["Applications"]
-
-        for app in applicationsData:
-            appName = app["Name"]
-            appExe = app["ExecutablePath"]
-            uqApplications[appName] = appExe
-
-    if 'DamageAndLossApplications' in registryData:
-        dlApplicationData = registryData["DamageAndLossApplications"]
-        applicationsData = dlApplicationData["Applications"]
-
-        for app in applicationsData:
-            appName = app["Name"]
-            appExe = app["ExecutablePath"]
-            dlApplications[appName] = appExe
-
-    #
-    # open input file, and parse json into data
-    #
-
-    with open(inputFile, 'r') as data_file:    
-        data = json.load(data_file)
-        # convert all relative paths to full paths
-        relative2fullpath(data)
-
-    #
-    # get all application data, quit if error
-    #
-
-    if 'WorkflowType' in data:
-        typeWorkflow = data["WorkflowType"]
-    else:
-        print('Need a Workflow Type')
-        quit()
-
-    # check correct workflow type
-
-    #
-    # now we parse for the applications & app specific data in workflow
-    #
-
-    if 'Applications' in data:
-        applications = data["Applications"]
-    else:
-        print('Need an Applications Entry')
-        quit()
-
-    #
-    # get building application and its data
-    #
-
-    if 'Buildings' in applications:
-        buildingApp = applications["Buildings"]
-
-        if 'BuildingApplication' in buildingApp:
-            buildingApplication = buildingApp["BuildingApplication"]
-
-            # check building app in registry, if so get full executable path
-            buildingAppData = buildingApp["ApplicationData"]
-            if buildingApplication in buildingApplications.keys():
-                buildingAppExe = buildingApplications.get(buildingApplication)
-            else:
-                print('Building application %s not in registry',buildingApplication)        
-                quit()
+        if 'WorkflowType' in data:
+            typeWorkflow = data['WorkflowType']
         else:
-            print('Need a Building Generator Application in Buildings')        
-            quit()
-    else:
-        print('Need a Buildings Entry in Applications')
-        quit()
+            raise WorkFlowInputError('Need a Workflow Type')
 
-    #
-    # get events, for each the  application and its data .. FOR NOW 1 EVENT
-    #
+        # check correct workflow type
 
-    if 'Events' in applications:
-        events = applications["Events"]
-        
-        for event in events:
-            if 'EventClassification' in event:
-                eventClassification = event["EventClassification"]
-                if eventClassification == 'Earthquake':
-                    if 'EventApplication' in event:
-                        eventApplication = event['EventApplication']
-                        eventAppData = event["ApplicationData"]
-                        eventData = event['ApplicationData']
-                        if eventApplication in eventApplications.keys():
-                            eventAppExe = eventApplications.get(eventApplication)
-                        else:
-                            print('Event application %s not in registry',eventApplication)        
-                            quit()
-                    else:
-                        print('Need an EventApplication section')
-                        quit()
-            
+        #
+        # now we parse for the applications & app specific data in workflow
+        #
+
+        if 'Applications' in data:
+            available_apps = data['Applications']
+        else:
+            raise WorkFlowInputError('Need an Applications Entry')
+
+        #
+        # get building application and its data
+        #
+
+        if 'Buildings' in available_apps:
+            buildingApp = available_apps['Buildings']
+
+            if 'BuildingApplication' in buildingApp:
+                buildingApplication = buildingApp['BuildingApplication']
+
+                # check building app in registry, if so get full executable path
+                buildingAppData = buildingApp['ApplicationData']
+                if buildingApplication in Applications['BuildingApplications'].keys():
+                    buildingAppExe = Applications['BuildingApplications'].get(buildingApplication)
                 else:
-                    print('Event classification must be Earthquake, not %s' % eventClassification)
-                    quit()
+                    raise WorkFlowInputError('Building application %s not in registry' % buildingApplication)
+
             else:
-                print('Need Event Classification')
-                quit()
-    else:
-        print('Need an Events Entry in Applications')
-        quit()
+                raise WorkFlowInputError('Need a Building Generator Application in Buildings')
 
-    #
-    # get modeling application and its data
-    #
-
-    if 'Modeling' in applications:
-        modelingApp = applications["Modeling"]
-
-        if 'ModelingApplication' in modelingApp:
-            modelingApplication = modelingApp["ModelingApplication"]
-
-            # check modeling app in registry, if so get full executable path
-            modelingAppData = modelingApp["ApplicationData"]
-            if modelingApplication in modelingApplications.keys():
-                modelingAppExe = modelingApplications.get(modelingApplication)
-            else:
-                print('Modeling application %s not in registry',modelingApplication)        
-                quit()
         else:
-            print('Need a ModelingApplication in Modeling data')        
-            quit()
+            raise WorkFlowInputError('Need a Buildings Entry in Applications')
 
-    else:
-        print('Need a Modeling Entry in Applications')
-        quit()
+        #
+        # get events, for each the  application and its data .. FOR NOW 1 EVENT
+        #
+
+        if 'Events' in available_apps:
+            events = available_apps['Events']
+
+            for event in events:
+                if 'EventClassification' in event:
+                    eventClassification = event['EventClassification']
+                    if eventClassification == 'Earthquake':
+                        if 'EventApplication' in event:
+                            eventApplication = event['EventApplication']
+                            eventAppData = event['ApplicationData']
+                            eventData = event['ApplicationData']
+                            if eventApplication in Applications['EventApplications'].keys():
+                                eventAppExe = Applications['EventApplications'].get(eventApplication)
+                            else:
+                                raise WorkFlowInputError('Event application %s not in registry' % eventApplication)
+
+                        else:
+                            raise WorkFlowInputError('Need an EventApplication section')
 
 
-    #
-    # get edp application and its data
-    #
+                    else:
+                        raise WorkFlowInputError('Event classification must be Earthquake, not %s' % eventClassification)
 
-    if 'EDP' in applications:
-        edpApp = applications["EDP"]
+                else:
+                    raise WorkFlowInputError('Need Event Classification')
 
-        if 'EDPApplication' in edpApp:
-            edpApplication = edpApp["EDPApplication"]
-
-            # check modeling app in registry, if so get full executable path
-            edpAppData = edpApp["ApplicationData"]
-            if edpApplication in edpApplications.keys():
-                edpAppExe = edpApplications.get(edpApplication)
-            else:
-                print('EDP application %s not in registry',edpApplication)        
-                quit()
         else:
-            print('Need an EDPApplication in EDP data')        
-            quit()
+            raise WorkFlowInputError('Need an Events Entry in Applications')
 
-    else:
-        print('Need an EDP Entry in Applications')
-        quit()
+        #
+        # get modeling application and its data
+        #
 
+        if 'Modeling' in available_apps:
+            modelingApp = available_apps['Modeling']
 
-    if 'Simulation' in applications:
-        simulationApp = applications["Simulation"]
+            if 'ModelingApplication' in modelingApp:
+                modelingApplication = modelingApp['ModelingApplication']
 
-        if 'SimulationApplication' in simulationApp:
-            simulationApplication = simulationApp["SimulationApplication"]
+                # check modeling app in registry, if so get full executable path
+                modelingAppData = modelingApp['ApplicationData']
+                if modelingApplication in Applications['ModelingApplications'].keys():
+                    modelingAppExe = Applications['ModelingApplications'].get(modelingApplication)
+                else:
+                    raise WorkFlowInputError('Modeling application %s not in registry' % modelingApplication)
 
-            # check modeling app in registry, if so get full executable path
-            simAppData = simulationApp["ApplicationData"]
-            if simulationApplication in simulationApplications.keys():
-                simAppExe = simulationApplications.get(simulationApplication)
             else:
-                print('Simulation application %s not in registry',simulationApplication)        
-                quit()
+                raise WorkFlowInputError('Need a ModelingApplication in Modeling data')
+
+
         else:
-            print('Need an SimulationApplication in Simulation data')        
-            quit()
+            raise WorkFlowInputError('Need a Modeling Entry in Applications')
 
-    else:
-        print('Need a Simulation Entry in Applications')
-        quit()
+        #
+        # get edp application and its data
+        #
 
+        if 'EDP' in available_apps:
+            edpApp = available_apps['EDP']
 
-    if 'UQ-Simulation' in applications:
-        uqApp = applications["UQ-Simulation"]
+            if 'EDPApplication' in edpApp:
+                edpApplication = edpApp['EDPApplication']
 
-        if 'UQApplication' in uqApp:
-            uqApplication = uqApp["UQApplication"]
+                # check modeling app in registry, if so get full executable path
+                edpAppData = edpApp['ApplicationData']
+                if edpApplication in Applications['EDPApplications'].keys():
+                    edpAppExe = Applications['EDPApplications'].get(edpApplication)
+                else:
+                    raise WorkFlowInputError('EDP application %s not in registry', edpApplication)
 
-            # check modeling app in registry, if so get full executable path
-            uqAppData = uqApp["ApplicationData"]
-            if uqApplication in uqApplications.keys():
-                uqAppExe = uqApplications.get(uqApplication)
             else:
-                print('UQ application %s not in registry',uqApplication)        
-                quit()
+                raise WorkFlowInputError('Need an EDPApplication in EDP data')
+
+
         else:
-            print('Need a UQApplication in UQ data')        
-            quit()
+            raise WorkFlowInputError('Need an EDP Entry in Applications')
 
-    else:
-        print('Need a Simulation Entry in Applications')
-        quit()
+        if 'Simulation' in available_apps:
+            simulationApp = available_apps['Simulation']
 
-    
+            if 'SimulationApplication' in simulationApp:
+                simulationApplication = simulationApp['SimulationApplication']
 
-    if 'Damage&Loss' in applications:
-        DLApp = applications["Damage&Loss"]
+                # check modeling app in registry, if so get full executable path
+                simAppData = simulationApp['ApplicationData']
+                if simulationApplication in Applications['SimulationApplications'].keys():
+                    simAppExe = Applications['SimulationApplications'].get(simulationApplication)
+                else:
+                    raise WorkFlowInputError('Simulation application %s not in registry', simulationApplication)
 
-        if 'Damage&LossApplication' in DLApp:
-            dlApplication = DLApp["Damage&LossApplication"]
-
-            # check modeling app in registry, if so get full executable path
-            dlAppData = DLApp["ApplicationData"]
-            if dlApplication in dlApplications.keys():
-                dlAppExe = dlApplications.get(dlApplication)
             else:
-                print('Dmage & Loss application %s not in registry',dlApplication)        
-                quit()
+                raise WorkFlowInputError('Need an SimulationApplication in Simulation data')
+
+
         else:
-            print('Need a Damage&LossApplicationApplication in Damage & Loss data')        
-            quit()
-    else:
-        print('Need a Simulation Entry in Applications')
-        quit()
+            raise WorkFlowInputError('Need a Simulation Entry in Applications')
 
-    print('SUCCESS: Parsed workflow input')
+        if 'UQ-Simulation' in available_apps:
+            uqApp = available_apps['UQ-Simulation']
 
-    #
-    # now invoke the applications
-    #
+            if 'UQApplication' in uqApp:
+                uqApplication = uqApp['UQApplication']
 
-    # 
-    # put building generator application data into list and exe
-    #
+                # check modeling app in registry, if so get full executable path
+                uqAppData = uqApp['ApplicationData']
+                if uqApplication in Applications['UQApplications'].keys():
+                    uqAppExe = Applications['UQApplications'].get(uqApplication)
+                else:
+                    raise WorkFlowInputError('UQ application %s not in registry', uqApplication)
 
-    buildingsFile = "buildings.json"
-    buildingAppDataList = [buildingAppExe,buildingsFile]
-
-    for key in buildingAppData.keys():
-        buildingAppDataList.append("-"+key.encode('ascii', 'ignore'))
-        buildingAppDataList.append(buildingAppData.get(key).encode('ascii', 'ignore'))
-
-    buildingAppDataList.append('-getRV')
-    subprocess.call(buildingAppDataList)
-
-    del buildingAppDataList[-1]
-
-    # 
-    # now we need to open buildingsfile and for each building
-    #  - get RV for EVENT file for building
-    #  - get RV for SAM file for building
-    #  - get EDP for buildings and event
-    #  - get SAM for buildings, event and EDP
-    #  - perform Simulation
-    #  - getDL
-
-    with open(buildingsFile, 'r') as data_file:    
-        data = json.load(data_file)
-
-    for building in data:
-        id = building["id"]
-        bimFILE = building["file"]
-        eventFILE = id + "-EVENT.json"
-        samFILE = id + "-SAM.json"
-        edpFILE = id + "-EDP.json"
-        dlFILE = id + "-DL.json"
-        simFILE = id + "-SIM.json"
-        driverFile = id + "-driver"
-
-        # open driver file & write building app (minus the -getRV) to it
-        driverFILE = open(driverFile,'w')
-        for item in buildingAppDataList:
-            driverFILE.write("%s " % item)
-        driverFILE.write("\n")
-
-        # get RV for event
-        eventAppDataList = [eventAppExe,'-filenameBIM',bimFILE,'-filenameEVENT',eventFILE]
-        if(eventAppExe.endswith(".py")):
-            eventAppDataList.insert(0, "python")
-
-        for key in eventAppData.keys():
-            eventAppDataList.append("-"+key.encode('ascii', 'ignore'))
-            value = eventAppData.get(key)
-            if(os.path.exists(value) and  not os.path.isabs(value)):
-                value = os.path.abspath(value)
-            eventAppDataList.append(value.encode('ascii', 'ignore'))
-
-        for item in eventAppDataList:
-            driverFILE.write("%s " % item)
-        driverFILE.write("\n")
-
-        eventAppDataList.append('-getRV')
-        subprocess.call(eventAppDataList)
-
-        # get RV for building model
-        modelAppDataList = [modelingAppExe,'-filenameBIM',bimFILE,'-filenameEVENT',eventFILE,'-filenameSAM',samFILE]
-
-        for key in modelingAppData.keys():
-            modelAppDataList.append("-"+key.encode('ascii', 'ignore'))
-            modelAppDataList.append(modelingAppData.get(key).encode('ascii', 'ignore'))
-
-        for item in modelAppDataList:
-            driverFILE.write("%s " % item)
-        driverFILE.write("\n")
-
-        modelAppDataList.append('-getRV')
-        subprocess.call(modelAppDataList)
-
-        # get RV for EDP!
-        edpAppDataList = [edpAppExe,'-filenameBIM',bimFILE,'-filenameEVENT',eventFILE,'-filenameSAM',samFILE,'-filenameEDP',edpFILE]
-
-        for key in edpAppData.keys():
-            edpAppDataList.append("-"+key.encode('ascii', 'ignore'))
-            edpAppDataList.append(edpAppData.get(key).encode('ascii', 'ignore'))
-
-        for item in edpAppDataList:
-            driverFILE.write("%s " % item)
-        driverFILE.write("\n")
-
-        edpAppDataList.append('-getRV')
-        subprocess.call(edpAppDataList)
-
-        # get RV for Simulation
-        simAppDataList = [simAppExe,'-filenameBIM',bimFILE,'-filenameSAM',samFILE,'-filenameEVENT',eventFILE,'-filenameEDP',edpFILE,'-filenameSIM',simFILE]
-
-        for key in simAppData.keys():
-            simAppDataList.append("-"+key.encode('ascii', 'ignore'))
-            simAppDataList.append(simAppData.get(key).encode('ascii', 'ignore'))
-
-        for item in simAppDataList:
-            driverFILE.write("%s " % item)
-        driverFILE.write("\n")
-
-        simAppDataList.append('-getRV')
-        subprocess.call(simAppDataList)
-
-        # Adding CreateLoss to Dakota Driver
-        dlAppDataList = [dlAppExe,'-filenameBIM',bimFILE,'-filenameEDP',edpFILE,'-filenameLOSS',dlFILE]
-        
-        for key in dlAppData.keys():
-            dlAppDataList.append("-"+key.encode('ascii', 'ignore'))
-            dlAppDataList.append(dlAppData.get(key).encode('ascii', 'ignore'))
-        
-        for item in dlAppDataList:
-            driverFILE.write("%s " % item)
-
-        # perform the simulation
-        driverFILE.close()
-
-        uqAppDataList = [uqAppExe,'-filenameBIM',bimFILE,'-filenameSAM',samFILE,'-filenameEVENT',eventFILE,'-filenameEDP',edpFILE,'-filenameLOSS',dlFILE,'-filenameSIM',simFILE,'driverFile',driverFile]
-
-        for key in uqAppData.keys():
-            uqAppDataList.append("-"+key.encode('ascii', 'ignore'))
-            uqAppDataList.append(simAppData.get(key).encode('ascii', 'ignore'))
-
-        print(uqAppDataList)
-
-        subprocess.call(uqAppDataList)
+            else:
+                raise WorkFlowInputError('Need a UQApplication in UQ data')
 
 
-if __name__ == "__main__":
-    main()
+        else:
+            raise WorkFlowInputError('Need a Simulation Entry in Applications')
+
+        if 'Damage&Loss' in available_apps:
+            DLApp = available_apps['Damage&Loss']
+
+            if 'Damage&LossApplication' in DLApp:
+                dlApplication = DLApp['Damage&LossApplication']
+
+                # check modeling app in registry, if so get full executable path
+                dlAppData = DLApp['ApplicationData']
+                if dlApplication in Applications['DamageAndLossApplications'].keys():
+                    dlAppExe = Applications['DamageAndLossApplications'].get(dlApplication)
+                else:
+                    raise WorkFlowInputError('Dmage & Loss application %s not in registry' % dlApplication)
+
+            else:
+                raise WorkFlowInputError('Need a Damage&LossApplicationApplication in Damage & Loss data')
+
+        else:
+            raise WorkFlowInputError('Need a Simulation Entry in Applications')
+
+        workflow_log('SUCCESS: Parsed workflow input')
+        workflow_log(divider)
+
+        #
+        # now invoke the applications
+        #
+
+        #
+        # put building generator application data into list and exe
+        #
+
+        buildingsFile = 'buildings.json'
+        buildingAppDataList = [buildingAppExe, buildingsFile]
+
+        for key in buildingAppData.keys():
+            buildingAppDataList.append('-' + key.encode('ascii', 'ignore'))
+            buildingAppDataList.append(buildingAppData.get(key).encode('ascii', 'ignore'))
+
+        buildingAppDataList.append('-getRV')
+        runApplication(buildingAppDataList)
+
+        del buildingAppDataList[-1]
+
+        #
+        # now we need to open buildingsfile and for each building
+        #  - get RV for EVENT file for building
+        #  - get RV for SAM file for building
+        #  - get EDP for buildings and event
+        #  - get SAM for buildings, event and EDP
+        #  - perform Simulation
+        #  - getDL
+
+        with open(buildingsFile, 'r') as data_file:
+            data = json.load(data_file)
+
+        for building in data:
+            id = building['id']
+            bimFILE = building['file']
+            eventFILE = id + '-EVENT.json'
+            samFILE = id + '-SAM.json'
+            edpFILE = id + '-EDP.json'
+            dlFILE = id + '-DL.json'
+            simFILE = id + '-SIM.json'
+            driverFile = id + '-driver'
+
+            # open driver file & write building app (minus the -getRV) to it
+            driverFILE = open(driverFile, 'w')
+            for item in buildingAppDataList:
+                driverFILE.write('%s ' % item)
+            driverFILE.write('\n')
+
+            # get RV for event
+            eventAppDataList = [eventAppExe, '-filenameBIM', bimFILE, '-filenameEVENT', eventFILE]
+            if (eventAppExe.endswith('.py')):
+                eventAppDataList.insert(0, 'python')
+
+            for key in eventAppData.keys():
+                eventAppDataList.append('-' + key.encode('ascii', 'ignore'))
+                value = eventAppData.get(key)
+                if (os.path.exists(value) and not os.path.isabs(value)):
+                    value = os.path.abspath(value)
+                eventAppDataList.append(value.encode('ascii', 'ignore'))
+
+            for item in eventAppDataList:
+                driverFILE.write('%s ' % item)
+            driverFILE.write('\n')
+
+            eventAppDataList.append('-getRV')
+            runApplication(eventAppDataList)
+
+            # get RV for building model
+            modelAppDataList = [modelingAppExe, '-filenameBIM', bimFILE, '-filenameEVENT', eventFILE, '-filenameSAM',
+                                samFILE]
+
+            for key in modelingAppData.keys():
+                modelAppDataList.append('-' + key.encode('ascii', 'ignore'))
+                modelAppDataList.append(modelingAppData.get(key).encode('ascii', 'ignore'))
+
+            for item in modelAppDataList:
+                driverFILE.write('%s ' % item)
+            driverFILE.write('\n')
+
+            modelAppDataList.append('-getRV')
+            runApplication(modelAppDataList)
+
+            # get RV for EDP!
+            edpAppDataList = [edpAppExe, '-filenameBIM', bimFILE, '-filenameEVENT', eventFILE, '-filenameSAM', samFILE,
+                              '-filenameEDP', edpFILE]
+
+            for key in edpAppData.keys():
+                edpAppDataList.append('-' + key.encode('ascii', 'ignore'))
+                edpAppDataList.append(edpAppData.get(key).encode('ascii', 'ignore'))
+
+            for item in edpAppDataList:
+                driverFILE.write('%s ' % item)
+            driverFILE.write('\n')
+
+            edpAppDataList.append('-getRV')
+            runApplication(edpAppDataList)
+
+            # get RV for Simulation
+            simAppDataList = [simAppExe, '-filenameBIM', bimFILE, '-filenameSAM', samFILE, '-filenameEVENT', eventFILE,
+                              '-filenameEDP', edpFILE, '-filenameSIM', simFILE]
+
+            for key in simAppData.keys():
+                simAppDataList.append('-' + key.encode('ascii', 'ignore'))
+                simAppDataList.append(simAppData.get(key).encode('ascii', 'ignore'))
+
+            for item in simAppDataList:
+                driverFILE.write('%s ' % item)
+            driverFILE.write('\n')
+
+            simAppDataList.append('-getRV')
+            runApplication(simAppDataList)
+
+            # Adding CreateLoss to Dakota Driver
+            dlAppDataList = [dlAppExe, '-filenameBIM', bimFILE, '-filenameEDP', edpFILE, '-filenameLOSS', dlFILE]
+
+            for key in dlAppData.keys():
+                dlAppDataList.append('-' + key.encode('ascii', 'ignore'))
+                dlAppDataList.append(dlAppData.get(key).encode('ascii', 'ignore'))
+
+            for item in dlAppDataList:
+                driverFILE.write('%s ' % item)
+
+            # perform the simulation
+            driverFILE.close()
+
+            uqAppDataList = [uqAppExe, '-filenameBIM', bimFILE, '-filenameSAM', samFILE, '-filenameEVENT', eventFILE,
+                             '-filenameEDP', edpFILE, '-filenameLOSS', dlFILE, '-filenameSIM', simFILE, 'driverFile',
+                             driverFile]
+
+            for key in uqAppData.keys():
+                uqAppDataList.append('-' + key.encode('ascii', 'ignore'))
+                uqAppDataList.append(simAppData.get(key).encode('ascii', 'ignore'))
+
+        if run_type == 'run':
+            workflow_log('Running Simulation...')
+            workflow_log(' '.join(uqAppDataList))
+
+            runApplication(uqAppDataList)
+
+            workflow_log('Simulation ended...')
+        else:
+            workflow_log('Check run only. No simulation performed.')
+
+    except WorkFlowInputError as e:
+        workflow_log('workflow error: %s' % e.value)
+        workflow_log(divider)
+        exit(1)
+
+    # unhandled exceptions are handled here
+    except:
+        raise
+        workflow_log('unhandled exception... exiting')
+        exit(1)
+
+
+if __name__ == '__main__':
+
+    if len(sys.argv) != 4:
+        print('\nNeed three arguments, e.g.:\n')
+        print('    python %s action workflowinputfile.json workflowapplications.json' % sys.argv[0])
+        print('\nwhere: action is either check or run\n')
+        exit(1)
+
+    run_type = sys.argv[1]
+    inputFile = sys.argv[2]
+    applicationsRegistry = sys.argv[3]
+
+    main(run_type, inputFile, applicationsRegistry)
+
+    workflow_log_file = 'workflow-log-%s.txt' % (strftime('%Y-%m-%d-%H-%M-%S-utc', gmtime()))
+    log_filehandle = open(workflow_log_file, 'wb')
+
+    print >>log_filehandle, divider
+    print >>log_filehandle, 'Start of Log'
+    print >>log_filehandle, divider
+    print >>log_filehandle, workflow_log_file
+    # nb: log_output is a global variable, defined at the top of this script.
+    for result in log_output:
+        print >>log_filehandle, divider
+        print >>log_filehandle, 'command line:\n%s\n' % result[0]
+        print >>log_filehandle, divider
+        print >>log_filehandle, 'output from process:\n%s\n' % result[1]
+
+    print >>log_filehandle, divider
+    print >>log_filehandle, 'End of Log'
+    print >>log_filehandle, divider
+
+    workflow_log('Log file: %s' % workflow_log_file)
+    workflow_log('End of run.')
+
