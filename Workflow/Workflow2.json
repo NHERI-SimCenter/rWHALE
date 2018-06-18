@@ -1,5 +1,5 @@
 {
-    "Name": "Workflow 1",
+    "Name": "Workflow 2",
     "Author": "fmk",
     "WorkflowType": "Regional Simulation",
     "buildingFile":"buildings.json",
@@ -9,8 +9,8 @@
           "ApplicationData": {
              "Min": "1",
          "Max":"1",
-         "parcelsFile":"../createBIM/parcels.csv",
-         "buildingsFile":"../createBIM/buildings.csv"
+         "parcelsFile":"../NHERI/parcels.csv",
+         "buildingsFile":"../NHERI/buildings.csv"
           }
        },
        "Events": [
