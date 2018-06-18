@@ -9,7 +9,7 @@
          "ApplicationData": {
                "Min": "1",
                "Max":"9",
-               "buildingsFile":"/home/elhaddad/SourceTree/WorkflowRegionalEarthquake/createBIM/GenericBimDatabase.csv"
+               "buildingsFile":"../createBIM/GenericBimDatabase.csv"
             }
       },
       "Events": [
@@ -17,15 +17,15 @@
             "EventClassification": "Earthquake",
             "EventApplication": "LLNL-SW4",
             "ApplicationData": {
-               "pathSW4results": "/home/elhaddad/SourceTree/WorkflowRegionalEarthquake/createEVENT/Hayward7.0/",
-   	       "filenameHFmeta":"/home/elhaddad/SourceTree/WorkflowRegionalEarthquake/createEVENT/HFmeta"
+               "pathSW4results": "../createEVENT/Hayward7.0/",
+   	       "filenameHFmeta":"../createEVENT/HFmeta"
             }
          }
       ],
       "Modeling": {
             "ModelingApplication": "MDOF-LU",
             "ApplicationData": {
-   	       "hazusData":"/home/elhaddad/SourceTree/WorkflowRegionalEarthquake/createSAM/data/HazusData.txt"
+   	       "hazusData":"../createSAM/data/HazusData.txt"
 	    }
       },
       "EDP": {
@@ -43,9 +43,9 @@
       "Damage&Loss": {
          "Damage&LossApplication": "FemaP58-LU",
          "ApplicationData": {
-	    "filenameSettings":"/home/elhaddad/SourceTree/WorkflowRegionalEarthquake/createLOSS/data/settings.ini",
-   	    "pathCurves":"/home/elhaddad/SourceTree/WorkflowRegionalEarthquake/createLOSS/data/ATCCurves/",
-   	    "pathNormative":"/home/elhaddad/SourceTree/WorkflowRegionalEarthquake/createLOSS/data/normative/"
+	    "filenameSettings":"../createLOSS/data/settings.ini",
+   	    "pathCurves":"../createLOSS/data/ATCCurves/",
+   	    "pathNormative":"../createLOSS/data/normative/"
          }
       }
    }
