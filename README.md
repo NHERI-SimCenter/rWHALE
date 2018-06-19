@@ -38,7 +38,7 @@ This repository contains workflow applications to carry out a regional loss esti
 
 * **Jansson Library**: Many of the provided applications require the [Jansson library](http://www.digip.org/jansson/) to be installed. Jansson is a free native C library for encoding, decoding and manipulating JSON data. It is licensed under the MIT license. For *nix systems, it is assumed installed in /usr/local/jansson as seen in the included Makefiles.
 
-* Some applications in the createLOSS and performUQ folders use C++11 features, consequently they may need a newer C++11 compliant compiler.
+* **C++11 compliant compiler**: Some applications in the createLOSS and performUQ folders use C++11 features, consequently they may need a newer C++11 compliant compiler.
 
 * **FEM and UQ Applciations**: The workflow applications require an installation of [OpenSees](http://opensees.berkeley.edu/) to carry out structural analysis and [DAKOTA](https://dakota.sandia.gov/) to handle uncertainties.
 

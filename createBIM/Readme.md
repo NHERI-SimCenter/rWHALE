@@ -1,6 +1,6 @@
 ## Creating Building Information Models (createBIM)
 
-A createBIM application is a tool that reads building information from a database and creates a BIM file in JSON format. The application should be able to create BIM files for a single building or a range of buildings in a given region. Currenlty, there are two different implementations of createBIM included with the workflow.
+A createBIM application is a tool that reads building information from a database and creates a BIM file in JSON format. The application should be able to create BIM files for a single building or a range of buildings in a given region.
 
 An example BIM file obtained by a createBIM application will contain the following information:
 
@@ -33,13 +33,15 @@ An example BIM file obtained by a createBIM application will contain the followi
 }
 ```
 
+Currenlty, there are two different implementations of createBIM included with the workflow.
+
 ### UrbanSimDatabase
 
 In collaboration with [UrbanSIM](http://www.urbansim.com/home/), the SimCenter is providing a buildings dataset for SF Bay Area (1.8 million buildings). Sample files for 100 building are distributed with the repository. UrbanSim database includes two files:
 
 * **Buildings File**: This is a csv file that contains building information such as area, number of stories, year built, building occupancy and parcel id.
 
-* **Parcels File**: This file contain information about the parcels conatining the buildings, including the geographic location (latitude and longitude).
+* **Parcels File**: This file provides information about the parcels conatining the buildings, including the geographic location (latitude and longitude).
 
 The application reads the building information from the buildings file, and uses the parcel id to obtain the parcel location from the parcel file.
 
@@ -56,7 +58,7 @@ In UrbanSim buildings file, the occupancy is represented using an integer, build
 9       |Industrial     |104.033475*(1+1.5)
 10,11,13|Retail         |105.33705*(1+1)
 Default |Residential    |137.5452*(1+0.5)
-|
+
 
 ### GenericBimDatabase:
 
