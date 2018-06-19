@@ -174,6 +174,11 @@ def main():
     if(needsCompute):
         computeScenario(scenarioConfig, scenarioHash)
 
+    
+    #We need to read the building location
+    with open(bimFilePath, 'r') as bimFile:
+        bim = json.load(bimFile)
+        location = [bim["GI"]["location"]["latitude"], bim["GI"]["location"]["longitude"]]
 
     #Now we can start processing the event
     with open("./HazardCache/Records_Selection.json", 'r') as selectionFile:
@@ -189,7 +194,7 @@ def main():
     # we need to find the nearest neighbor
     sitesTree = spatial.KDTree(siteLocations)
 
-    nearest = sitesTree.query([37.5, -122.5])
+    nearest = sitesTree.query(location)
     selectedRecord = recordSelection["GroundMotions"][nearest[1]]
     rsn = selectedRecord["Record"]["Id"]
     scaleFactor = selectedRecord["ScaleFactor"]
