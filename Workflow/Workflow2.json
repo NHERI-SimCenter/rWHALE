@@ -1,5 +1,5 @@
 {
-    "Name": "Workflow 1",
+    "Name": "Workflow 2",
     "Author": "fmk",
     "WorkflowType": "Regional Simulation",
     "buildingFile":"buildings.json",
@@ -9,8 +9,8 @@
           "ApplicationData": {
              "Min": "1",
          "Max":"1",
-         "parcelsFile":"/home/elhaddad/SourceTree/WorkflowRegionalEarthquake/createBIM/parcels.csv",
-         "buildingsFile":"/home/elhaddad/SourceTree/WorkflowRegionalEarthquake/createBIM/buildings.csv"
+         "parcelsFile":"../NHERI/parcels.csv",
+         "buildingsFile":"../NHERI/buildings.csv"
           }
        },
        "Events": [
@@ -25,7 +25,7 @@
        "Modeling": {
              "ModelingApplication": "MDOF-LU",
              "ApplicationData": {
-               "hazusData":"/home/elhaddad/SourceTree/WorkflowRegionalEarthquake/createSAM/data/HazusData.txt"
+               "hazusData":"../createSAM/data/HazusData.txt"
          }
        },
        "EDP": {
@@ -43,9 +43,9 @@
        "Damage&Loss": {
           "Damage&LossApplication": "FemaP58-LU",
           "ApplicationData": {
-         "filenameSettings":"/home/elhaddad/SourceTree/WorkflowRegionalEarthquake/createLOSS/data/settings.ini",
-            "pathCurves":"/home/elhaddad/SourceTree/WorkflowRegionalEarthquake/createLOSS/data/ATCCurves/",
-            "pathNormative":"/home/elhaddad/SourceTree/WorkflowRegionalEarthquake/createLOSS/data/normative/"
+         "filenameSettings":"../createLOSS/data/settings.ini",
+            "pathCurves":"../createLOSS/data/ATCCurves/",
+            "pathNormative":"../createLOSS/data/normative/"
           }
        }
     }
