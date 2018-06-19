@@ -11,6 +11,9 @@ OBJS1=csvparser.o LLNL_SW4.o
 
 all: createEVENT LLNL_SW4
 
+debug: CPPFLAGS += -DDEBUG -g
+debug: all
+
 csvParser.o: csvparser.cpp csvparser.h
 
 createEVENT.o: createEVENT.cpp

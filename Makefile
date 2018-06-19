@@ -9,12 +9,15 @@ all:
 	cd createLOSS; make
 	cd finalProcessing; make
 
-HazusLossEstimator.o: HazusLossEstimator.cpp HazusLossEstimator.h
-
-createEDP.o: createEDP.cpp HazusLossEstimator.h
-
-createEDP: $(OBJS)
-	$(CXX) $(LDFLAGS) -o createEDP $(OBJS) $(LDLIBS)
+debug:
+	cd createBIM; make debug
+	cd createEDP; make debug
+	cd createEVENT; make debug
+	cd createSAM; make debug
+	cd performSIMULATION; make debug
+	cd performUQ; make debug
+	cd createLOSS; make debug
+	cd finalProcessing; make debug
 
 clean:
 	cd createBIM; make clean

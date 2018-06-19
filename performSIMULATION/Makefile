@@ -14,6 +14,9 @@ OBJS_Uncertainty=getUncertainty.o OpenSeesPreprocessor.o
 
 all: mainPreprocessor mainPostprocessor getUncertainty
 
+debug: CPPFLAGS += -DDEBUG -g
+debug: all
+
 OpenSeesPreprocessor.o: OpenSeesPreprocessor.cpp OpenSeesPreprocessor.h
 
 OpenSeesPostprocessor.o: OpenSeesPostprocessor.cpp OpenSeesPostprocessor.h

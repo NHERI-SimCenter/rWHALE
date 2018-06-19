@@ -2,7 +2,7 @@ CC=gcc
 CXX=g++
 RM=rm -f
 CPPFLAGS= -I /usr/local/jansson/include -I ./nanoflann/include -std=c++11
-LDFLAGS= 
+LDFLAGS= -pthread
 LDLIBS=/usr/local/jansson/lib/libjansson.a
 
 SRCS=	 main.cpp \
@@ -26,6 +26,9 @@ OBJS= \
 otherOBJS = ./include/inifile.o ./include/tinyxml2.o
 
 all: createLOSS FEMA-P58
+
+debug: CPPFLAGS += -DDEBUG -g
+debug: all
 
 createLOSS: $(OBJS) main.o
 	cd include; make
