@@ -2,7 +2,7 @@
 
 This repository contains workflow applications to carry out a regional loss estimaion due to an earthquake event. The provided applications are organized in subdirectories:
 
-1. **createBIM**: This directory contains applications that can obtain a Building Information Model (BIM) from a database of buildings. Some examples of these applications are:
+1. **[createBIM](./createBIM/Readme.md)**: This directory contains applications that can obtain a Building Information Model (BIM) from a database of buildings. Some examples of these applications are:
 
    * **UrbanSimDatabase**: This application generates BIM models given UrbanSim buildings and parcels csv files.
 
@@ -30,13 +30,21 @@ This repository contains workflow applications to carry out a regional loss esti
 
 7. **createLOSS**:  Applications in this directory are used to determine damage and loss.
    * **FEMA_P58_LU**: Damage and loss assessment tool that uses FEMA-P58 methodology. This tool was developed by Prof. Xinzheng Lu's research group at Tsinghua University [1].
+   * **SimCenter_P58** [Under developmeent]: an efficient damage and loss assessment tool using FEMA-P58 is currenlty under development.
 
 8. **Workflow**: This directory contains scripts and examples to run the workflow with different configurations.
 
 ## Dependencies
-* Many of the provided applications require the [Jansson library](http://www.digip.org/jansson/) to be installed. Jansson is a free native C library for encoding, decoding and manipulating JSON data. It is licensed under the MIT license. For *nix systems, it is assumed installed in /usr/local/jansson as seen in the included Makefiles.
+
+* **Jansson Library**: Many of the provided applications require the [Jansson library](http://www.digip.org/jansson/) to be installed. Jansson is a free native C library for encoding, decoding and manipulating JSON data. It is licensed under the MIT license. For *nix systems, it is assumed installed in /usr/local/jansson as seen in the included Makefiles.
+
 * Some applications in the createLOSS and performUQ folders use C++11 features, consequently they may need a newer C++11 compliant compiler.
-* The workflow applications require an installation of [OpenSees](http://opensees.berkeley.edu/) to carry out structural analysis and [DAKOTA](https://dakota.sandia.gov/) to handle uncertainties.
+
+* **FEM and UQ Applciations**: The workflow applications require an installation of [OpenSees](http://opensees.berkeley.edu/) to carry out structural analysis and [DAKOTA](https://dakota.sandia.gov/) to handle uncertainties.
+
+* **Python**: The workflow requires Python 2.7.
+
+* **Perl**: The workflow makes use of a modified version of the `DPrePro` preprocessor Perl script distributed with DAKOTA, and thus requires Perl. Later releases may switch to the newer python version of the script as the Perl script is deprecated as of DAKOTA 6.8.
 
 ## Building from source on *nix systems
 The repository uses Makefiles to build the applications.
@@ -46,7 +54,8 @@ To build all the workflow applications, use ```make``` or ```make all``` in the 
 Visual studio projects is under development. Currently the workflow can be built and run in windows using the Windows subsystem for linux and building using the same commands for *nix systems.
 
 ## Data
-Some data files required to run the workflow is not included in this repository, and is distributed using the [SimCenter Box account](https://berkeley.box.com/s/7es601ve766fprph88n67khfip7fqupd). If you cannot access the data, please contact the SimCenter using [Slack](https://designsafe-ci.slack.com/messages/C92HT3GG4) or by [email](nheri-simcenter@berkeley.edu).
+
+Some data files required to run the workflow are not included in this repository, and is distributed using the [SimCenter Box account](https://berkeley.box.com/s/7es601ve766fprph88n67khfip7fqupd). If you cannot access the data, please contact the SimCenter using [Slack](https://designsafe-ci.slack.com/messages/C92HT3GG4) or by [email](nheri-simcenter@berkeley.edu).
 
 * **BIM Datasets**: The workflow is distributed with a sample UrbanSim data to run a sample number of buildings, e.g. sample buildings.csv and parcels.csv files for UrbanSimDatabase with 100 buildigns. Data for SF Bay Area is available only for the GenericBimDatabase application and can be obtained from the SimCenter Box account.
 
@@ -69,13 +78,16 @@ pretty good. Large workflows should be mapped to TACC Wrangler.
 Submitting a workflow for local HTCondor pool execution can be done
 by executing:
 
+```shell
     ./submit-workflow
+```
 
-Submitting to TACC Stampede2 can be done on the workflow.isi.edu host
-with the command:
+Submitting to TACC Stampede2 can be done on the workflow.isi.edu host with the command:
 
+```shell
     ./submit-workflow stampede2
     ./submit-workflow wrangler
+```
 
 ## References
 [1] Zeng X., Lu X.Z., Yang T., Xu Z., "Application of the FEMA-P58 methodology for regional earthquake loss prediction", Natural Hazards (2016), 10.1007/s11069-016-2307-z
