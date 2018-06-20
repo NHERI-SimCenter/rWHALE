@@ -244,7 +244,7 @@ int main(int argc, const char **argv)
             json_object_set(GI,"occupancy",json_string(bldgInfo.Occupancy.c_str()));
             json_object_set(GI,"height",json_string("RV.height"));
             
-            json_object_set(GI,"replacementCost", json_real(bldgInfo.ReplacementCost * bldgInfo.Area));
+            json_object_set(GI,"replacementCost", json_real(bldgInfo.ReplacementCost * bldgInfo.Area * 10.764));
 
             double replacementTime = 180.0;      
             json_t* pReplacementTime = json_object_get(pJsonConfig, "ReplacementTime");
