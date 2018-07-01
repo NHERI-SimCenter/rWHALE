@@ -1,6 +1,6 @@
 
-// createEDP.cpp
-// purpose - given a building, return an EVENT for the Haywired data.
+// readDLs.cpp
+// purpose - aggregates the damage and loss outputs into a single CSV file
 // written: fmckenna
 
 #include <iostream>
@@ -12,7 +12,6 @@ using namespace std;
 #include <string.h>
 
 #include <jansson.h>     // for writing json
-#include <nanoflann.hpp> // for searching for nearest point
 
 int main(int argc, char **argv) {
 
@@ -24,24 +23,48 @@ int main(int argc, char **argv) {
 
   if (!output.is_open())
     return -1;
-    
+  
+  output.precision(10);
+
+  output << "Id,MedianRepairCost,RepairCostStdDev,MedianDowntime,RedTagged,PGA,LossRatio,Latitude,Longitude\n";
+
   for (int i=minRow; i<=maxRow; i++) {
-    string inputFilename = to_string(i) + "-DL.json";
+    //First, we will read the location from the BIM file
+    string bimFilename = to_string(i) + "-BIM.json";
+    json_error_t error;
+    json_t *bimJson = json_load_file(bimFilename.c_str(), 0, &error);
+    double latitude = -1.0;
+    double longitude = -1.0;
+    if(bimJson)
+    {
+      json_t* giJson = json_object_get(bimJson, "GI");
+      if(giJson)
+      {
+        json_t* locationJson = json_object_get(giJson, "location");
+
+        json_t* latitudeJson = json_object_get(locationJson, "latitude");
+        if (latitudeJson)
+          latitude = json_real_value(latitudeJson);
+
+        json_t* longitudeJson = json_object_get(locationJson, "longitude");
+        if (longitudeJson)
+          longitude = json_real_value(longitudeJson);
+      }
+    }
     // now parse the DL file for the building
     //
-    
-    json_error_t error;
-    json_t *root = json_load_file(inputFilename.c_str(), 0, &error);
+    string lossFilename = to_string(i) + "-DL.json";
+
+    json_t *root = json_load_file(lossFilename.c_str(), 0, &error);
     
     if(!root) {
-      output << "0,\"UNKNOWN\",0,0,0,0,0\n";
+      output << ",,,,,\n";
     } else {
 
       double loss = 0.;
       double medianRepairCost = 0.;
       double stdRepairCost = 0.;
       double medianDowntime = 0.;
-      double prob = 0.;
       const char *placard = "none";
       int placardValue = 0;
       double pga = 0.0;
@@ -53,9 +76,9 @@ int main(int argc, char **argv) {
 	stdRepairCost = json_real_value(json_object_get(lossO,"StdRepairCost"));
       }
 
-      json_t *downtimeO = json_object_get(root,"Downtime");
+      json_t *downtimeO = json_object_get(root,"RepairTime");
       if (downtimeO != 0)
-	medianDowntime = json_real_value(json_object_get(downtimeO,"MedianDowntime"));
+	medianDowntime = json_real_value(json_object_get(downtimeO,"MedianRepairTime"));
 
       const char *name;
 
@@ -73,12 +96,12 @@ int main(int argc, char **argv) {
 	if (strcmp(placard,"red") == 0) {
 	  placardValue = 1;
 	}
-	prob = json_real_value(json_object_get(placardsO,"RedTagProbability"));
       }
       
       
-      output << name << ",\"UNKNOWN\"," << medianRepairCost << "," << stdRepairCost
-	     << "," << medianDowntime << "," << placardValue << "," << pga << "\n";
+      output << name << "," << medianRepairCost << "," << stdRepairCost
+	     << "," << medianDowntime << "," << placardValue << "," << pga
+       << "," << loss << "," << latitude << "," << longitude <<"\n";
       
       json_object_clear(root);  
     }

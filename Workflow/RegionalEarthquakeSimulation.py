@@ -445,15 +445,15 @@ def main(run_type, inputFile, applicationsRegistry):
                 uqAppDataList.append('-' + key.encode('ascii', 'ignore'))
                 uqAppDataList.append(simAppData.get(key).encode('ascii', 'ignore'))
 
-        if run_type == 'run':
-            workflow_log('Running Simulation...')
-            workflow_log(' '.join(uqAppDataList))
+            if run_type == 'run':
+                workflow_log('Running Simulation...')
+                workflow_log(' '.join(uqAppDataList))
 
-            runApplication(uqAppDataList)
+                runApplication(uqAppDataList)
 
-            workflow_log('Simulation ended...')
-        else:
-            workflow_log('Check run only. No simulation performed.')
+                workflow_log('Simulation ended...')
+            else:
+                workflow_log('Check run only. No simulation performed.')
 
     except WorkFlowInputError as e:
         workflow_log('workflow error: %s' % e.value)
