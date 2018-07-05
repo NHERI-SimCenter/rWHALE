@@ -1,0 +1,57 @@
+{
+  "genericbim": {
+    "directory": "../createBIM",
+    "command": "../createBIM/GenericBimDatabase ../createBIM/buildings.json -Min 1 -Max 1 -buildingsFile ../createBIM/GenericBimDatabase.csv -getRV",
+    "comment": "Run 'Generic BIM Creation' process to create a single building; save it in 1-BIM.json",
+    "output": "1-BIM.json"
+  },
+  "fixbim": {
+    "comment": "Open 1-BIM.json and replace 'RV.height' with 3.0",
+    "command": "echo 'this is a NO-OP. This task is not done by this test harness'"
+  },
+  "createevent": {
+    "directory": "../createEVENT",
+    "command": "../createEVENT/LLNL_SW4 -filenameBIM ../createBIM/1-BIM.json -filenameEVENT 1-EVENT.json -filenameHFmeta ../createEVENT/HFmeta -pathSW4results ./Hayward7.0/ -getRV",
+    "comment": "Create an earthquake event; save it in 1-EVENT.json",
+    "output": "1-EVENT.json"
+  },
+  "createsam": {
+    "directory": "../createSAM",
+    "command": "../createSAM/MDOF-LU -filenameBIM ../createBIM/1-BIM.json -filenameEVENT ../createEVENT/1-EVENT.json -filenameSAM 1-SAM.json -hazusData ../createSAM/data/HazusData.txt -getRV",
+    "comment": "This should create a 1-SAM.json file (not similar to the reference one yet)",
+    "output": "1-SAM.json"
+  },
+  "adjustsam": {
+    "comment": "open 1-SAM.json and replace both 'RV.kFactor' and 'RV.dampFactor' with 1.0",
+    "command": "echo 'open 1-SAM.json and replace both 'RV.kFactor' and 'RV.dampFactor' with 1.0'"
+  },
+  "mdof-lu": {
+    "directory": "../createSAM",
+    "command": "../createSAM/MDOF-LU -filenameBIM ../createBIM/1-BIM.json -filenameEVENT ../createEVENT/1-EVENT.json -filenameSAM 1-SAM.json -hazusData ../createSAM/data/HazusData.txt",
+    "comment": "Update SAM using MDOF-LU",
+    "output": "1-SAM.json"
+  },
+  "edp": {
+    "directory": "../createEDP",
+    "command": "../createEDP/StandardEarthquakeEDP -filenameBIM ../createBIM/1-BIM.json -filenameEVENT ../createEVENT/1-EVENT.json -filenameSAM ../createSAM/1-SAM.json -filenameEDP 1-EDP.json -getRV",
+    "comment": "This should create a 1-EDP.json file (not similar to the reference file yet)."
+  },
+  "opensees": {
+    "directory": "../performSIMULATION",
+    "command": "../performSIMULATION/OpenSeesSimulation.sh -filenameBIM ../createBIM/1-BIM.json -filenameSAM ../createSAM/1-SAM.json -filenameEVENT ../createEVENT/1-EVENT.json  -filenameEDP ../createEDP/1-EDP.json -filenameEDP 1-SIM.json -getRV",
+    "comment": "this should run opensees and create 1-SIM.json",
+    "output": "1-SIM.json"
+  },
+  "simulation": {
+    "directory": "../performSIMULATION",
+    "command": "../performSIMULATION/OpenSeesSimulation.sh -filenameBIM ../createBIM/1-BIM.json -filenameSAM ../createSAM/1-SAM.json -filenameEVENT ../createEVENT/1-EVENT.json  -filenameEDP ../createEDP/1-EDP.json -filenameEDP 1-SIM.json",
+    "output": "1-EDP.json",
+    "comment": "this should run opensees and update the 1-EDP.json file; it should now be similar to reference file"
+  },
+  "createloss": {
+    "directory": "../createLOSS",
+    "command": "../createLOSS/FEMAP58_LU -filenameBIM ../createBIM/1-BIM.json -filenameEDP ../createEDP/1-EDP.json -filenameLOSS 1-DL.json -filenameSettings ../createLOSS/data/settings.ini -pathCurves ../createLOSS/data/ATCCurves/ -pathNormative ../createLOSS/data/normative/",
+    "output": "1-DL.json",
+    "comment": "This should create a 1-DL.json file similar to the attached (may not be exactly the same values but very close values in the samples object may not match"
+  }
+}
