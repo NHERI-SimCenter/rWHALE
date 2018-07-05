@@ -11,8 +11,6 @@ To run it, invoke it with one or more of the keywords for an already-configured 
 python RunTests.py genericbim
 ```
 
-A log of the activity is written to STDOUT, and the actual output of the process is written to a logfile of the form ``workflow-log-YYYY-MM-DD-HH-MM-SS-utc.txt``.
-
 A summary of the options for the script, in the form of a monologue:
 
 ```bash
@@ -29,23 +27,43 @@ where <list of tests to run> is one or more of the following:
     createloss genericbim createsam adjustsam fixbim mdof-lu opensees edp simulation createevent
 
 $ python RunTests.py createloss createsam genericbim fixbim mdof-lu opensees edp simulation createevent
-2018-07-04T21:22:20Z ################################################################################
-2018-07-04T21:22:20Z Start of test
-2018-07-04T21:22:20Z ################################################################################
-2018-07-04T21:22:20Z running test(s): createloss createsam genericbim fixbim mdof-lu opensees edp simulation createevent
-2018-07-04T21:22:20Z running createloss
-2018-07-04T21:22:20Z NON-ZERO RETURN CODE: -11
-2018-07-04T21:22:20Z running createsam
-2018-07-04T21:22:20Z running genericbim
-2018-07-04T21:22:20Z running fixbim
-2018-07-04T21:22:20Z running mdof-lu
-2018-07-04T21:22:20Z running opensees
-2018-07-04T21:22:20Z running edp
-2018-07-04T21:22:20Z running simulation
-2018-07-04T21:22:20Z running createevent
-2018-07-04T21:22:20Z test output may be found in: workflow-log-2018-07-04-21-22-20-utc.txt
-2018-07-04T21:22:20Z End of run.
+2018-07-05T14:08:15Z ################################################################################
+2018-07-05T14:08:15Z Start of test
+2018-07-05T14:08:15Z ################################################################################
+2018-07-05T14:08:15Z running test(s): createloss createsam genericbim fixbim mdof-lu opensees edp simulation createevent
+2018-07-05T14:08:15Z running createloss
+2018-07-05T14:08:15Z NON-ZERO RETURN CODE: -11
+2018-07-05T14:08:15Z No comparison done, bad return code from test createloss
+2018-07-05T14:08:15Z running createsam
+2018-07-05T14:08:15Z some reference values differ.
+2018-07-05T14:08:15Z running genericbim
+2018-07-05T14:08:15Z height = 3.0 in reference, RV.height in new run
+2018-07-05T14:08:15Z replacementCost = 418706.346527 in reference, 38898.7687223 in new run
+2018-07-05T14:08:15Z some reference values differ.
+2018-07-05T14:08:15Z running fixbim
+2018-07-05T14:08:15Z No output file given for comparison for test fixbim
+2018-07-05T14:08:15Z running mdof-lu
+2018-07-05T14:08:15Z dampingRatio = 0.1 in reference, 0.0 in new run
+2018-07-05T14:08:15Z some reference values differ.
+2018-07-05T14:08:15Z running opensees
+2018-07-05T14:08:15Z some reference values differ.
+2018-07-05T14:08:15Z running edp
+2018-07-05T14:08:15Z No output file given for comparison for test edp
+2018-07-05T14:08:15Z running simulation
+2018-07-05T14:08:15Z total_number_edp = 4 in reference, 0 in new run
+2018-07-05T14:08:15Z some reference values differ.
+2018-07-05T14:08:15Z running createevent
+2018-07-05T14:08:15Z some reference values differ.
+2018-07-05T14:08:15Z test output may be found in: workflow-log-2018-07-05-14-08-15-utc.txt
+2018-07-05T14:08:15Z End of run.
 ```
+
+A few remarks:
+
+* Note that the script attempts to compare the output of a test (if there is any) with
+the matching 'reference output' in the ``Reference_Files`` directory.
+* An indication is given in the log as to whether the output values match the reference values.
+* A log of the activity is written to STDOUT, and the actual output of the process and the comparisons is written to a logfile of the form ``workflow-log-YYYY-MM-DD-HH-MM-SS-utc.txt``.
 
 ### Adding components, or modifying existing components
 
