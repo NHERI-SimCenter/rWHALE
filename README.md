@@ -20,7 +20,7 @@ This repository contains workflow applications to carry out a regional loss esti
 
    * **MDOF_LU**:  This application use Hazus data to generate a MDOF non-linear shear building model. 
 
-   * **AI-M-3** [Under Development]: This is an application that is currenlty under development that uses artificial intelligence to obtain SAM from BIM.
+   * **AI-M-3** [Under Development]: This is an application that is currently under development that uses artificial intelligence to obtain SAM from BIM.
 
 4. **createEDP**: This directory contains applications that generates a list of the required Engineering Demand Parameters (EDPs) to be obtained from structural analysis
 
@@ -88,6 +88,13 @@ Submitting to TACC Stampede2 can be done on the workflow.isi.edu host with the c
     ./submit-workflow stampede2
     ./submit-workflow wrangler
 ```
+
+
+## Testing Workflow Components
+
+If you wish to try out existing workflow components with new parameters, or to
+develop new components, you may wish to consider using the 'test harness' provided in this repo.
+See the [README](./WorkflowREADME.md) in the ``Workflow`` directory for details.
 
 ## References
 [1] Zeng X., Lu X.Z., Yang T., Xu Z., "Application of the FEMA-P58 methodology for regional earthquake loss prediction", Natural Hazards (2016), 10.1007/s11069-016-2307-z

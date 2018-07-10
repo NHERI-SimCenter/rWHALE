@@ -9,69 +9,7 @@ from time import gmtime, strftime
 divider = '#' * 80
 log_output = []
 
-class WorkFlowInputError(Exception):
-    def __init__(self, value):
-        self.value = value
-
-    def __str__(self):
-        return repr(self.value)
-
-
-def workflow_log(msg):
-    # ISO-8601 format, e.g. 2018-06-16T20:24:04Z
-    print '%s %s' % (strftime('%Y-%m-%dT%H:%M:%SZ', gmtime()), msg)
-
-
-# function to return result of invoking an application
-def runApplication(application_plus_args):
-    try:
-        result = subprocess.check_output(' '.join(application_plus_args), stderr=subprocess.STDOUT, shell=True)
-        # for line in result.split('\n'):
-        # pass
-        # print(line)
-        returncode = 0
-    except subprocess.CalledProcessError as e:
-        result = e.output
-        returncode = e.returncode
-
-    if returncode != 0:
-        workflow_log('NON-ZERO RETURN CODE!')
-    workflow_log('%s =  %s' % (returncode, application_plus_args[0]))
-    #workflow_log('args: %s' % ' '.join(application_plus_args[1:]))
-    log_output.append([' '.join(application_plus_args), result])
-    return result, returncode
-
-
-def add_full_path(possible_filename):
-    if not isinstance(possible_filename, basestring):
-        return possible_filename
-    if (os.path.exists(possible_filename)):
-        if os.path.isdir(possible_filename):
-            return os.path.abspath(possible_filename) + '/'
-        else:
-            return os.path.abspath(possible_filename)
-    else:
-        return possible_filename
-
-
-def recursive_iter(obj):
-    if isinstance(obj, dict):
-        for k, v in obj.items():
-            if isinstance(v, basestring):
-                obj[k] = add_full_path(v)
-            else:
-                recursive_iter(v)
-    elif any(isinstance(obj, t) for t in (list, tuple)):
-        for idx, item in enumerate(obj):
-            if isinstance(item, basestring):
-                obj[idx] = add_full_path(item)
-            else:
-                recursive_iter(item)
-
-
-def relative2fullpath(json_object):
-    recursive_iter(json_object)
-
+from WorkflowUtils import *
 
 def main(run_type, inputFile, applicationsRegistry):
     # the whole workflow is wrapped within a 'try' block.
@@ -328,7 +266,8 @@ def main(run_type, inputFile, applicationsRegistry):
             buildingAppDataList.append(buildingAppData.get(key).encode('ascii', 'ignore'))
 
         buildingAppDataList.append('-getRV')
-        runApplication(buildingAppDataList)
+        command, result, returncode = runApplication(buildingAppDataList)
+        log_output.append([command, result, returncode])
 
         del buildingAppDataList[-1]
 
@@ -377,7 +316,8 @@ def main(run_type, inputFile, applicationsRegistry):
             driverFILE.write('\n')
 
             eventAppDataList.append('-getRV')
-            runApplication(eventAppDataList)
+            command, result, returncode = runApplication(eventAppDataList)
+            log_output.append([command, result, returncode])
 
             # get RV for building model
             modelAppDataList = [modelingAppExe, '-filenameBIM', bimFILE, '-filenameEVENT', eventFILE, '-filenameSAM',
@@ -392,7 +332,9 @@ def main(run_type, inputFile, applicationsRegistry):
             driverFILE.write('\n')
 
             modelAppDataList.append('-getRV')
-            runApplication(modelAppDataList)
+            command, result, returncode = runApplication(modelAppDataList)
+            log_output.append([command, result, returncode])
+
 
             # get RV for EDP!
             edpAppDataList = [edpAppExe, '-filenameBIM', bimFILE, '-filenameEVENT', eventFILE, '-filenameSAM', samFILE,
@@ -407,7 +349,8 @@ def main(run_type, inputFile, applicationsRegistry):
             driverFILE.write('\n')
 
             edpAppDataList.append('-getRV')
-            runApplication(edpAppDataList)
+            command, result, returncode = runApplication(edpAppDataList)
+            log_output.append([command, result, returncode])
 
             # get RV for Simulation
             simAppDataList = [simAppExe, '-filenameBIM', bimFILE, '-filenameSAM', samFILE, '-filenameEVENT', eventFILE,
@@ -422,7 +365,8 @@ def main(run_type, inputFile, applicationsRegistry):
             driverFILE.write('\n')
 
             simAppDataList.append('-getRV')
-            runApplication(simAppDataList)
+            command, result, returncode = runApplication(simAppDataList)
+            log_output.append([command, result, returncode])
 
             # Adding CreateLoss to Dakota Driver
             dlAppDataList = [dlAppExe, '-filenameBIM', bimFILE, '-filenameEDP', edpFILE, '-filenameLOSS', dlFILE]
@@ -448,9 +392,8 @@ def main(run_type, inputFile, applicationsRegistry):
             if run_type == 'run':
                 workflow_log('Running Simulation...')
                 workflow_log(' '.join(uqAppDataList))
-
-                runApplication(uqAppDataList)
-
+                command, result, returncode = runApplication(uqAppDataList)
+                log_output.append([command, result, returncode])
                 workflow_log('Simulation ended...')
             else:
                 workflow_log('Check run only. No simulation performed.')
