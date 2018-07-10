@@ -1,8 +1,8 @@
 CC=gcc
 CXX=g++
 RM=rm -f
-CPPFLAGS= -I /usr/local/jansson/include -I ../nanoflann/include
 LDFLAGS= 
+CPPFLAGS= -I /usr/local/jansson/include -I ../include/nanoflann
 LDLIBS=/usr/local/jansson/lib/libjansson.a
 
 SRCS=csvparser.c createEVENT.cpp

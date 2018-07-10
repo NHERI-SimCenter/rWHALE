@@ -1,7 +1,7 @@
 {
   "genericbim": {
     "directory": "../createBIM",
-    "command": "../createBIM/GenericBimDatabase ../createBIM/buildings.json -Min 1 -Max 1 -buildingsFile ../createBIM/GenericBimDatabase.csv -getRV",
+    "command": "../createBIM/GenericBimDatabase buildings.json -Min 1 -Max 1 -buildingsFile ../createBIM/GenericBimDatabase.csv -getRV",
     "comment": "Run 'Generic BIM Creation' process to create a single building; save it in 1-BIM.json",
     "output": "1-BIM.json"
   },
@@ -11,7 +11,7 @@
   },
   "createevent": {
     "directory": "../createEVENT",
-    "command": "../createEVENT/LLNL_SW4 -filenameBIM ../createBIM/1-BIM.json -filenameEVENT 1-EVENT.json -filenameHFmeta ../createEVENT/HFmeta -pathSW4results ./Hayward7.0/ -getRV",
+    "command": "../createEVENT/LLNL_SW4 -filenameBIM ../createBIM/1-BIM.json -filenameEVENT 1-EVENT.json -filenameHFmeta ../createEVENT/HFmeta -pathSW4results ../createEVENT/Hayward7.0/ -getRV",
     "comment": "Create an earthquake event; save it in 1-EVENT.json",
     "output": "1-EVENT.json"
   },
