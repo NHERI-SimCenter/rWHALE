@@ -6,6 +6,7 @@ import sys
 divider = '#' * 80
 log_output = []
 
+sys.path.insert(0, '../Workflow/')
 from WorkflowUtils import *
 
 
