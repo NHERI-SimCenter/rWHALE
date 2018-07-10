@@ -24,9 +24,7 @@ In addition to these main processes, the following five intermediate files are d
 
 5. **DL** file: a file containing the obtained damage and loss estimates for a building.
 
-In this framework, the JSON format is adopted for all the intermediate files defined above. Based on the previous 5 main processes, the main workflow applications can be categorized based on their purpose as follows:
-
-This repository contains implementations of the workflow applications, which can be used to carry out a regional damage and loss estimation of buildings due to an earthquake event. The provided applications are organized based on the previous 5 main processes, categorized based on their purpose, in the following subdirectories:
+In this framework for regional simulation, the JSON format is adopted for all the intermediate files defined above.  The implementations of the workflow applications provided in this repository are organized based on the previous 5 main processes, categorized based on their purpose, in the following sub-directories:
 
 * **[createBIM](./createBIM/Readme.md)**: This directory contains applications that can obtain a Building Information Model (BIM) from a database of buildings. Some examples of these applications are:
 
@@ -79,13 +77,25 @@ Other directories included in this repository are:
 
 * **C++11 compliant compiler**: Some applications in the createLOSS and performUQ folders use C++11 features, consequently they may need a newer C++11 compliant compiler.
 
-* **FEM and UQ Applications**: The workflow applications require an installation of [OpenSees](http://opensees.berkeley.edu/) to carry out structural analysis and [DAKOTA](https://dakota.sandia.gov/) to handle uncertainties.
+* **OpenSees**: The workflow applications require an installation of [OpenSees](http://opensees.berkeley.edu/) to carry out structural analysis using the finite element method.
+
+* **DAKOTA**: The workflow applications require an installation of [DAKOTA](https://dakota.sandia.gov/) to handle and propagate the uncertainties defined in the input files for the workflow applications.
 
 * **Python**: The workflow requires Python 2.7.
 
 * **Perl**: The workflow makes use of a modified version of the `DPrePro` preprocessor Perl script distributed with DAKOTA, and thus requires Perl. Later releases may switch to the newer python version of the script as the Perl script is deprecated as of DAKOTA 6.8.
 
+*	**nanoflann**: A C++11 library that performs nearest neighbor search using k-dimensional trees. nanoflann is a header-only library and is included with the source of the workflow. It is currently being used by LLNL_SW4 createEVENT application.
+
+* **Simcenter-EQSS**: the ground motion tools developed at the SimCenter are needed, if using SHA-GM.py as a createEVENT application. To obtain and build these applications please refer to [SimCenter-EQSS](https://github.com/el7addad/Simcenter-EQSS) repository for documentation.
+
 ## Building the source code on Unix-like systems
+
+Before building the workflow, the following dependencies will need to be installed:
+
+1. [GNU Compiler Collection](https://gcc.gnu.org/) (gcc & g++ ) version 4.8.1 or newer.
+2. [GNU Make](https://www.gnu.org/software/make/).
+3. [Jansson Library](http://www.digip.org/jansson/).
 
 The repository uses Makefiles to build the applications.
 To build all the workflow applications, use ```make``` or ```make all``` in the root directory. To build for debugging use ```make debug```  and to clean, use ```make clean```.
@@ -93,10 +103,12 @@ To build all the workflow applications, use ```make``` or ```make all``` in the 
 ## Building the source code on Ubuntu Linux
 
 Before building the source code on Ubuntu Linux and running it, the dependencies can be installed using the following commands:
+
 ```shell
 sudo apt-get update
 sudo apt-get install gcc g++ python perl
 ```
+
 After installing the dependencies, building the workflow applications can then be done similar to other unix systems, using `make all`. Running the workflow applications will require installing other dependencies like OpenSees and DAKOTA. Instructions to building these software applications from their source code on Ubuntu Linux are available on their respective websites.
 
 ## Building the source code on Windows
@@ -105,11 +117,11 @@ Visual studio projects is under development. Currently the workflow can be built
 
 ## Data
 
-Some data files required to run the workflow are not included in this repository, and is distributed using the [SimCenter Box account](https://berkeley.box.com/s/7es601ve766fprph88n67khfip7fqupd). If you cannot access the data, please contact the SimCenter using [Slack](https://designsafe-ci.slack.com/messages/C92HT3GG4) or by [email](nheri-simcenter@berkeley.edu).
+Some data files required to run the workflow are not included in this repository, and are distributed using the [SimCenter Box account](https://berkeley.box.com/s/7es601ve766fprph88n67khfip7fqupd). If you cannot access the data, please contact the SimCenter using [Slack](https://designsafe-ci.slack.com/messages/C92HT3GG4) or by [email](nheri-simcenter@berkeley.edu).
 
 * **BIM Datasets**: The workflow is distributed with a sample UrbanSim data to run a sample number of buildings, e.g. sample buildings.csv and parcels.csv files for UrbanSimDatabase with 100 buildings. Data for SF Bay Area is available only for the GenericBimDatabase application and can be obtained from the SimCenter Box account.
 
-* **Ground Motion**: files for the LLNL Hayward 7.0 scenario is available through the SimCenter Box account.
+* **Ground Motion**: files for the LLNL Hayward 7.0 scenario are available through the SimCenter Box account.
 
 ## Pegasus Workflow
 
