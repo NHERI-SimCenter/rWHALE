@@ -5,17 +5,15 @@ CPPFLAGS= -I /usr/local/jansson/include -I ./nanoflann/include
 LDFLAGS= 
 LDLIBS=/usr/local/jansson/lib/libjansson.a
 
-SRCS=createSAM.cpp \
-	FloorParam.cpp \
+SRCS=FloorParam.cpp \
 	InterstoryParam.cpp \
 	Building.cpp \
-	processSAM.cpp \
 	HazusSAM_Generator.cpp
 
 OBJS= FloorParam.o InterstoryParam.o Building.o \
 	HazusSAM_Generator.o 
 
-all: createSAM processSAM MDOF
+all: MDOF
 
 debug: CPPFLAGS += -DDEBUG -g
 debug: all
@@ -28,23 +26,13 @@ FloorParam.o: FloorParam.cpp FloorParam.h
 
 InterstoryParam.o: InterstoryParam.cpp InterstoryParam.h
 
-createSAM.o: createSAM.cpp
-
-processSAM.o: processSAM.cpp
-
-createSAM: $(OBJS) createSAM.o
-	$(CXX) $(LDFLAGS) -o createSAM createSAM.o $(OBJS) $(LDLIBS)
-
-processSAM: $(OBJS) processSAM.o
-	$(CXX) $(LDFLAGS) -o processSAM processSAM.o $(OBJS) $(LDLIBS)
-
 MDOF: $(OBJS) MDOF_ShearBuildingModel.o
-	$(CXX) $(LDFLAGS) -o MDOF-LU MDOF_ShearBuildingModel.o $(OBJS) $(LDLIBS)
+	$(CXX) $(LDFLAGS) $(CPPFLAGS) -o MDOF-LU MDOF_ShearBuildingModel.o $(OBJS) $(LDLIBS)
 
 clean:
-	$(RM) $(OBJS) *~ \#* processSAM.o
+	$(RM) *.o
 
 distclean: clean
-	$(RM) createSAM processSAM MDOF-LU
+	$(RM) MDOF-LU
 
 

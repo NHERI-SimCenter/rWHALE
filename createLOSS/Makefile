@@ -25,14 +25,10 @@ OBJS= \
 
 otherOBJS = ./include/inifile.o ./include/tinyxml2.o
 
-all: createLOSS FEMA-P58
+all: FEMA-P58
 
 debug: CPPFLAGS += -DDEBUG -g
 debug: all
-
-createLOSS: $(OBJS) main.o
-	cd include; make
-	$(CXX) $(LDFLAGS) -o createLOSS main.o $(OBJS) $(otherOBJS) $(LDLIBS)
 
 FEMA-P58: $(OBJS) FEMAP58_LU.o
 		cd include; make
@@ -41,8 +37,8 @@ FEMA-P58: $(OBJS) FEMAP58_LU.o
 
 clean:
 	cd include; make clean
-	$(RM) $(OBJS) *~ \#*
+	$(RM) *.o
 
 distclean: clean
 	cd include; make distclean
-	$(RM) createLOSS
+	$(RM) FEMAP58_LU
