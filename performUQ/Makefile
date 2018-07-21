@@ -27,6 +27,6 @@ clean:
 	$(RM) $(OBJS) *~ \#* extractEDP prostprocessDAKOTA
 
 distclean: clean
-	$(RM) extractEDP workdir.* templatedir LHS*.out *.json dakota.*
+	$(RM) extractEDP postprocessDAKOTA workdir.* templatedir LHS*.out *.json dakota.*
 
 

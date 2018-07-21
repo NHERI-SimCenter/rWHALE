@@ -25,6 +25,7 @@ clean:
 	cd createSAM; make clean
 	cd createEDP; make clean
 	cd performSIMULATION; make clean
+	cd performUQ; make clean
 	cd createLOSS; make clean
 	cd finalProcessing; make clean
 	$(RM) $(OBJS) *~ \#*
@@ -35,6 +36,7 @@ distclean: clean
 	cd createSAM; make distclean
 	cd createEDP; make distclean
 	cd performSIMULATION; make distclean
+	cd performUQ; make distclean
 	cd createLOSS; make distclean
 	cd finalProcessing; make distclean
 

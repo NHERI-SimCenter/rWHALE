@@ -5,10 +5,10 @@ CPPFLAGS= -I /usr/local/jansson/include -I ./nanoflann/include
 LDFLAGS= 
 LDLIBS=/usr/local/jansson/lib/libjansson.a
 
-SRCS=createEDP.cpp HazusLossEstimator.cpp
-OBJS=createEDP.o HazusLossEstimator.o
+SRCS=HazusLossEstimator.cpp
+OBJS=HazusLossEstimator.o
 
-all: createEDP StandardEarthquakeEDP
+all:StandardEarthquakeEDP
 
 debug: CPPFLAGS += -DDEBUG -g
 debug: all
@@ -17,18 +17,13 @@ HazusLossEstimator.o: HazusLossEstimator.cpp HazusLossEstimator.h
 
 StandardEarthquakeEDP.o : StandardEarthquakeEDP.cpp
 
-createEDP.o: createEDP.cpp HazusLossEstimator.h
-
-createEDP: $(OBJS)
-	$(CXX) $(LDFLAGS) -o createEDP $(OBJS) $(LDLIBS)
-
 StandardEarthquakeEDP: StandardEarthquakeEDP.o
 	$(CXX) $(LDFLAGS) -o StandardEarthquakeEDP StandardEarthquakeEDP.o $(LDLIBS)
 
 clean:
-	$(RM) $(OBJS) *~ \#*
+	$(RM) *.o
 
 distclean: clean
-	$(RM) createEDP
+	$(RM) StandardEarthquakeEDP
 
 

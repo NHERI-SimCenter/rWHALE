@@ -12,14 +12,9 @@ all: urbanSimDatabase randomUrbanSimDatabase GenericBimDatabase
 debug: CPPFLAGS += -DDEBUG -g
 debug: all
 
-csvParser.o: csvparser.cpp csvparser.h
+csvparser.o: csvparser.h
 
 randomCreateBIM.o: randomCreateBIM.cpp
-
-countStory.o: countStory.cpp
-
-count: countStory.o
-	$(CXX) $(LDFLAGS) -o createBIM countStory.o csvparser.o $(LDLIBS)
 
 urbanSimDatabase: $(OBJS) UrbanSimDatabase.o
 	$(CXX) $(LDFLAGS) -o UrbanSimDatabase $(OBJS) UrbanSimDatabase.o $(LDLIBS)
@@ -30,9 +25,7 @@ randomUrbanSimDatabase: $(OBJS) RandomUrbanSimDatabase.o
 GenericBimDatabase: $(OBJS) GenericBimDatabase.h GenericBimDatabase.cpp
 
 clean:
-	$(RM) $(OBJS) *~ \#* *.o
+	$(RM) *.o
 
 distclean: clean
-	$(RM) UrbanSimDatabase
-
-
+	$(RM) UrbanSimDatabase RandomUrbanSimDatabase GenericBimDatabase

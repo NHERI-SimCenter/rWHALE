@@ -15,6 +15,5 @@ clean:
 	$(RM) $(OBJS) *~ \#*
 
 distclean: clean
-	$(RM) createEDP
 
 
