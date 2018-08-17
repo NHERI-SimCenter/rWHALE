@@ -55,35 +55,40 @@ numSamples=5
 # parse json file, creating dakota input and other files
 #  note: done in python
 
-echo $scriptDIR/preprocessJSON.py $bimName $evtName $samName $edpName $lossName $simName $driverFile
-python $scriptDIR/preprocessJSON.py $bimName $evtName $samName $edpName $lossName $simName $driverFile $scriptDIR
+bldgName=${bimName::-9}
+mkdir $bldgName
+
+echo $scriptDIR/preprocessJSON.py $bimName $evtName $samName $edpName $lossName $simName $driverFile $scriptDIR $bldgName
+python $scriptDIR/preprocessJSON.py $bimName $evtName $samName $edpName $lossName $simName $driverFile $scriptDIR $bldgName
 
 #
 # create a dir templatedir to place all files needed by a dakota run
 # & place all the needed files in here
 #
 
-rm -fr templatedir
-rm -fr workdir.*
-
-mkdir templatedir
-chmod 'u+x' workflow_driver
+templatedir="$bldgName/templatedir"
+mkdir $templatedir
+bldgWorkflowDriver="$bldgName/workflow_driver"
+chmod 'u+x' $bldgWorkflowDriver
 #cp -r $scriptDIR/createSAM/data ./templatedir
-cp workflow_driver ./templatedir
-cp $scriptDIR/dpreproSimCenter ./templatedir
-cp $bimName ./templatedir/bim.j
-cp $evtName ./templatedir/evt.j
-cp $samName ./templatedir/sam.j
-cp $edpName ./templatedir/edp.j
-cp $simName ./templatedir/sim.j
+cp $bldgWorkflowDriver ./$templatedir
+cp $scriptDIR/dpreproSimCenter $templatedir
+cp $bimName $templatedir/bim.j
+cp $evtName $templatedir/evt.j
+cp $samName $templatedir/sam.j
+cp $edpName $templatedir/edp.j
+cp $simName $templatedir/sim.j
 
 #
 # run dakota
 #
+cd $bldgName
 dakota -input dakota.in -output dakota.out -error dakota.err
+cd ..
 
-chmod 'u+x' finishUP.sh
-./finishUP.sh
+chmod 'u+x' $bldgName/finishUP.sh
+./$bldgName/finishUP.sh
+
 
 # copy dakota.out up to word Kurtosis
 #cp dakota.out dakota.tmp

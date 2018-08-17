@@ -12,6 +12,7 @@ lossName=sys.argv[5];#'exampleDL.json'
 simName=sys.argv[6];#'exampleSIMULATION.json'
 driverFile = sys.argv[7]
 scriptDIR = sys.argv[8]
+bldgName = sys.argv[9]
 
 #workflowDIR=sys.argv[6];#'/Users/simcenter/NHERI/Workflow1.1/'
 
@@ -89,7 +90,7 @@ parseFileForRV(edpName)
 #
 
 # write out the method data
-f = open('dakota.in', 'w')
+f = open('{}/dakota.in'.format(bldgName), 'w')
 
 f.write("environment\n")
 f.write("tabular_data\n")
@@ -169,7 +170,7 @@ f.write('parameters_file = \'params.in\' \n')
 f.write('results_file = \'results.out\' \n')
 f.write('work_directory directory_tag \n')
 f.write('copy_files = \'templatedir/*\' \n')
-f.write('named \'workdir\' file_save  directory_save \n')
+f.write('named \'workdir\' file_save directory_save\n')
 f.write('aprepro \n')
 f.write('\n')
 
@@ -200,7 +201,7 @@ f.close()  # you can omit in most cases as the destructor will call it
 # Write the workflow driver
 #
 
-f = open('workflow_driver', 'w')
+f = open('{}/workflow_driver'.format(bldgName), 'w')
 
 # want to dprepro the files with the random variables
 f.write('dpreproSimCenter $1 bim.j ' + bimName + '\n')
@@ -221,9 +222,9 @@ f.write(scriptDIR + '/extractEDP ' + edpName + ' results.out \n')
 #f.write('echo 1 >> results.out\n')
 f.close()
 
-f = open('finishUP.sh', 'w')
+f = open('{}/finishUP.sh'.format(bldgName), 'w')
 f.write('#!/bin/bash\n')
-f.write(scriptDIR + '/postprocessDAKOTA ' + str(numRandomVariables) + ' ' + str(numSamples) + ' ' + bimName + ' ' +  edpName  + ' ' + lossName + ' ' + ' dakotaTab.out \n')
-f.write('rm -fr templatedir workdir.* dakota.* LHS* dakotaTab.*')
+f.write(scriptDIR + '/postprocessDAKOTA {} {} {} {} {}'.format(numRandomVariables, numSamples, bimName, edpName, lossName) + ' ./{}/dakotaTab.out '.format(bldgName) + './{}/ \n'.format(bldgName))
+f.write('rm -fr {}'.format(bldgName))
 
 f.close();
