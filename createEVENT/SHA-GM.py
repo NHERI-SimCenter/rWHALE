@@ -72,7 +72,7 @@ def readNGAWest2File(ngaW2FilePath, scaleFactor):
         canRead = False #We need to process the header first
         for line in recordFile:
             if(canRead):
-                series.extend([float(value) * scaleFactor for value in line.split()])
+                series.extend([float(value) * scaleFactor * 9.81 for value in line.split()])
 
             elif("NPTS=" in line):
                 dt = float(re.match(r"NPTS=.+, DT=\s+([0-9\.]+)\s+SEC", line).group(1))

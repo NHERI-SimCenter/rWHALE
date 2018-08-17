@@ -12,7 +12,7 @@
 
 double getReplacementCost(const char* filenameBIM);
 void processEDPs(const char* filenameEDP, const char* dakotaOUT, int numRV, int numSample);
-void processLosses(const char *filenameLOSS, int numSample, double replacementCost);
+void processLosses(const char *bldgDir, const char *filenameLOSS, int numSample, double replacementCost);
 
 int main(int argc, const char **argv)
 {
@@ -22,6 +22,7 @@ int main(int argc, const char **argv)
   const char *filenameEDP = argv[4];
   const char *filenameLOSS = argv[5];
   const char *dakotaOUT = argv[6];
+  const char *bldgDir = argv[7];
 
   int numRV = atoi(numberRVs);
   int numSample = atoi(numberSamples);
@@ -32,7 +33,7 @@ int main(int argc, const char **argv)
   //
   processEDPs(filenameEDP, dakotaOUT, numRV, numSample);
 
-  processLosses(filenameLOSS, numSample, replacementCost);
+  processLosses(bldgDir, filenameLOSS, numSample, replacementCost);
 
   return 0;
 }
@@ -108,7 +109,7 @@ void processEDPs(const char* filenameEDP, const char* dakotaOUT, int numRV, int 
   json_dump_file(root,filenameEDP,0);
 }
 
-void processLosses(const char *filenameLOSS, int numSample, double replacementCost)
+void processLosses(const char *bldgDir, const char *filenameLOSS, int numSample, double replacementCost)
 {
     //TODO
     std::vector<double> vLoss, vDowntime;
@@ -128,7 +129,7 @@ void processLosses(const char *filenameLOSS, int numSample, double replacementCo
     for(int i = 0; i < numSample; i++)
     {
         char sampleDLFile[256];
-        sprintf(sampleDLFile, "./workdir.%u/%s", i + 1, filenameLOSS);
+        sprintf(sampleDLFile, "%sworkdir.%u/%s", bldgDir, i + 1, filenameLOSS);
         json_t* root = json_load_file(sampleDLFile, 0, &error);
         json_t* samplesJson = json_object_get(root, "Samples");
 
