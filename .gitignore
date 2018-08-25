@@ -62,6 +62,10 @@ mainPostprocessor
 dakota*
 templatedir
 workdir.*
+createBIM/GenericBimDatabase
+createBIM/RandomUrbanSimDatabase
+finalProcessing/readDLs
+performUQ/postprocessDAKOTA
 *.tcl
 
 *.gz
