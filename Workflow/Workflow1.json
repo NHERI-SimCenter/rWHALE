@@ -7,8 +7,8 @@
       "Buildings": {
          "BuildingApplication": "UrbanSimDatabase",
          "ApplicationData": {
-            "Min": "1",
-	    "Max":"1",
+            "Min": "286",
+	    "Max":"286",
 	    "parcelsFile":"../NHERI/parcels.csv",
 	    "buildingsFile":"../NHERI/buildings.csv"
          }

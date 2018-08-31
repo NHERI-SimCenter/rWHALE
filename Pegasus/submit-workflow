@@ -82,7 +82,7 @@ def add_task_files(task_files, dax, job, lfn, base_dir, recursed=False):
 def local_pfn(path):
     ''' generates a full pfn given a local path '''
     pfn = None
-    if exec_site == 'condorpool':
+    if exec_site == 'condorpool' or exec_site == 'tacc_wrangler':
         pfn = PFN('file://' + path, 'local')
     else:
         pfn = PFN('scp://' + getpass.getuser() + '@' + socket.gethostname() + '/' + path, 'local')
@@ -112,6 +112,8 @@ def add_combine_job(dax, prefix, chunk, level, job_number, final):
     adds a combine job
     '''
     j = Job(name='COMBINE')
+    j.profile(namespace='pegasus', key='label', value='combine')
+    j.addProfile(Profile('condor', 'priority', '100'))
     out_file = File('%s-combined-%d-%d.csv' %(prefix, level, job_number))
     if final:
         out_file = File(prefix + '-combined.csv')
@@ -128,7 +130,7 @@ def combine_outputs(dax, prefix, outputs, level):
     '''
     creates a set of small jobs to combine the results
     '''
-    max_files = 50
+    max_files = 200
     new_outputs = []
 
     output_chunks = [outputs[i:i + max_files] for i in xrange(0, len(outputs), max_files)]
@@ -163,9 +165,6 @@ def generate_subwf(wfid, bid_list):
 
     dls_to_combine = []
 
-    # small workflows do not merge
-    small_wf = len(bid_list) <= 50
-
     # make one event job run before the rest to make sure the code works
     test_job = None
     
@@ -173,8 +172,10 @@ def generate_subwf(wfid, bid_list):
 
         # label based clustering - these tasks are so short we want to
         # bundle a bunch of buildings together
-        if not small_wf:
-            # large workflows - be aggressive
+        if exec_site == 'tacc_wrangler':
+            # everything in one mpiexec
+            label = 'uq'
+        else:
             if count % 200 == 0:
                 count_label += 1
             label = "sim%05d" %(count_label)
@@ -186,10 +187,7 @@ def generate_subwf(wfid, bid_list):
         # UQ
     
         uq = Job(name='UQ')
-        if small_wf:
-            uq.profile(namespace='condor', key='jobprio', value='1000')
-        else:
-            uq.profile(namespace='pegasus', key='label', value=label)
+        uq.profile(namespace='pegasus', key='label', value=label)
         add_task_files(task_files, dax, uq, 'codes.tar.gz', run_dir)
         add_task_files(task_files, dax, uq, 'motions.tar.gz', input_dir)
         add_task_files(task_files, dax, uq, 'HazusData.txt', input_dir)
@@ -206,13 +204,13 @@ def generate_subwf(wfid, bid_list):
 
         # outputs
         bim_json = File('%d-BIM.json' %(building_id))
-        uq.uses(bim_json, link=Link.OUTPUT, transfer=True, register=False)
+        uq.uses(bim_json, link=Link.OUTPUT, transfer=False, register=False)
         edp_json = File('%d-EDP.json' %(building_id))
-        uq.uses(edp_json, link=Link.OUTPUT, transfer=True, register=False)
+        uq.uses(edp_json, link=Link.OUTPUT, transfer=False, register=False)
         dl_json = File('%d-DL.json' %(building_id))
-        uq.uses(dl_json, link=Link.OUTPUT, transfer=True, register=False)
+        uq.uses(dl_json, link=Link.OUTPUT, transfer=False, register=False)
         dl_csv = File('%d-DL.csv' %(building_id))
-        uq.uses(dl_csv, link=Link.OUTPUT, transfer=True, register=False)
+        uq.uses(dl_csv, link=Link.OUTPUT, transfer=False, register=False)
     
         dax.addJob(uq)
 
@@ -281,8 +279,15 @@ if not os.path.exists(input_dir + '/parcels.csv'):
 
 # set up run id and work dir
 run_id = datetime.datetime.now().strftime('%Y%m%d%H%M%S')
-run_dir = '/local-scratch/' + getpass.getuser() + '/workflows/' + run_id
+if 'WORK' in os.environ:
+    run_dir = os.environ['WORK'] + '/workflows/' + run_id
+else:
+    run_dir = '/local-scratch/' + getpass.getuser() + '/workflows/' + run_id
 os.makedirs(run_dir)
+
+# expose in the env for subst in catalogs
+os.environ['TOP_DIR'] = top_dir
+os.environ['RUN_DIR'] = run_dir
 
 # run make, create tarball
 print('Running "make" to ensure all the binaries are current...')
@@ -290,15 +295,20 @@ cmd = 'cd ' + top_dir + ' && make >/dev/null && tar czf ' + run_dir + '/codes.ta
 call(cmd, shell=True)
 
 # pegasus files
-os.environ['RUN_DIR'] = run_dir
 cmd = 'envsubst <' + top_dir + '/Pegasus/sites/' + exec_site + '/sites.xml >' + run_dir + '/sites.xml'
+call(cmd, shell=True)
+
+if os.path.exists(top_dir + '/Pegasus/sites/' + exec_site + '/transformations.template.txt'):
+    cmd = 'envsubst <' + top_dir + '/Pegasus/sites/' + exec_site + '/transformations.template.txt >' + run_dir + '/transformations.txt'
+else:
+    cmd = 'touch ' + run_dir + '/transformations.txt'
 call(cmd, shell=True)
 
 cmd = 'cp ' + top_dir + '/Pegasus/sites/' + exec_site + '/pegasus.conf ' + run_dir
 call(cmd, shell=True)
 
 bids = get_building_ids(input_dir + '/GenericBim2010.csv')[0:100000]
-buildings_per_subwf = 50000
+buildings_per_subwf = 25000
 building_line = 0
 
 print('Generating a hierarchical workflow for %d buildings...' %(len(bids)))
@@ -335,6 +345,7 @@ for subwf_list in [bids[i:i + buildings_per_subwf] for i in xrange(0, len(bids),
     job.addProfile(Profile('dagman', 'CATEGORY', 'subwf'))
     job.uses(subwf_dax)
     job.addArguments('-Dpegasus.catalog.site.file=%s/sites.xml' % (run_dir),
+                     '-Dpegasus.catalog.transformation.file=%s/transformations.txt' % (run_dir),
                      '--sites', 'compute',
                      '--output-site', 'local',
                      '--basename', '%06d' %(subwf_id),
@@ -357,9 +368,11 @@ dax.addFile(subwf_dax)
 job = DAX('combine.xml')
 job.uses(subwf_dax)
 job.addArguments('-Dpegasus.catalog.site.file=%s/sites.xml' % (run_dir),
+                 '-Dpegasus.catalog.transformation.file=%s/transformations.txt' % (run_dir),
                  '--sites', 'compute',
                  '--output-site', 'local',
                  '--basename', 'combine',
+                 '--cluster', 'label',
                  '--cleanup', 'inplace',
                  '--force')
 dax.addDAX(job)
@@ -375,9 +388,6 @@ f.close()
 print('')
 print('Outputs will show up in: ' + run_dir + '/outputs/')
 print('')
-
-# environment needed for the site catalog
-os.environ['RUN_DIR'] = run_dir
 
 cmd = 'pegasus-plan ' + \
       ' -Dpegasus.catalog.site.file=' + run_dir + '/sites.xml' + \

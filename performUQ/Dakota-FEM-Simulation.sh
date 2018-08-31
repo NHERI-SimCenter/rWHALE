@@ -56,6 +56,7 @@ numSamples=5
 #  note: done in python
 
 bldgName=${bimName::-9}
+rm -rf $bldgName
 mkdir $bldgName
 
 echo $scriptDIR/preprocessJSON.py $bimName $evtName $samName $edpName $lossName $simName $driverFile $scriptDIR $bldgName
