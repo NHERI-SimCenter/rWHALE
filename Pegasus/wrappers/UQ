@@ -44,7 +44,7 @@ touch $BID-EDP.json
 touch $BID-DL.json
 
 # set up Dakota
-export LD_LIBRARY_PATH=$PWD/dakota-6.8.0.Linux.x86_64/lib:$PWD/dakota-6.8.0.Linux.x86_64/bin
+export LD_LIBRARY_PATH=$PWD/dakota-6.8.0.Linux.x86_64/lib:$PWD/dakota-6.8.0.Linux.x86_64/bin:$LD_LIBRARY_PATH
 export PATH=$PWD/dakota-6.8.0.Linux.x86_64/bin:$PATH
 
 # set up OpenSEES
@@ -56,18 +56,44 @@ cd Workflow
 rm -f $BID-*
 
 # create a bid specific json driver
-../Pegasus/task-files/uq/update-workflow-json $BUILDING_LINE >$BID-Pegasus.json
+../Pegasus/task-files/uq/update-workflow-json $BUILDING_LINE $BID >$BID-Pegasus.json
 
-python ./RegionalEarthquakeSimulation.py $BID-Pegasus.json
+set +e
+python ./RegionalEarthquakeSimulation.py run $BID-Pegasus.json WorkflowApplications.json >$BID-log.txt 2>&1
+FAILURES=$?
+set -e
+
+cat $BID-log.txt
+LOGFILE=`grep "Log file:" $BID-log.txt | sed 's;.*Log file: ;;'`
+
+# sometimes RegionalEarthquakeSimulation.py will signal success, but we files might be missing
+if [ ! -s $BID-BIM.json ]; then
+    FAILURES=$(( $FAILURES + 1 ))
+fi
+
+if [ $FAILURES != 0 ]; then
+    echo "Due to non-zero exit code, displaying $LOGFILE ..."
+    cat $LOGFILE
+    echo
+    echo
+    cat $BID-Pegasus.json
+    echo
+    echo
+    ls -l $BID-*
+    exit $FAILURES
+fi
+rm -f $BID-log.txt $LOGFILE
 
 # create the DL csv
 ../finalProcessing/readDLs $BID $BID $BID-DL.csv
 
 # put the files in the expected location
-cp $BID-BIM.json ../
-cp $BID-EDP.json ../
-cp $BID-DL.json ../
-cp $BID-DL.csv ../
+mv $BID-BIM.json ../
+mv $BID-EDP.json ../
+mv $BID-DL.json ../
+mv $BID-DL.csv ../
 
+# let's clean up to make sure our directories are not filled up with old files
+rm -f $BID-*
 
 

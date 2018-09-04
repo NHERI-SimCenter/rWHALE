@@ -3,7 +3,8 @@
 import json
 import sys
 
-bid = sys.argv[1]
+building_line = sys.argv[1]
+bid = sys.argv[2]
 
 # read from Pegasus.json
 f = open('Pegasus.json')
@@ -11,8 +12,11 @@ data = json.load(f)
 f.close()
 
 # update min/max
-data['Applications']['Buildings']['ApplicationData']['Min'] = bid
-data['Applications']['Buildings']['ApplicationData']['Max'] = bid
+data['Applications']['Buildings']['ApplicationData']['Min'] = building_line
+data['Applications']['Buildings']['ApplicationData']['Max'] = building_line
+
+# set a unique buildings file
+data['buildingFile'] = str(bid) + '-buildings.json'
 
 # write to stdout
 print(json.dumps(data, indent=4))

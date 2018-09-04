@@ -14,8 +14,8 @@
         <profile namespace="pegasus" key="style" >condor</profile>
         <profile namespace="condor" key="universe" >vanilla</profile>
         <profile namespace="condor" key="requirements" >regexp("isi.edu", TARGET.FileSystemDomain)</profile>
-        <profile namespace="condor" key="request_memory" >3 GB</profile>
-        <profile namespace="condor" key="request_disk" >20 GB</profile>
+        <profile namespace="condor" key="request_memory" >1 GB</profile>
+        <profile namespace="condor" key="request_disk" >3 GB</profile>
     </site>
     
 </sitecatalog>

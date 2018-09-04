@@ -2,6 +2,7 @@
 
 import json
 import os
+import re
 import sys
 import subprocess
 from time import gmtime, strftime
@@ -259,11 +260,22 @@ def main(run_type, inputFile, applicationsRegistry):
         #
 
         buildingsFile = 'buildings.json'
+        if 'buildingFile' in data:
+            buildingsFile = data['buildingFile']
         buildingAppDataList = [buildingAppExe, buildingsFile]
 
         for key in buildingAppData.keys():
             buildingAppDataList.append('-' + key.encode('ascii', 'ignore'))
             buildingAppDataList.append(buildingAppData.get(key).encode('ascii', 'ignore'))
+
+            # sanity check - added by rynge 8/27/18
+            if key == 'Min' or key == 'Max':
+                value = buildingAppData.get(key).encode('ascii', 'ignore')
+                # make sure we have an int
+                if not re.search('^[0-9]+$', value):
+                    print('Expected value for %s is not an integer: %s' %(key, value))
+                    print(buildingAppData)
+                    sys.exit(1)
 
         buildingAppDataList.append('-getRV')
         command, result, returncode = runApplication(buildingAppDataList)

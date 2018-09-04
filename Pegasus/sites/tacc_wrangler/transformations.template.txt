@@ -1,0 +1,20 @@
+tr system::chmod {
+  site compute {
+    profile pegasus "cores" "1"
+    profile pegasus "nodes" "1"
+    pfn "/bin/chmod"
+    type "INSTALLED"
+  }
+}
+
+tr pegasus::mpiexec {
+  site compute {
+    profile pegasus "cores" "48"
+    profile pegasus "nodes" "1"
+    profile pegasus "runtime" "43200"
+    profile pegasus "change.dir" "true"
+    pfn "$TOP_DIR/Pegasus/sites/tacc_wrangler/pmc-wrapper"
+    type "INSTALLED"
+  }
+}
+

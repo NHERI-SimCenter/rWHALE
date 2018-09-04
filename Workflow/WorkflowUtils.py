@@ -35,6 +35,9 @@ def runApplication(application_plus_args):
 def add_full_path(possible_filename):
     if not isinstance(possible_filename, basestring):
         return possible_filename
+    # only update if it looks like a path
+    if not ('./' in possible_filename or '..' in possible_filename):
+        return possible_filename
     if (os.path.exists(possible_filename)):
         if os.path.isdir(possible_filename):
             return os.path.abspath(possible_filename) + '/'
