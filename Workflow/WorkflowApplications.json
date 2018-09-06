@@ -245,7 +245,7 @@
     "Applications": [
       {
         "Name": "OpenSees",
-        "ExecutablePath": "../performSIMULATION/OpenSeesSimulation.sh"
+        "ExecutablePath": "../performSIMULATION/OpenSeesSimulation.py"
       }
     ]
   },

@@ -367,7 +367,10 @@ def main(run_type, inputFile, applicationsRegistry):
             # get RV for Simulation
             simAppDataList = [simAppExe, '-filenameBIM', bimFILE, '-filenameSAM', samFILE, '-filenameEVENT', eventFILE,
                               '-filenameEDP', edpFILE, '-filenameSIM', simFILE]
-
+            
+            if (simAppExe.endswith('.py')):
+                simAppDataList.insert(0, 'python')
+                
             for key in simAppData.keys():
                 simAppDataList.append('-' + key.encode('ascii', 'ignore'))
                 simAppDataList.append(simAppData.get(key).encode('ascii', 'ignore'))
