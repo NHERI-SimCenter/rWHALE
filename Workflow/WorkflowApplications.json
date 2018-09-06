@@ -301,7 +301,7 @@
     "Applications": [
       {
         "Name": "Dakota-FEM",
-        "ExecutablePath": "../performUQ/Dakota-FEM-Simulation.sh"
+        "ExecutablePath": "../performUQ/DakotaFEM.py"
       }
     ]
   },

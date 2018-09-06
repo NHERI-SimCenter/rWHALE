@@ -240,7 +240,7 @@ def main(run_type, inputFile, applicationsRegistry):
                 if dlApplication in Applications['DamageAndLossApplications'].keys():
                     dlAppExe = Applications['DamageAndLossApplications'].get(dlApplication)
                 else:
-                    raise WorkFlowInputError('Dmage & Loss application %s not in registry' % dlApplication)
+                    raise WorkFlowInputError('Damage & Loss application %s not in registry' % dlApplication)
 
             else:
                 raise WorkFlowInputError('Need a Damage&LossApplicationApplication in Damage & Loss data')
@@ -396,6 +396,8 @@ def main(run_type, inputFile, applicationsRegistry):
             uqAppDataList = [uqAppExe, '-filenameBIM', bimFILE, '-filenameSAM', samFILE, '-filenameEVENT', eventFILE,
                              '-filenameEDP', edpFILE, '-filenameLOSS', dlFILE, '-filenameSIM', simFILE, 'driverFile',
                              driverFile]
+            if (uqAppExe.endswith('.py')):
+                uqAppDataList.insert(0, 'python')
 
             for key in uqAppData.keys():
                 uqAppDataList.append('-' + key.encode('ascii', 'ignore'))
