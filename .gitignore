@@ -42,8 +42,6 @@ moc*
 
 # EXAMPLE & EXE
 *.out
-createBIM/createBIM
-createBIM/UrbanSimDatabase
 createEVENT/createEVENT
 createEDP/createEDP
 createEDP/StandardEarthquakeEDP
@@ -62,8 +60,6 @@ mainPostprocessor
 dakota*
 templatedir
 workdir.*
-createBIM/GenericBimDatabase
-createBIM/RandomUrbanSimDatabase
 finalProcessing/readDLs
 performUQ/postprocessDAKOTA
 *.tcl
