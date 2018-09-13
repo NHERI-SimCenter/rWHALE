@@ -42,14 +42,12 @@ moc*
 
 # EXAMPLE & EXE
 *.out
-createEVENT/createEVENT
 createEDP/createEDP
 createEDP/StandardEarthquakeEDP
 createSAM/createSAM
 createSAM/MDOF-LU
 createSAM/processSAM
 createLOSS/createLOSS
-createEVENT/LLNL_SW4
 createLOSS/FEMAP58_LU
 createLOSS/DL-data.tar.gz
 performUQ/extractEDP

@@ -22,7 +22,6 @@ def computeScenario(scenarioConfig, scenarioHash):
     selectionConfig = scenarioConfig["RecordSelection"]
     del scenarioConfig["RecordSelection"]
 
-
     #Adding the required output
     scenarioConfig["IntensityMeasure"]["EnableJsonOutput"] = True
     with open("./HazardCache/Hazard_Scenario.json", 'w') as hazardFile:
