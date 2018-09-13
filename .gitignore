@@ -37,16 +37,8 @@ moc*
 *.out
 *.app
 
-# QT
-*.pro.user
-
 # EXAMPLE & EXE
 *.out
-createEDP/createEDP
-createEDP/StandardEarthquakeEDP
-createSAM/createSAM
-createSAM/MDOF-LU
-createSAM/processSAM
 createLOSS/createLOSS
 createLOSS/FEMAP58_LU
 createLOSS/DL-data.tar.gz
