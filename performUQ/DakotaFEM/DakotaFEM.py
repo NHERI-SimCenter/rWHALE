@@ -69,4 +69,5 @@ postprocessCommand = '{}/postprocessDAKOTA {} {} {} {} {}'.format(scriptDir, num
 + ' ./{}/dakotaTab.out '.format(bldgName) + './{}/'.format(bldgName)
 subprocess.Popen(postprocessCommand, shell=True).wait()
 
-shutil.rmtree(bldgName)
+#Clean up building folder
+#shutil.rmtree(bldgName)

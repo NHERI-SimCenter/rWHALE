@@ -8,7 +8,7 @@
 #include <vector>
 
 #include <jansson.h>  // for Json
-#include "../createLOSS/Stat.h"
+#include "Stat.h"
 
 double getReplacementCost(const char* filenameBIM);
 void processEDPs(const char* filenameEDP, const char* dakotaOUT, int numRV, int numSample);

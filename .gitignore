@@ -42,13 +42,10 @@ moc*
 createLOSS/createLOSS
 createLOSS/FEMAP58_LU
 createLOSS/DL-data.tar.gz
-performUQ/extractEDP
-performUQ/finishUP.sh
 dakota*
 templatedir
 workdir.*
 finalProcessing/readDLs
-performUQ/postprocessDAKOTA
 *.tcl
 
 *.gz
