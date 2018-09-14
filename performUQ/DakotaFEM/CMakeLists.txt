@@ -6,7 +6,7 @@ conan_basic_setup(TARGETS)
 project (DakotaFEM VERSION 0.0.1)
 
 include_directories(".")
-include_directories("${CMAKE_SOURCE_DIR}/createLOSS")
+include_directories("${CMAKE_SOURCE_DIR}/createLOSS/FEMAP58_LU")
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin/)
 

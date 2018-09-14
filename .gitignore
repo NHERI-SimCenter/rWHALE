@@ -39,9 +39,6 @@ moc*
 
 # EXAMPLE & EXE
 *.out
-createLOSS/createLOSS
-createLOSS/FEMAP58_LU
-createLOSS/DL-data.tar.gz
 dakota*
 templatedir
 workdir.*
