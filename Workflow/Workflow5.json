@@ -1,5 +1,5 @@
 {
-   "Name": "Workflow 1",
+   "Name": "Workflow 5",
    "Author": "fmk",
    "WorkflowType": "Regional Simulation",
    "buildingFile":"buildings.json",
@@ -8,8 +8,8 @@
          "BuildingApplication": "GenericBimDatabase",
          "ApplicationData": {
                "Min": "1",
-               "Max":"9",
-               "buildingsFile":"../createBIM/GenericBimDatabase.csv"
+               "Max":"2",
+               "buildingsFile":"../build/data/GenericBimDatabase.csv"
             }
       },
       "Events": [
@@ -18,14 +18,14 @@
             "EventApplication": "LLNL-SW4",
             "ApplicationData": {
                "pathSW4results": "../createEVENT/Hayward7.0/",
-   	       "filenameHFmeta":"../createEVENT/HFmeta"
+   	       "filenameHFmeta":"../build/data/HFmeta"
             }
          }
       ],
       "Modeling": {
             "ModelingApplication": "MDOF-LU",
             "ApplicationData": {
-   	       "hazusData":"../createSAM/data/HazusData.txt"
+   	       "hazusData":"../build/data/HazusData.txt"
 	    }
       },
       "EDP": {
@@ -43,9 +43,9 @@
       "Damage&Loss": {
          "Damage&LossApplication": "FemaP58-LU",
          "ApplicationData": {
-	    "filenameSettings":"../createLOSS/data/settings.ini",
-   	    "pathCurves":"../createLOSS/data/ATCCurves/",
-   	    "pathNormative":"../createLOSS/data/normative/"
+	    "filenameSettings":"../build/data/settings.ini",
+   	    "pathCurves":"../build/data/ATCCurves/",
+   	    "pathNormative":"../build/data/normative/"
          }
       }
    }

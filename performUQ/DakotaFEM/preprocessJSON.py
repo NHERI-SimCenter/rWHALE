@@ -2,15 +2,15 @@ import json
 import sys
 import os
 
-# numRandomVariables = 0
-# numNormalUncertain = 0
-# normalUncertainName=[]
-# normalUncertainMean =[]
-# normalUncertainStdDev =[]
+numRandomVariables = 0
+numNormalUncertain = 0
+normalUncertainName=[]
+normalUncertainMean =[]
+normalUncertainStdDev =[]
 
-# numDiscreteDesignSetString = 0
-# discreteDesignSetStringName=[]
-# discreteDesignSetStringValues =[]
+numDiscreteDesignSetString = 0
+discreteDesignSetStringName=[]
+discreteDesignSetStringValues =[]
 
 def preProcessDakota(bimName, evtName, samName, edpName, lossName, simName, driverFile, bldgName):
     numSamples = 5
