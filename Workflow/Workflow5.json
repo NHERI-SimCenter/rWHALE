@@ -1,5 +1,5 @@
 {
-   "Name": "Workflow 5",
+   "Name": "Workflow5",
    "Author": "fmk",
    "WorkflowType": "Regional Simulation",
    "buildingFile":"buildings.json",
@@ -8,7 +8,7 @@
          "BuildingApplication": "GenericBimDatabase",
          "ApplicationData": {
                "Min": "1",
-               "Max":"2",
+               "Max":"10",
                "buildingsFile":"../build/data/GenericBimDatabase.csv"
             }
       },

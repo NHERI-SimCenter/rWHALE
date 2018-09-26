@@ -6,6 +6,7 @@ import re
 import sys
 import subprocess
 from time import gmtime, strftime
+import shutil
 
 divider = '#' * 80
 log_output = []
@@ -75,6 +76,14 @@ def main(run_type, inputFile, applicationsRegistry):
             raise WorkFlowInputError('Need a Workflow Type')
 
         # check correct workflow type
+
+        # Use workflow name to set cwd
+        workDir = data['Name']
+        print 'DirName is: ' + workDir
+        if(os.path.exists(workDir) and os.path.isdir(workDir)):
+            shutil.rmtree(workDir)
+        
+        os.mkdir(workDir)
 
         #
         # now we parse for the applications & app specific data in workflow
@@ -259,9 +268,9 @@ def main(run_type, inputFile, applicationsRegistry):
         # put building generator application data into list and exe
         #
 
-        buildingsFile = 'buildings.json'
+        buildingsFile = os.path.abspath('{}/buildings.json'.format(workDir))
         if 'buildingFile' in data:
-            buildingsFile = data['buildingFile']
+            buildingsFile = os.path.abspath(workDir + '/' + data['buildingFile'])
         buildingAppDataList = [buildingAppExe, buildingsFile]
 
         for key in buildingAppData.keys():
@@ -278,7 +287,7 @@ def main(run_type, inputFile, applicationsRegistry):
                     sys.exit(1)
 
         buildingAppDataList.append('-getRV')
-        command, result, returncode = runApplication(buildingAppDataList)
+        command, result, returncode = runApplication(buildingAppDataList, workDir)
         log_output.append([command, result, returncode])
 
         del buildingAppDataList[-1]
@@ -306,7 +315,7 @@ def main(run_type, inputFile, applicationsRegistry):
             driverFile = id + '-driver'
 
             # open driver file & write building app (minus the -getRV) to it
-            driverFILE = open(driverFile, 'w')
+            driverFILE = open(workDir + '/' +driverFile, 'w')
             for item in buildingAppDataList:
                 driverFILE.write('%s ' % item)
             driverFILE.write('\n')
@@ -328,7 +337,7 @@ def main(run_type, inputFile, applicationsRegistry):
             driverFILE.write('\n')
 
             eventAppDataList.append('-getRV')
-            command, result, returncode = runApplication(eventAppDataList)
+            command, result, returncode = runApplication(eventAppDataList, workDir)
             log_output.append([command, result, returncode])
 
             # get RV for building model
@@ -344,7 +353,7 @@ def main(run_type, inputFile, applicationsRegistry):
             driverFILE.write('\n')
 
             modelAppDataList.append('-getRV')
-            command, result, returncode = runApplication(modelAppDataList)
+            command, result, returncode = runApplication(modelAppDataList, workDir)
             log_output.append([command, result, returncode])
 
 
@@ -361,7 +370,7 @@ def main(run_type, inputFile, applicationsRegistry):
             driverFILE.write('\n')
 
             edpAppDataList.append('-getRV')
-            command, result, returncode = runApplication(edpAppDataList)
+            command, result, returncode = runApplication(edpAppDataList, workDir)
             log_output.append([command, result, returncode])
 
             # get RV for Simulation
@@ -380,7 +389,7 @@ def main(run_type, inputFile, applicationsRegistry):
             driverFILE.write('\n')
 
             simAppDataList.append('-getRV')
-            command, result, returncode = runApplication(simAppDataList)
+            command, result, returncode = runApplication(simAppDataList, workDir)
             log_output.append([command, result, returncode])
 
             # Adding CreateLoss to Dakota Driver
@@ -407,11 +416,9 @@ def main(run_type, inputFile, applicationsRegistry):
                 uqAppDataList.append(simAppData.get(key).encode('ascii', 'ignore'))
 
             if run_type == 'run':
-                workflow_log('Running Simulation...')
-                workflow_log(' '.join(uqAppDataList))
-                command, result, returncode = runApplication(uqAppDataList)
+                workflow_log('Running simulation for building ' + id + '...')
+                command, result, returncode = runApplication(uqAppDataList, workDir)
                 log_output.append([command, result, returncode])
-                workflow_log('Simulation ended...')
             else:
                 workflow_log('Check run only. No simulation performed.')
 

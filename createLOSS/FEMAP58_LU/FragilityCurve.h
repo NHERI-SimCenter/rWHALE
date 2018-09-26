@@ -14,7 +14,7 @@ public:
     enum DamageStateType{sequential, mutually_exclusive, simultaneous};
     enum EDPType{story_drift_ratio,peak_floor_acceleration};
     enum CurveType{normal, lognormal};
-    enum ComponentType{Str,NSD,NSA,Content};
+    enum ComponentType{Str = 0, NSD = 1, NSA = 2, Content = 3};
     enum Tag{none,red};
 
     struct ConsequenceCurve{

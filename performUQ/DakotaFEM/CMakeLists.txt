@@ -9,6 +9,9 @@ include_directories(".")
 include_directories("${CMAKE_SOURCE_DIR}/createLOSS/FEMAP58_LU")
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin/)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG ${CMAKE_BINARY_DIR}/bin/)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_BINARY_DIR}/bin/)
+
 
 add_executable(postprocessDAKOTA postprocessDakota.cpp)
 target_link_libraries(postprocessDAKOTA CONAN_PKG::jansson)

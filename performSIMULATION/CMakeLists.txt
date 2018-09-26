@@ -12,6 +12,9 @@ file(GLOB PRESOURCES "./OpenSeesSimulation/*Pre*.cpp")
 file(GLOB POSTSOURCES "./OpenSeesSimulation/*Post*.cpp")
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin/)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG ${CMAKE_BINARY_DIR}/bin/)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_BINARY_DIR}/bin/)
+
 add_executable(getUncertainty common/getUncertainty.cpp ${PRESOURCES})
 target_link_libraries(getUncertainty CONAN_PKG::jansson)
 

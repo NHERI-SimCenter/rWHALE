@@ -9,7 +9,7 @@ FragilityCurve::FragilityCurve(const char *dataPath)
   else
     path = dataPath;
 
-  std::cerr << "FC: path" << path;
+  std::cerr << "FC: path" << path.c_str();
 
 }
 
@@ -133,7 +133,7 @@ void FragilityCurve::LoadFragility()
 
 FragilityCurve::ComponentType FragilityCurve::JudgeComponentType()
 {
-    ComponentType ct;
+    ComponentType ct = ComponentType::Str;
     //TODO
     return ct;
 }

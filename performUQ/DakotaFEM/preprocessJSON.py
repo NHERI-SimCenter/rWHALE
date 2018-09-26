@@ -134,7 +134,7 @@ def preProcessDakota(bimName, evtName, samName, edpName, lossName, simName, driv
     # write out the interface data
     f.write('interface,\n')
     f.write('system # asynch evaluation_concurrency = 4\n')
-    f.write('analysis_driver = \'workflow_driver\' \n')
+    f.write('analysis_driver = \'workflow_driver.bat\' \n')
     f.write('parameters_file = \'params.in\' \n')
     f.write('results_file = \'results.out\' \n')
     f.write('work_directory directory_tag \n')
@@ -170,13 +170,13 @@ def preProcessDakota(bimName, evtName, samName, edpName, lossName, simName, driv
     # Write the workflow driver
     #
 
-    f = open('{}/workflow_driver'.format(bldgName), 'w')
+    f = open('{}/workflow_driver.bat'.format(bldgName), 'w')
 
     # want to dprepro the files with the random variables
-    f.write('dpreproSimCenter $1 bim.j ' + bimName + '\n')
-    f.write('dpreproSimCenter $1 sam.j ' + samName + '\n')
-    f.write('dpreproSimCenter $1 evt.j ' + evtName + '\n')
-    f.write('dpreproSimCenter $1 edp.j ' + edpName + '\n')
+    f.write('perl dpreproSimCenter params.in bim.j ' + bimName + '\n')
+    f.write('perl dpreproSimCenter params.in sam.j ' + samName + '\n')
+    f.write('perl dpreproSimCenter params.in evt.j ' + evtName + '\n')
+    f.write('perl dpreproSimCenter params.in edp.j ' + edpName + '\n')
 
     scriptDir = os.path.dirname(os.path.realpath(__file__))
 

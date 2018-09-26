@@ -17,6 +17,8 @@ elif platform.system() == 'Darwin':
 elif platform.system() == 'Linux':
     env["PATH"] = env["PATH"] + ':{}/bin'.format(home)
     env["PATH"] = env["PATH"] + ':{}/dakota/dakota-6.5/bin'.format(home)
+elif platform.system() == 'Windows':
+    print "Running on Window platform"
 else:
     print "PLATFORM {} NOT RECOGNIZED".format(platform.system)
 
@@ -50,10 +52,9 @@ numRVs = preProcessDakota(bimName, evtName, samName, edpName, lossName, simName,
 #Create Template Directory and copy files
 templateDir = "{}/templatedir".format(bldgName)
 os.mkdir(templateDir)
-bldgWorkflowDriver = "{}/workflow_driver".format(bldgName)
-st = os.stat(bldgWorkflowDriver)
-os.chmod(bldgWorkflowDriver, st.st_mode | stat.S_IEXEC)
-shutil.copy("{}/dpreproSimCenter".format(scriptDir), bldgName)
+bldgWorkflowDriver = "{}/workflow_driver.bat".format(bldgName)
+shutil.copy(bldgWorkflowDriver, "{}/workflow_driver.bat".format(templateDir))
+shutil.copy("{}/dpreproSimCenter".format(scriptDir), templateDir)
 shutil.copy(bimName, "{}/bim.j".format(templateDir))
 shutil.copy(evtName, "{}/evt.j".format(templateDir))
 shutil.copy(samName, "{}/sam.j".format(templateDir))

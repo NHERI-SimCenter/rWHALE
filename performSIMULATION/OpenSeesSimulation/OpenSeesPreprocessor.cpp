@@ -61,6 +61,8 @@ OpenSeesPreprocessor::writeRV(const char *BIM,
     // write the file & clean memory
     json_dump_file(root,outputFilename,0);
     json_object_clear(root);
+
+	return 0;
 }
 
 int 

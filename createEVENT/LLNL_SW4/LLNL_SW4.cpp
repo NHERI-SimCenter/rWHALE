@@ -194,7 +194,7 @@ int main(int argc, char **argv) {
   //
 
   long unsigned int num_results = 1;
-  long unsigned int ret_index;
+  size_t ret_index;
   float out_dist_sqr;
   nanoflann::KNNResultSet<float> resultSet(num_results);
   resultSet.init(&ret_index, &out_dist_sqr);

@@ -13,6 +13,8 @@ file(GLOB SOURCES "*.cpp" "include/*.c" "include/*.cpp")
 find_package(Threads REQUIRED)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin/)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG ${CMAKE_BINARY_DIR}/bin/)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_BINARY_DIR}/bin/)
 
 add_executable(FEMAP58_LU ${SOURCES})
 target_link_libraries(FEMAP58_LU CONAN_PKG::jansson Threads::Threads)
