@@ -48,3 +48,5 @@ finalProcessing/readDLs
 *.gz
 *.csv
 
+build/*
+createEVENT/Hayward7.0
