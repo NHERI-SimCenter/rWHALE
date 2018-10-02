@@ -3,24 +3,8 @@ import os
 import platform
 import shutil
 import subprocess
-import stat
 from preprocessJSON import preProcessDakota
-
-#First we need to set the path and environment
-home = os.path.expanduser('~')
-env = os.environ
-if os.getenv("PEGASUS_WF_UUID") is not None:
-    print "Pegasus job detected - Pegasus will set up the env"
-elif platform.system() == 'Darwin':
-    env["PATH"] = env["PATH"] + ':{}/bin'.format(home)
-    env["PATH"] = env["PATH"] + ':{}/dakota/bin'.format(home)
-elif platform.system() == 'Linux':
-    env["PATH"] = env["PATH"] + ':{}/bin'.format(home)
-    env["PATH"] = env["PATH"] + ':{}/dakota/dakota-6.5/bin'.format(home)
-elif platform.system() == 'Windows':
-    print "Running on Window platform"
-else:
-    print "PLATFORM {} NOT RECOGNIZED".format(platform.system)
+import platform
 
 #Reading input arguments
 bimName = sys.argv[2]
@@ -31,29 +15,31 @@ lossName = sys.argv[10]
 simName = sys.argv[12]
 driverFile = sys.argv[14]
 
-numSamples = 5
+numSamples = 5 #TODO: needs to be configured
+
 bldgName = bimName[:-9]
 
+#setting workflow driver name based on platform
+workflowDriver = 'workflow_driver'
+if platform.system == 'Windows':
+    workflowDriver = 'workflow_driver.bat'
 
 #Removing working directory for the current building, if it exists
-if os.path.exists(bldgName):
+if os.path.exists(bldgName) and os.path.isdir(bldgName):
     shutil.rmtree(bldgName)
 
 os.mkdir(bldgName)
 
 #Run Preprocess for Dakota
 scriptDir = os.path.dirname(os.path.realpath(__file__))
-# preProcessArgs = ["python", "{}/preprocessJSON.py".format(scriptDir), bimName, evtName,\
-# samName, edpName, lossName, simName, driverFile, scriptDir, bldgName]
-# subprocess.call(preProcessArgs)
-numRVs = preProcessDakota(bimName, evtName, samName, edpName, lossName, simName, driverFile, bldgName)
+numRVs = preProcessDakota(bimName, evtName, samName, edpName, lossName, simName, driverFile, bldgName, numSamples)
 
 
 #Create Template Directory and copy files
 templateDir = "{}/templatedir".format(bldgName)
 os.mkdir(templateDir)
-bldgWorkflowDriver = "{}/workflow_driver.bat".format(bldgName)
-shutil.copy(bldgWorkflowDriver, "{}/workflow_driver.bat".format(templateDir))
+bldgWorkflowDriver = "{}/{}".format(bldgName, workflowDriver)
+shutil.copy(bldgWorkflowDriver, "{}/{}".format(templateDir, workflowDriver))
 shutil.copy("{}/dpreproSimCenter".format(scriptDir), templateDir)
 shutil.copy(bimName, "{}/bim.j".format(templateDir))
 shutil.copy(evtName, "{}/evt.j".format(templateDir))
@@ -71,4 +57,4 @@ postprocessCommand = '{}/postprocessDAKOTA {} {} {} {} {}'.format(scriptDir, num
 subprocess.Popen(postprocessCommand, shell=True).wait()
 
 #Clean up building folder
-#shutil.rmtree(bldgName)
+shutil.rmtree(bldgName)

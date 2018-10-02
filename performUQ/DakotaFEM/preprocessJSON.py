@@ -1,6 +1,7 @@
 import json
 import sys
 import os
+import platform
 
 numRandomVariables = 0
 numNormalUncertain = 0
@@ -12,24 +13,12 @@ numDiscreteDesignSetString = 0
 discreteDesignSetStringName=[]
 discreteDesignSetStringValues =[]
 
-def preProcessDakota(bimName, evtName, samName, edpName, lossName, simName, driverFile, bldgName):
-    numSamples = 5
+def preProcessDakota(bimName, evtName, samName, edpName, lossName, simName, driverFile, bldgName, numSamples):
 
-    # bimName=sys.argv[1];#'exampleBIM.json'
-    # evtName=sys.argv[2];#'exampleEVENT.json'
-    # samName=sys.argv[3];#'exampleSAM.json'
-    # edpName=sys.argv[4];#'exampleEDP.json'
-    # lossName=sys.argv[5];#'exampleDL.json'
-    # simName=sys.argv[6];#'exampleSIMULATION.json'
-    # driverFile = sys.argv[7]
-    # scriptDIR = sys.argv[8]
-    # bldgName = sys.argv[9]
-
-    #workflowDIR=sys.argv[6];#'/Users/simcenter/NHERI/Workflow1.1/'
-
-    #later
-    #dakotaName=sys.argv[7]
-    #numSamples=sys.argv[8];
+    #setting workflow driver name based on platform
+    workflowDriver = 'workflow_driver'
+    if platform.system == 'Windows':
+        workflowDriver = 'workflow_driver.bat'
 
     # 
     # parse the data
@@ -134,7 +123,7 @@ def preProcessDakota(bimName, evtName, samName, edpName, lossName, simName, driv
     # write out the interface data
     f.write('interface,\n')
     f.write('system # asynch evaluation_concurrency = 4\n')
-    f.write('analysis_driver = \'workflow_driver.bat\' \n')
+    f.write("analysis_driver = '{}' \n".format(workflowDriver))
     f.write('parameters_file = \'params.in\' \n')
     f.write('results_file = \'results.out\' \n')
     f.write('work_directory directory_tag \n')
@@ -170,7 +159,7 @@ def preProcessDakota(bimName, evtName, samName, edpName, lossName, simName, driv
     # Write the workflow driver
     #
 
-    f = open('{}/workflow_driver.bat'.format(bldgName), 'w')
+    f = open('{}/{}'.format(bldgName, workflowDriver), 'w')
 
     # want to dprepro the files with the random variables
     f.write('perl dpreproSimCenter params.in bim.j ' + bimName + '\n')
