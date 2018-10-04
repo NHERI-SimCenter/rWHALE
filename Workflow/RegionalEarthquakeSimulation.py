@@ -80,11 +80,9 @@ def main(run_type, inputFile, applicationsRegistry):
         # Use workflow name to set cwd
         workDir = data['Name']
         print 'DirName is: ' + workDir
-        if(os.path.exists(workDir) and os.path.isdir(workDir)):
-            shutil.rmtree(workDir)
-        
-        os.mkdir(workDir)
-
+        if(not os.path.exists(workDir)):
+            os.mkdir(workDir)
+            
         #
         # now we parse for the applications & app specific data in workflow
         #
@@ -106,6 +104,21 @@ def main(run_type, inputFile, applicationsRegistry):
 
                 # check building app in registry, if so get full executable path
                 buildingAppData = buildingApp['ApplicationData']
+                print(buildingAppData)
+                if '-Min' in sys.argv:
+                    minArgIndex = sys.argv.index('-Min') + 1
+                    minArg = sys.argv[minArgIndex]
+                    print('Overriding min: ' + minArg)
+                    buildingAppData['Min'] = minArg
+
+
+                if '-Max' in sys.argv:
+                    maxArgIndex = sys.argv.index('-Max') + 1
+                    maxArg = sys.argv[maxArgIndex]
+                    print('Overriding max: ' + maxArg)
+                    buildingAppData['Max'] = maxArg
+
+
                 if buildingApplication in Applications['BuildingApplications'].keys():
                     buildingAppExe = Applications['BuildingApplications'].get(buildingApplication)
                 else:
@@ -422,6 +435,12 @@ def main(run_type, inputFile, applicationsRegistry):
             else:
                 workflow_log('Check run only. No simulation performed.')
 
+        minBldg = buildingAppData['Min']
+        maxBldg = buildingAppData['Max']
+        readDLs = [os.path.abspath("../build/bin/ReadDLs"), minBldg, maxBldg, "DLs{}-{}.csv".format(minBldg, maxBldg)]
+        command, result, returncode = runApplication(readDLs, workDir)
+        log_output.append([command, result, returncode])
+
     except WorkFlowInputError as e:
         workflow_log('workflow error: %s' % e.value)
         workflow_log(divider)
@@ -436,7 +455,7 @@ def main(run_type, inputFile, applicationsRegistry):
 
 if __name__ == '__main__':
 
-    if len(sys.argv) != 4:
+    if len(sys.argv) < 4:
         print('\nNeed three arguments, e.g.:\n')
         print('    python %s action workflowinputfile.json workflowapplications.json' % sys.argv[0])
         print('\nwhere: action is either check or run\n')
