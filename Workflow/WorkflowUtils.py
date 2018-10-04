@@ -42,7 +42,7 @@ def add_full_path(possible_filename):
     possibleWinFileName = possible_filename + '.exe'
     if (os.path.exists(possible_filename) or os.path.exists(possibleWinFileName)):
         if os.path.isdir(possible_filename):
-            return os.path.abspath(possible_filename) + '\\'
+            return os.path.abspath(possible_filename) + '/'
         else:
             return os.path.abspath(possible_filename)
     else:

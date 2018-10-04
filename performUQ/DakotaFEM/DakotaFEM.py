@@ -5,6 +5,7 @@ import shutil
 import subprocess
 from preprocessJSON import preProcessDakota
 import platform
+import stat
 
 #Reading input arguments
 bimName = sys.argv[2]
@@ -39,6 +40,8 @@ numRVs = preProcessDakota(bimName, evtName, samName, edpName, lossName, simName,
 templateDir = "{}/templatedir".format(bldgName)
 os.mkdir(templateDir)
 bldgWorkflowDriver = "{}/{}".format(bldgName, workflowDriver)
+st = os.stat(bldgWorkflowDriver)
+os.chmod(bldgWorkflowDriver, st.st_mode | stat.S_IEXEC)
 shutil.copy(bldgWorkflowDriver, "{}/{}".format(templateDir, workflowDriver))
 shutil.copy("{}/dpreproSimCenter".format(scriptDir), templateDir)
 shutil.copy(bimName, "{}/bim.j".format(templateDir))

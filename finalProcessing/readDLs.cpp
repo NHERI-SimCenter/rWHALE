@@ -10,6 +10,7 @@ using namespace std;
 #include <stdio.h>
 #include <stdlib.h>
 #include <string>
+#include <cstring>
 
 #include <jansson.h>     // for writing json
 
