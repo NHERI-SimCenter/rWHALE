@@ -284,6 +284,8 @@ def main(run_type, inputFile, applicationsRegistry):
         buildingsFile = os.path.abspath('{}/buildings.json'.format(workDir))
         if 'buildingFile' in data:
             buildingsFile = os.path.abspath(workDir + '/' + data['buildingFile'])
+
+        buildingsFile = buildingsFile.replace('.json', '{}-{}.json'.format(buildingAppData['Min'], buildingAppData['Max']))
         buildingAppDataList = [buildingAppExe, buildingsFile]
 
         for key in buildingAppData.keys():
@@ -467,7 +469,7 @@ if __name__ == '__main__':
 
     main(run_type, inputFile, applicationsRegistry)
 
-    workflow_log_file = 'workflow-log-%s.txt' % (strftime('%Y-%m-%d-%H-%M-%S-utc', gmtime()))
+    workflow_log_file = 'workflow-log-{}-{}.txt'.format(sys.argv[5], sys.argv[7])
     log_filehandle = open(workflow_log_file, 'wb')
 
     print >>log_filehandle, divider
