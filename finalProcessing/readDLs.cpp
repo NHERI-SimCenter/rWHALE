@@ -9,7 +9,8 @@ using namespace std;
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
+#include <string>
+#include <cstring>
 
 #include <jansson.h>     // for writing json
 
@@ -30,7 +31,7 @@ int main(int argc, char **argv) {
 
   for (int i=minRow; i<=maxRow; i++) {
     //First, we will read the location from the BIM file
-    string bimFilename = to_string(i) + "-BIM.json";
+    string bimFilename = std::to_string(i) + "-BIM.json";
     json_error_t error;
     json_t *bimJson = json_load_file(bimFilename.c_str(), 0, &error);
     double latitude = -1.0;

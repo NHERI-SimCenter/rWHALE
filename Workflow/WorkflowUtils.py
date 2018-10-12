@@ -16,9 +16,9 @@ def workflow_log(msg):
 
 
 # function to return result of invoking an application
-def runApplication(application_plus_args):
+def runApplication(application_plus_args, workDir):
     try:
-        result = subprocess.check_output(' '.join(application_plus_args), stderr=subprocess.STDOUT, shell=True)
+        result = subprocess.check_output(' '.join(application_plus_args), stderr=subprocess.STDOUT, shell=True, cwd=workDir)
         # for line in result.split('\n'):
         # pass
         # print(line)
@@ -38,7 +38,9 @@ def add_full_path(possible_filename):
     # only update if it looks like a path
     if not ('./' in possible_filename or '..' in possible_filename):
         return possible_filename
-    if (os.path.exists(possible_filename)):
+    
+    possibleWinFileName = possible_filename + '.exe'
+    if (os.path.exists(possible_filename) or os.path.exists(possibleWinFileName)):
         if os.path.isdir(possible_filename):
             return os.path.abspath(possible_filename) + '/'
         else:
