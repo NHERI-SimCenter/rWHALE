@@ -37,37 +37,16 @@ moc*
 *.out
 *.app
 
-# QT
-*.pro.user
-
 # EXAMPLE & EXE
 *.out
-createBIM/createBIM
-createBIM/UrbanSimDatabase
-createEVENT/createEVENT
-createEDP/createEDP
-createEDP/StandardEarthquakeEDP
-createSAM/createSAM
-createSAM/MDOF-LU
-createSAM/processSAM
-createLOSS/createLOSS
-createEVENT/LLNL_SW4
-createLOSS/FEMAP58_LU
-createLOSS/DL-data.tar.gz
-performUQ/extractEDP
-performUQ/finishUP.sh
-getUncertainty
-mainPreprocessor
-mainPostprocessor
 dakota*
 templatedir
 workdir.*
-createBIM/GenericBimDatabase
-createBIM/RandomUrbanSimDatabase
 finalProcessing/readDLs
-performUQ/postprocessDAKOTA
 *.tcl
 
 *.gz
 *.csv
 
+build/*
+createEVENT/Hayward7.0

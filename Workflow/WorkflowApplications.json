@@ -14,7 +14,7 @@
       {
         "Name": "UrbanSimDatabase",
 
-        "ExecutablePath": "../createBIM/UrbanSimDatabase",
+        "ExecutablePath": "../build/bin/UrbanSimDatabase",
 
         "ApplicationSpecificInputs": [
 		{ "id":"Min",
@@ -41,7 +41,7 @@
       },
       {
         "Name": "RandomUrbanSimDatabase",
-        "ExecutablePath": "../createBIM/RandomUrbanSimDatabase",
+        "ExecutablePath": "../build/bin/RandomUrbanSimDatabase",
         "ApplicationSpecificInputs": [
 		{ "id":"Min",
 		  "type":"int",
@@ -72,7 +72,7 @@
       },
       {
         "Name": "GenericBimDatabase",
-        "ExecutablePath": "../createBIM/GenericBimDatabase",
+        "ExecutablePath": "../build/bin/GenericBimDatabase",
         "ApplicationSpecificInputs": [
           { "id":"Min",
             "type":"int",
@@ -115,7 +115,7 @@
     "Applications": [
       {
         "Name": "LLNL-SW4",
-        "ExecutablePath": "../createEVENT/LLNL_SW4",
+        "ExecutablePath": "../build/bin/LLNL_SW4",
         "ApplicationSpecificInputs": [
 		{ "id":"pathSW4results",
 	          "type":"string",
@@ -129,7 +129,7 @@
       },
       {
         "Name": "SHA-GM",
-        "ExecutablePath": "../createEVENT/SHA-GM.py",
+        "ExecutablePath": "../build/bin/SHA-GM.py",
         "ApplicationSpecificInputs":[{
             "id": "scenarioConfig",
             "type": "path",
@@ -167,7 +167,7 @@
     "Applications": [
       {
         "Name": "MDOF-LU",
-        "ExecutablePath": "../createSAM/MDOF-LU",
+        "ExecutablePath": "../build/bin/MDOF-LU",
         "ApplicationSpecificInputs": []
       }
     ]
@@ -206,7 +206,7 @@
     "Applications": [
       {
         "Name": "StandardEarthquakeEDP",
-        "ExecutablePath": "../createEDP/StandardEarthquakeEDP",
+        "ExecutablePath": "../build/bin/StandardEarthquakeEDP",
         "ApplicationSpecificInputs": []
       }
     ]
@@ -245,7 +245,7 @@
     "Applications": [
       {
         "Name": "OpenSees",
-        "ExecutablePath": "../performSIMULATION/OpenSeesSimulation.py"
+        "ExecutablePath": "../build/bin/OpenSeesSimulation.py"
       }
     ]
   },
@@ -301,7 +301,7 @@
     "Applications": [
       {
         "Name": "Dakota-FEM",
-        "ExecutablePath": "../performUQ/DakotaFEM.py"
+        "ExecutablePath": "../build/bin/DakotaFEM.py"
       }
     ]
   },
@@ -333,7 +333,7 @@
     "Applications": [
       {
         "Name": "FemaP58-LU",
-        "ExecutablePath": "../createLOSS/FEMAP58_LU",
+        "ExecutablePath": "../build/bin/FEMAP58_LU",
         "ApplicationSpecificInputs": [
 		{ "id":"pathCurves",
 		  "type":"string",
@@ -342,12 +342,12 @@
 	        },
 	        { "id":"filenameSettings",
 	          "type":"string",
-	          "description":"full path to file cntaining the application settings",
+	          "description":"full path to file containing the application settings",
 	          "default":10
 	        },
 	        { "id":"pathNormative",
 	          "type":"string",
-	          "description":"full path to file cntaining the normative building data",
+	          "description":"full path to file containing the normative building data",
 	          "default":10
 	        }
         ]
