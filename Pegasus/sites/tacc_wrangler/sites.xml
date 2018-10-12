@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sitecatalog xmlns="http://pegasus.isi.edu/schema/sitecatalog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://pegasus.isi.edu/schema/sitecatalog http://pegasus.isi.edu/schema/sc-4.0.xsd" version="4.0">
+
+    <site  handle="local" arch="x86_64">
+        <directory type="shared-scratch" path="${RUN_DIR}/scratch">
+            <file-server operation="all" url="file://${RUN_DIR}/scratch"/>
+        </directory>
+        <directory type="local-storage" path="${RUN_DIR}/outputs">
+            <file-server operation="all" url="file://${RUN_DIR}/outputs"/>
+        </directory>
+        <profile namespace="env" key="PEGASUS_HOME">/home/00384/rynge/software/pegasus/4.9.0dev</profile>
+    </site>
+
+    <site  handle="compute" arch="x86_64" os="LINUX">
+        <directory type="shared-scratch" path="/gpfs/flash/users/rynge/wf-scratch">
+            <file-server operation="all" url="file:///gpfs/flash/users/rynge/wf-scratch"/>
+        </directory>
+        <profile namespace="env" key="PEGASUS_HOME">/home/00384/rynge/software/pegasus/4.9.0dev</profile>
+        <profile namespace="condor" key="grid_resource">batch slurm</profile>
+        <profile namespace="pegasus" key="style">glite</profile>
+        <profile namespace="pegasus" key="data.configuration">sharedfs</profile>
+        <profile namespace="pegasus" key="auxillary.local">True</profile>
+        <profile namespace="pegasus" key="queue">normal</profile>
+        <profile namespace="pegasus" key="runtime">14400</profile>
+        <profile namespace="pegasus" key="project">DesignSafe-McKenna</profile>
+        <profile namespace="pegasus" key="job.aggregator">mpiexec</profile>
+    </site>
+    
+</sitecatalog>
+
