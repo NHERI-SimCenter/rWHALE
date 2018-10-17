@@ -67,3 +67,8 @@ workdir.*
 *.gz
 *.csv
 
+# Pegasus stuff
+Pegasus/plan.*
+Pegasus/tacc/*.out
+Pegasus/tacc/*.err
+

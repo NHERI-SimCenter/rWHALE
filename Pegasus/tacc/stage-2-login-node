@@ -1,0 +1,77 @@
+#!/bin/bash
+
+
+function update_status
+{
+   STATUS=`pegasus-status --noqueue | tail -1 | sed 's/[:\(\)]/ /g'| awk '{print $5}'`
+   SUMMARY=`pegasus-status | grep "Condor jobs total" | sed 's/Summary: //'`
+}
+
+
+function show_state
+{
+    OUT="# STATUS is $STATUS"
+    if [ "x$STATUS" = "xRunning" -a "x$SUMMARY" != "x" ]; then
+        OUT="$OUT - $SUMMARY"
+    fi
+
+    if [ "x$OLD_OUT" = "x$OUT" ]; then
+        return
+    fi
+
+    OLD_OUT="$OUT"
+    echo "$OUT"
+}
+
+TOP_DIR=$1
+
+echo
+echo
+echo "I'm running on "`hostname -f`" in the directory $PWD"
+echo "The configured top dir is $TOP_DIR"
+
+echo
+echo
+
+cd $TOP_DIR/Pegasus
+./submit-workflow tacc_wrangler $TOP_DIR/NHERI 2>&1 | tee plan.out
+
+STATUS=$?
+if [ $STATUS != 0 ]; then
+   echo "Workflow submission failed"
+   exit $STATUS
+fi
+
+# get run directory from the planning output
+RUN_DIR=`grep pegasus-remove plan.out | awk '{print $5}'`
+if [ "x$RUN_DIR" = "x" ]; then
+    echo "Unable to determine the RUN_DIR from the planner output - did the planner fail?"
+    exit 1
+fi
+
+# Change in to the rundir
+cd $RUN_DIR
+echo "Run directory is " `pwd`
+
+sleep 30s
+update_status
+show_state
+
+while [ "$STATUS" = "Running" -o "$STATUS" = "" -o "$STATUS" = "Unknown"  ] ; do
+    NOW=`date +'%s'`
+    sleep 3m
+    update_status
+    show_state
+done
+
+if [ "$STATUS" = "Success" ]; then
+    # give monitord some time to finish
+    sleep 1m
+    echo "*** Workflow finished succesfully ***"
+    exit 0
+else
+    echo "*** Workflow failed ***" 1>&1
+    exit 1
+fi
+
+
