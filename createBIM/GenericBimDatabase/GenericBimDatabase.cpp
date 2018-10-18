@@ -15,9 +15,10 @@
 #include "GenericBimDatabase.h"
 #include "BIM.h"
 #include "BIMConfig.h"
-#include "BuildingPropertyMapper.h"
 
 using namespace std;
+void parseRow(BIM::BuildingInfo& building, const CsvRow* row);
+void writeBIMJson(BIM::BuildingInfo& building, std::string filename);
 
 int main(int argc, const char **argv)
 {
@@ -126,29 +127,14 @@ int main(int argc, const char **argv)
   
     int currentRow = 1;
   
-    json_t *root = json_object();
 
     while ((row = CsvParser_getRow(csvparser))) 
     {
         if (currentRow >= minRow && currentRow <= maxRow)
         {
-            const char **rowFields = CsvParser_getFields(row);
-
-            json_t *GI = json_object();
-            json_t *distribution = json_array();
-            json_t *structtype = json_object();
-            json_t *height = json_object();
-            json_t *valuenames = json_array();
-
             //Reading info from CSV
             BIM::BuildingInfo bldgInfo;
-            bldgInfo.Id = rowFields[0];
-            bldgInfo.Stories = atoi(rowFields[2]);
-            bldgInfo.Area = strtod(rowFields[1], NULL)/10.764; //Converting area from sqft to meters squared
-            bldgInfo.YearBuilt = atoi(rowFields[3]);
-            bldgInfo.OccupancyId = atoi(rowFields[4]);
-            bldgInfo.Location.Latitude = strtod(rowFields[5], NULL);
-            bldgInfo.Location.Longitude = strtod(rowFields[6], NULL);
+			parseRow(bldgInfo, row);
             
 			//Validating area
 			bimConfig->validateArea(bldgInfo);
@@ -161,61 +147,18 @@ int main(int argc, const char **argv)
 			
 			//Mapping Structure Type
 			bimConfig->mapBuildingStructureType(bldgInfo);
-
-            //Setting info in Json
-            json_object_set(GI, "area", json_real(bldgInfo.Area/bldgInfo.Stories));
-            json_object_set(GI, "name", json_string(bldgInfo.Id.c_str()));
-            json_object_set(GI, "numStory", json_integer(bldgInfo.Stories));
-            json_object_set(GI, "yearBuilt", json_integer(bldgInfo.YearBuilt));
-            
-            int numMappedTypes = bldgInfo.MappedStructTypes.size();
-            if (numMappedTypes == 1)
-                json_object_set(GI,"structType", json_string(bldgInfo.MappedStructTypes[0].c_str()));
-            else
-            {                
-                json_object_set(GI, "structType", json_string("RV.structType"));
-
-                for(int i = 0; i < bldgInfo.MappedStructTypes.size(); i++) 
-                    json_array_append(valuenames, json_string(bldgInfo.MappedStructTypes[i].c_str()));                
-
-                json_object_set(structtype,"distribution", json_string("discrete_design_set_string"));
-                json_object_set(structtype,"name", json_string("structType"));
-                json_object_set(structtype,"value", json_string("RV.structType"));
-                json_object_set(structtype,"elements", valuenames);
-
-                json_array_append(distribution, structtype);	
-            }
-
-            json_object_set(GI,"occupancy",json_string(bldgInfo.Occupancy.c_str()));
-            json_object_set(GI,"height",json_string("RV.height"));
-            
-            json_object_set(GI,"replacementCost", json_real(bldgInfo.ReplacementCost * bldgInfo.Area * 10.764));
-
-			bimConfig->mapReplacementTime(bldgInfo);
-
-            json_object_set(GI,"replacementTime", json_real(bldgInfo.ReplacementTime));
-            
-            json_t *location = json_object();
-            json_object_set(location, "latitude", json_real(bldgInfo.Location.Latitude));
-            json_object_set(location, "longitude", json_real(bldgInfo.Location.Longitude));
-            json_object_set(GI, "location", location);
-
-            json_object_set(height,"distribution", json_string("normal"));
-            json_object_set(height,"name", json_string("height"));
-            json_object_set(height,"value", json_string("RV.height"));
-            
+			
+			//Mapping story height
 			bimConfig->mapStoryHeight(bldgInfo);
 
-            json_object_set(height, "mean", json_real(bldgInfo.Stories * bldgInfo.storyHeightMean));
-            json_object_set(height, "stdDev", json_real(bldgInfo.storyHeightStdDev * bldgInfo.Stories));
+			//Map replacement time
+			bimConfig->mapReplacementTime(bldgInfo);
 
-            json_array_append(distribution, height);
-
-            json_object_set(root,"RandomVariables", distribution);
-            json_object_set(root,"GI", GI);
             std::string filename;
-
             filename = bldgInfo.Id + std::string("-BIM.json");
+
+			//Writing the BIM file
+			writeBIMJson(bldgInfo, filename);
 
             json_t *bldg = json_object();
             json_object_set(bldg,"id", json_string(bldgInfo.Id.c_str()));
@@ -223,8 +166,6 @@ int main(int argc, const char **argv)
             json_array_append(buildingsArray, bldg);
             
             // write the file & clean memory
-            json_dump_file(root, filename.c_str(), 0);
-            json_object_clear(root);
             CsvParser_destroy_row(row);
         }
 
@@ -242,5 +183,77 @@ int main(int argc, const char **argv)
     return 0;
 }
 
+void parseRow(BIM::BuildingInfo & building, const CsvRow * row)
+{
+	const char **rowFields = CsvParser_getFields(row);
+
+	building.Id = rowFields[0];
+	building.Stories = atoi(rowFields[2]);
+	building.Area = strtod(rowFields[1], NULL) / 10.764; //Converting area from sqft to meters squared
+	building.YearBuilt = atoi(rowFields[3]);
+	building.OccupancyId = atoi(rowFields[4]);
+	building.Location.Latitude = strtod(rowFields[5], NULL);
+	building.Location.Longitude = strtod(rowFields[6], NULL);
+}
+
+void writeBIMJson(BIM::BuildingInfo & bldgInfo, std::string filename)
+{
+	json_t *root = json_object();
+
+	json_t *GI = json_object();
+	json_t *distribution = json_array();
+	json_t *structtype = json_object();
+	json_t *height = json_object();
+	json_t *valuenames = json_array();
+
+	//Setting info in Json
+	json_object_set(GI, "area", json_real(bldgInfo.Area / bldgInfo.Stories));
+	json_object_set(GI, "name", json_string(bldgInfo.Id.c_str()));
+	json_object_set(GI, "numStory", json_integer(bldgInfo.Stories));
+	json_object_set(GI, "yearBuilt", json_integer(bldgInfo.YearBuilt));
+
+	int numMappedTypes = bldgInfo.MappedStructTypes.size();
+	if (numMappedTypes == 1)
+		json_object_set(GI, "structType", json_string(bldgInfo.MappedStructTypes[0].c_str()));
+	else
+	{
+		json_object_set(GI, "structType", json_string("RV.structType"));
+
+		for (int i = 0; i < bldgInfo.MappedStructTypes.size(); i++)
+			json_array_append(valuenames, json_string(bldgInfo.MappedStructTypes[i].c_str()));
+
+		json_object_set(structtype, "distribution", json_string("discrete_design_set_string"));
+		json_object_set(structtype, "name", json_string("structType"));
+		json_object_set(structtype, "value", json_string("RV.structType"));
+		json_object_set(structtype, "elements", valuenames);
+
+		json_array_append(distribution, structtype);
+	}
+
+	json_object_set(GI, "occupancy", json_string(bldgInfo.Occupancy.c_str()));
+	json_object_set(GI, "height", json_string("RV.height"));
+
+	json_object_set(GI, "replacementCost", json_real(bldgInfo.ReplacementCost * bldgInfo.Area * 10.764));
 
 
+	json_object_set(GI, "replacementTime", json_real(bldgInfo.ReplacementTime));
+
+	json_t *location = json_object();
+	json_object_set(location, "latitude", json_real(bldgInfo.Location.Latitude));
+	json_object_set(location, "longitude", json_real(bldgInfo.Location.Longitude));
+	json_object_set(GI, "location", location);
+
+	json_object_set(height, "distribution", json_string("normal"));
+	json_object_set(height, "name", json_string("height"));
+	json_object_set(height, "value", json_string("RV.height"));
+
+	json_object_set(height, "mean", json_real(bldgInfo.Stories * bldgInfo.storyHeightMean));
+	json_object_set(height, "stdDev", json_real(bldgInfo.storyHeightStdDev * bldgInfo.Stories));
+
+	json_array_append(distribution, height);
+
+	json_object_set(root, "RandomVariables", distribution);
+	json_object_set(root, "GI", GI);
+
+	json_dump_file(root, filename.c_str(), 0);
+}
