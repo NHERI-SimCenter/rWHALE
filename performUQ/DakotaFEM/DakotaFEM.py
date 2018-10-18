@@ -22,7 +22,7 @@ bldgName = bimName[:-9]
 
 #setting workflow driver name based on platform
 workflowDriver = 'workflow_driver'
-if platform.system == 'Windows':
+if platform.system() == 'Windows':
     workflowDriver = 'workflow_driver.bat'
 
 #Removing working directory for the current building, if it exists

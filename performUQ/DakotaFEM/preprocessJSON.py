@@ -17,7 +17,7 @@ def preProcessDakota(bimName, evtName, samName, edpName, lossName, simName, driv
 
     #setting workflow driver name based on platform
     workflowDriver = 'workflow_driver'
-    if platform.system == 'Windows':
+    if platform.system() == 'Windows':
         workflowDriver = 'workflow_driver.bat'
 
     # 
