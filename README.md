@@ -1,3 +1,5 @@
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1442914.svg)](https://doi.org/10.5281/zenodo.1442914)
+
 # Regional Earthquake Simulation Workflow
 
 The regional earthquake simulation workflow is a set of applications that together can estimate damage and loss based on a buildings database and hazard information for a region. The workflow goes through the following five main processes to obtain damage and loss estimates for each building in the region:
