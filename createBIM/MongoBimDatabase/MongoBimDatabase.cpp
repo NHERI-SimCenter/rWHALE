@@ -29,6 +29,8 @@ int main(int argc, const char **argv)
 	const char* connectionString = NULL;
 	const char* configFile = NULL;
 	const char* outputFile = argv[1];
+	const char* database = NULL;
+	const char* collection = NULL;
 
 	int arg = 2;
 	while (arg < argc)
@@ -48,6 +50,18 @@ int main(int argc, const char **argv)
 			arg++;
 			connectionString = argv[arg];
 			std::cerr << "MongoDB connection string: " << connectionString << std::endl;
+		}
+		else if (strcmp(argv[arg], "-database") == 0)
+		{
+			arg++;
+			database = argv[arg];
+			std::cerr << "MongoDB connection database: " << database << std::endl;
+		}
+		else if (strcmp(argv[arg], "-collection") == 0)
+		{
+			arg++;
+			collection = argv[arg];
+			std::cerr << "MongoDB connection collection: " << collection << std::endl;
 		}
 		else if (strcmp(argv[arg], "-config") == 0)
 		{
@@ -118,10 +132,10 @@ int main(int argc, const char **argv)
 	mongocxx::client mongoClient(uri);
 
 	//Connecting to SimCenter database
-	mongocxx::database db = mongoClient["SimCenter"];
+	mongocxx::database db = mongoClient[database];
 
 	//Reading the Buildings collection
-	mongocxx::collection buildings = db["Buildings"];
+	mongocxx::collection buildings = db[collection];
 
 	//Building the min-max query
 	std::string min = std::to_string(minRow);
@@ -201,7 +215,9 @@ int main(int argc, const char **argv)
 		json_array_append(buildingsArray, bldg);
 	}
 
-	
+	json_dump_file(buildingsArray, outputFile, 0);
+	delete bimConfig;
+	delete buildingsArray;
     return 0;
 }
 
@@ -314,10 +330,11 @@ void writeBIMJson(BIM::BuildingInfo & bldgInfo, bsoncxx::document::view & doc, s
 
 	json_object_set(root, "GI", GI);
 
-	size_t flags;
+	size_t flags = 0;
 	json_error_t error;
 	json_object_set(root, "StructuralInformation", json_loads(jsonDoc.c_str(), flags, &error));
 
+	json_object_set(root, "RandomVariables", json_array());
 
 	json_dump_file(root, filename.c_str(), 0);
 

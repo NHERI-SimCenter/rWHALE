@@ -8,7 +8,7 @@ project (PerformSimulation VERSION 0.0.1)
 include_directories("./common")
 include_directories("./OpenSeesSimulation")
 
-file(GLOB PRESOURCES "./OpenSeesSimulation/*Pre*.cpp")
+file(GLOB PRESOURCES "./OpenSeesSimulation/*Pre*.cpp" "./OpenSeesSimulation/OpenSeesConcreteShearWalls.cpp")
 file(GLOB POSTSOURCES "./OpenSeesSimulation/*Post*.cpp")
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin/)

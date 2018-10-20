@@ -1,5 +1,5 @@
-#ifndef OPENSEES_PREPROCESSOR_H
-#define OPENSEES_PREPROCESSOR_H
+#ifndef OpenSeesConcreteShearWalls_H
+#define OpenSeesConcreteShearWalls_H
 class json_t;
 #include <fstream>
 using namespace::std;

@@ -56,7 +56,11 @@ def preProcessDakota(bimName, evtName, samName, edpName, lossName, simName, driv
 
     f.write("method\n")
     f.write("sampling,\n")
-    f.write('samples=' '{}'.format(numSamples))
+    if(not numRandomVariables == 0):
+        f.write('samples=' '{}'.format(numSamples))
+    else:
+        f.write('samples=1')
+
     #f.write("samples=5\n")
     f.write("\nseed=98765,\n")
     f.write("sample_type random\n")
@@ -64,7 +68,14 @@ def preProcessDakota(bimName, evtName, samName, edpName, lossName, simName, driv
 
     # write out the variable data
     f.write('variables,\n')
+    
+    if(numRandomVariables == 0):
+        f.write('normal_uncertain = 1\n')
+        f.write('means = 1.0\n')
+        f.write('std_deviations = 1e-3\n')
+        f.write("descriptors = 'dummyRV'\n\n")    
 
+        
     if (numNormalUncertain > 0):
         f.write('normal_uncertain = ' '{}'.format(numNormalUncertain))
         f.write('\n')
