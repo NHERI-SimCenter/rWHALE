@@ -689,9 +689,9 @@ int ConcreteShearWall::readBIM(const char *event, const char *bim)
   json_error_t error;
   json_t *rootBIM = json_load_file(bim, 0, &error);
 
-  json_t *GI = json_object_get(rootBIM, "GeneralInformation");
-  json_t *yType = json_object_get(GI, "yBuilt");
-  int nStory = json_integer_value(json_object_get(GI, "stories"));
+  json_t *GI = json_object_get(rootBIM, "GI");
+  json_t *yType = json_object_get(GI, "yearBuilt");
+  int nStory = json_integer_value(json_object_get(GI, "numStory"));
 
   numFloors = nStory;
 
@@ -701,7 +701,7 @@ int ConcreteShearWall::readBIM(const char *event, const char *bim)
 
   int year = json_integer_value(yType);
 
-  if (strcmp(type, "A1 - SpecialReinforcedConcreteShearWall") != 0)
+  if (strcmp(type, "ReinforcedConcreteShearWall") != 0)
   {
     return -1;
   }
@@ -1021,6 +1021,8 @@ int ConcreteShearWall::writeSAM(const char *path, int nLtmp, int nHtmp)
 
     json_object_set(root,"NodeMapping",nodeMapping);
     */
+
+  json_object_set(root, "RandomVariables", json_array());
 
   // write the file & clean memory
   json_dump_file(root, path, 0);

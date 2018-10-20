@@ -65,6 +65,7 @@ int OpenSeesConcreteShearWalls::writeRV(const char *BIM,
   // write the file & clean memory
   json_dump_file(root, outputFilename, 0);
   json_object_clear(root);
+  return 0;
 }
 
 int OpenSeesConcreteShearWalls::createInputFile(const char *BIM,
@@ -110,7 +111,7 @@ int OpenSeesConcreteShearWalls::createInputFile(const char *BIM,
 
   json_error_t error0;
   json_t *rootBIM = json_load_file((filenameBIM), 0, &error0);
-  json_t *GI = json_object_get(rootBIM, "GeneralInformation");
+  json_t *GI = json_object_get(rootBIM, "GI");
   volumeOfWall = json_number_value(json_object_get(GI, "volume"));
 
   //
@@ -573,6 +574,7 @@ int OpenSeesConcreteShearWalls::processEvents(ofstream &s)
 
       if (strcmp(edpEventName, eventName) == 0)
       {
+		/*
         json_t *eventEDP = json_object_get(eventEDPs, "responses");
         int numResponses = json_array_size(eventEDP);
         for (int k = 0; k < numResponses; k++)
@@ -656,6 +658,7 @@ int OpenSeesConcreteShearWalls::processEvents(ofstream &s)
               json_t *value = json_object_get(json_array_get(infoDataArray, 0), "value");
               */
 
+		  /*
               size_t indexInfoData;
               json_t *infoData;
 
@@ -708,6 +711,7 @@ int OpenSeesConcreteShearWalls::processEvents(ofstream &s)
           }
         }
         //endhere
+		*/
 
         /*
           if (strcmp(type, "force") == 0)
@@ -741,7 +745,7 @@ int OpenSeesConcreteShearWalls::processEvents(ofstream &s)
           */
       }
 
-      if (strcmp(edpEventName, eventName) == 1000) // 0 This is old code, useful to earthquake events.
+      if (strcmp(edpEventName, eventName) == 0) // 0 This is old code, useful to earthquake events.
       {
         json_t *eventEDP = json_object_get(eventEDPs, "responses");
         int numResponses = json_array_size(eventEDP);
@@ -755,7 +759,7 @@ int OpenSeesConcreteShearWalls::processEvents(ofstream &s)
             int cline = json_integer_value(json_object_get(response, "cline"));
             int floor = json_integer_value(json_object_get(response, "floor"));
 
-            int nodeTag = this->getNode(cline, floor);
+            int nodeTag = this->getNode(cline, floor-1);
             //	    std::ostringstream fileString(string(edpEventName)+string(type));
             string fileString;
             ostringstream temp; //temp as in temporary
@@ -781,8 +785,8 @@ int OpenSeesConcreteShearWalls::processEvents(ofstream &s)
             int floor1 = json_integer_value(json_object_get(response, "floor1"));
             int floor2 = json_integer_value(json_object_get(response, "floor2"));
 
-            int nodeTag1 = this->getNode(cline, floor1);
-            int nodeTag2 = this->getNode(cline, floor2);
+            int nodeTag1 = this->getNode(cline, floor1 - 1);
+            int nodeTag2 = this->getNode(cline, floor2 - 1);
 
             string fileString1;
             string fileString2;
@@ -798,11 +802,11 @@ int OpenSeesConcreteShearWalls::processEvents(ofstream &s)
 
             s << "recorder EnvelopeDrift -file " << fileName1;
             s << " -iNode " << nodeTag1 << " -jNode " << nodeTag2;
-            s << " -dof 1 -perpDirn 1\n";
+            s << " -dof 1 -perpDirn 2\n";
 
             s << "recorder EnvelopeDrift -file " << fileName2;
             s << " -iNode " << nodeTag1 << " -jNode " << nodeTag2;
-            s << " -dof 2 -perpDirn 1\n";
+            s << " -dof 2 -perpDirn 2\n";
           }
 
           else if (strcmp(type, "residual_disp") == 0)
@@ -811,7 +815,7 @@ int OpenSeesConcreteShearWalls::processEvents(ofstream &s)
             int cline = json_integer_value(json_object_get(response, "cline"));
             int floor = json_integer_value(json_object_get(response, "floor"));
 
-            int nodeTag = this->getNode(cline, floor);
+            int nodeTag = this->getNode(cline, floor - 1);
 
             string fileString;
             ostringstream temp; //temp as in temporary
@@ -830,64 +834,7 @@ int OpenSeesConcreteShearWalls::processEvents(ofstream &s)
       }
     }
 
-    // create analysis
-    if (analysisType == -999) // 1
-    {
-      //      s << "handler Plain\n";
-      s << "numberer RCM\n";
-      s << "system BandGen\n";
-
-      if (filenameUQ != 0)
-      {
-        printf("HI filenameUQ %s\n", filenameUQ);
-        json_error_t error;
-        json_t *rootUQ = json_load_file(filenameUQ, 0, &error);
-        json_dump_file(rootUQ, "TEST", 0);
-
-        json_t *theRVs = json_object_get(rootUQ, "RandomVariables");
-        json_t *theRV;
-        int index;
-
-        json_array_foreach(theRVs, index, theRV)
-        {
-          const char *type = json_string_value(json_object_get(theRV, "name"));
-          printf("type: %s\n", type);
-          if (strcmp(type, "integration_scheme") == 0)
-          {
-            //	    const char *typeI = json_string_value(json_object_get(theRV,"value"));
-            int typeI = json_integer_value(json_object_get(theRV, "value"));
-            if (typeI == 1)
-            {
-              s << "integrator Newmark 0.5 0.25\n";
-            }
-            else if (typeI == 2)
-            {
-              s << "integrator Newmark 0.5 0.1667\n";
-            }
-            else if (typeI == 3)
-            {
-              s << "integrator HHT .9\n";
-            }
-            //	  printf("type: %s\n",typeI);
-            /*
-	    int typeI = json_integer_value(json_object_get(theRV,"value"));
-	    if (strcmp(typeI,"NewmarkLinear") == 0) {    
-	      //	      s << "integrator Newmark 0.5 0.25\n";
-	    } else if (strcmp(typeI,"NewmarkAverage") == 0) {    
-	      //	      s << "integrator Newmark 0.5 0.1667\n";
-	    } else if (strcmp(typeI,"HHTpt9") == 0) {    
-	      //	      s << "integrator HHT .9\n";
-	    }
-	    */
-          }
-        }
-      }
-
-      s << "analysis Transient\n";
-      s << "analyze " << numSteps << " " << dT << "\n";
-    }
-
-    if (analysisType == 100) // 1  gravity
+        if (analysisType == 100) // 1  gravity
     {
       s << "constraints Plain\n";
       s << "system UmfPack\n";
@@ -906,7 +853,7 @@ int OpenSeesConcreteShearWalls::processEvents(ofstream &s)
     int numNodes = json_array_size(nodes);
     s << "set numNodes " << numNodes << " \n";
     s << "set rho " << 2383.0 * 3.61273e-5 / 1000 << " \n"; //kilo-lb per cubic inch
-    s << "set g -1.0 \n";                             // lb force
+    s << "set g -9.81 \n";                             // lb force
 
     s << "set volumeOfWall " << volumeOfWall << "\n"; // TODO
 
@@ -919,7 +866,7 @@ int OpenSeesConcreteShearWalls::processEvents(ofstream &s)
 
     s << "} \n";
 
-    if (analysisType == 1) // cyclic
+    if (analysisType == 2) // cyclic
     {
 
       // apply gravity
@@ -968,6 +915,64 @@ int OpenSeesConcreteShearWalls::processEvents(ofstream &s)
       s << "remove recorders \n";
       s << "wipe  \n";
     }
+
+
+	// create analysis
+	if (analysisType == 1) // 1
+	{
+		//      s << "handler Plain\n";
+		s << "numberer RCM\n";
+		s << "system BandGen\n";
+
+		if (filenameUQ != 0)
+		{
+			printf("HI filenameUQ %s\n", filenameUQ);
+			json_error_t error;
+			json_t *rootUQ = json_load_file(filenameUQ, 0, &error);
+			json_dump_file(rootUQ, "TEST", 0);
+
+			json_t *theRVs = json_object_get(rootUQ, "RandomVariables");
+			json_t *theRV;
+			int index;
+
+			json_array_foreach(theRVs, index, theRV)
+			{
+				const char *type = json_string_value(json_object_get(theRV, "name"));
+				printf("type: %s\n", type);
+				if (strcmp(type, "integration_scheme") == 0)
+				{
+					//	    const char *typeI = json_string_value(json_object_get(theRV,"value"));
+					int typeI = json_integer_value(json_object_get(theRV, "value"));
+					if (typeI == 1)
+					{
+						s << "integrator Newmark 0.5 0.25\n";
+					}
+					else if (typeI == 2)
+					{
+						s << "integrator Newmark 0.5 0.1667\n";
+					}
+					else if (typeI == 3)
+					{
+						s << "integrator HHT .9\n";
+					}
+					//	  printf("type: %s\n",typeI);
+					/*
+					int typeI = json_integer_value(json_object_get(theRV,"value"));
+					if (strcmp(typeI,"NewmarkLinear") == 0) {
+					//	      s << "integrator Newmark 0.5 0.25\n";
+					} else if (strcmp(typeI,"NewmarkAverage") == 0) {
+					//	      s << "integrator Newmark 0.5 0.1667\n";
+					} else if (strcmp(typeI,"HHTpt9") == 0) {
+					//	      s << "integrator HHT .9\n";
+					}
+					*/
+				}
+			}
+		}
+
+		s << "analysis Transient\n";
+		s << "analyze " << numSteps << " " << dT << "\n";
+	}
   }
 
   return 0;
@@ -1000,10 +1005,10 @@ int OpenSeesConcreteShearWalls::processEvent(ofstream &s,
   json_array_foreach(timeSeriesArray, index, timeSeries)
   {
     const char *subType = json_string_value(json_object_get(timeSeries, "type"));
-    if (strcmp(subType, "PathValue") == 0)
+    if (strcmp(subType, "Value") == 0)
     {
-      double dt = json_number_value(json_object_get(timeSeries, "dt"));
-      json_t *data = json_object_get(timeSeries, "values");
+      double dt = json_number_value(json_object_get(timeSeries, "dT"));
+      json_t *data = json_object_get(timeSeries, "data");
       s << "timeSeries Path " << numSeries << " -dt " << dt;
       s << " -values \{ ";
       json_t *dataV;
@@ -1011,7 +1016,8 @@ int OpenSeesConcreteShearWalls::processEvent(ofstream &s,
 
       json_array_foreach(data, dataIndex, dataV)
       {
-        s << json_number_value(json_array_get(dataV, 0)) << " ";
+		  double a = json_real_value(dataV);
+        s << json_number_value(dataV) << " ";
       }
       s << " }\n";
 
@@ -1045,16 +1051,17 @@ int OpenSeesConcreteShearWalls::processEvent(ofstream &s,
     }
   }
 
-  json_t *boundaryConditionsArray = json_object_get(event, "boundaryConditions");
+  /*json_t *boundaryConditionsArray = json_object_get(event, "boundaryConditions");
   json_t *loadsArray = json_object_get(event, "loads");
+  json_t *loadsArray = json_object_get(event, "pattern");
   size_t indexLoads;
   json_t *loadJson;
   json_array_foreach(loadsArray, indexLoads, loadJson)
   {
     json_array_append_new(boundaryConditionsArray, loadJson);
-  }
+  }*/
   json_t *patternArray = json_object_get(event, "pattern");
-  patternArray = boundaryConditionsArray;
+  //patternArray = boundaryConditionsArray;
 
   int nodeTag;
   string cline;
@@ -1075,7 +1082,7 @@ int OpenSeesConcreteShearWalls::processEvent(ofstream &s,
 
   json_array_foreach(patternArray, index, pattern)
   {
-    patternName = json_string_value(json_object_get(pattern, "name"));
+    //patternName = json_string_value(json_object_get(pattern, "name"));
     printf("pattern name is %s\n", patternName.c_str());
     patternType = json_string_value(json_object_get(pattern, "type"));
     timeSeriesName = json_string_value(json_object_get(pattern, "timeSeries"));
@@ -1091,6 +1098,7 @@ int OpenSeesConcreteShearWalls::processEvent(ofstream &s,
       positionType = "Point";
     else if (patternType.find("Line") != string::npos)
       positionType = "Line";
+
     else
       printf("positionType is not found! \n");
 
@@ -1240,6 +1248,23 @@ int OpenSeesConcreteShearWalls::processEvent(ofstream &s,
       s << "}\n";
     }
 
+	if (0 == patternType.compare("UniformAcceleration"))
+	{
+		int dirn = json_integer_value(json_object_get(pattern, "dof"));
+
+		int series = 0;
+		string name(json_string_value(json_object_get(pattern, "timeSeries")));
+		printf("%s\n", name.c_str());
+		it = timeSeriesList.find(name);
+		if (it != timeSeriesList.end())
+			series = it->second;
+
+		int seriesTag = timeSeriesList[name];
+		s << "pattern UniformExcitation " << numPattern << " " << dirn;
+		s << " -accel " << series << "\n";
+		numPattern++;
+		
+	}
     numPattern++;
   }
 
