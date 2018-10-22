@@ -110,7 +110,7 @@ int OpenSeesConcreteShearWalls::createInputFile(const char *BIM,
   //Parse BIM Json input file
 
   json_error_t error0;
-  json_t *rootBIM = json_load_file((filenameBIM), 0, &error0);
+  rootBIM = json_load_file((filenameBIM), 0, &error0);
   json_t *GI = json_object_get(rootBIM, "GI");
   volumeOfWall = json_number_value(json_object_get(GI, "volume"));
 
@@ -132,14 +132,26 @@ int OpenSeesConcreteShearWalls::createInputFile(const char *BIM,
 
   mapping = json_object_get(rootSAM, "nodeMapping");
 
+  tclFile << "#Nodes Coordinates" << std::endl;
   processNodes(tclFile);
+  tclFile << std::endl << std::endl;
 
+  tclFile << "#Material Properties" << std::endl;
   processMaterials(tclFile);
+  tclFile << std::endl << std::endl;
+
+  tclFile << "#Element Connectivity" << std::endl;
   processElements(tclFile);
+  tclFile << std::endl << std::endl;
+
   //processDamping(tclFile);
 
   rootEVENT = json_load_file(filenameEVENT, 0, &error);
   rootEDP = json_load_file(filenameEDP, 0, &error);
+
+  tclFile << "#Floors Masses" << std::endl;
+  processFloorsMasses(tclFile);
+  tclFile << std::endl << std::endl;
 
   processEvents(tclFile);
 
@@ -202,9 +214,17 @@ int OpenSeesConcreteShearWalls::createInputFile(const char *BIM,
 
   mapping = json_object_get(rootSAM, "nodeMapping");
 
+  tclFile << "#Nodes Coordinates" << std::endl;
   processNodes(tclFile);
+  tclFile << std::endl << std::endl;
+
+  tclFile << "#Material Properties" << std::endl;
   processMaterials(tclFile);
+  tclFile << std::endl << std::endl;
+
+  tclFile << "#Element Connectivity" << std::endl;
   processElements(tclFile);
+  tclFile << std::endl << std::endl;
 
   rootEVENT = json_load_file(filenameEVENT, 0, &error);
   rootEDP = json_load_file(filenameEDP, 0, &error);
@@ -418,6 +438,16 @@ int OpenSeesConcreteShearWalls::processNodes(ofstream &s)
 
     s << "\n";
   }
+
+  s << "\n#Fixing nodes at the base\n";
+  std::vector<int> baseNodes = getNodesAtElevation(0.0);
+  for each (auto baseNode in baseNodes)
+  {
+	  s << "fix " << baseNode << " 1 1 " << std::endl;
+  }
+
+  s << std::endl << std::endl;
+
   /*
   int nodeTag = getNode(1, 1);
   s << "fix " << nodeTag;
@@ -556,6 +586,23 @@ int OpenSeesConcreteShearWalls::processEvents(ofstream &s)
   double startPoint[2];
   double endPoint[2];
 
+	s << "timeSeries Constant 100 -factor 9.81" << std::endl;
+	s << "pattern UniformExcitation 100 2 -accel 100" << std::endl;
+
+	s << "constraints Plain\n";
+	s << "system UmfPack\n";
+	s << "test NormDispIncr 1.0e-3 30\n";
+	s << "algorithm ModifiedNewton\n";
+	s << "numberer RCM\n";
+	s << "integrator LoadControl 1\n";
+	s << "analysis Static\n";
+	s << "analyze " << 1 << "\n";
+
+	s << "puts \"Gravity loading done!\"" << std::endl;
+	s << "loadConst -time 0.0" << std::endl;
+	s << "wipeAnalysis" << std::endl;
+	s << std::endl;
+  
   for (int i = 0; i < numEvents; i++)
   {
 
@@ -571,6 +618,8 @@ int OpenSeesConcreteShearWalls::processEvents(ofstream &s)
 
       json_t *eventEDPs = json_array_get(edps, j);
       const char *edpEventName = json_string_value(json_object_get(eventEDPs, "name"));
+
+
 
       if (strcmp(edpEventName, eventName) == 0)
       {
@@ -745,6 +794,8 @@ int OpenSeesConcreteShearWalls::processEvents(ofstream &s)
           */
       }
 
+
+
       if (strcmp(edpEventName, eventName) == 0) // 0 This is old code, useful to earthquake events.
       {
         json_t *eventEDP = json_object_get(eventEDPs, "responses");
@@ -772,10 +823,10 @@ int OpenSeesConcreteShearWalls::processEvents(ofstream &s)
             s << "recorder EnvelopeNode -file " << fileName;
             s << " -timeSeries ";
             for (int i = 0; i < NDF; i++)
-              s << i + startTimeSeries << " ";
+              s << 1 << " ";
             s << " -node " << nodeTag << " -dof ";
             for (int i = 1; i <= NDF; i++)
-              s << i << " ";
+              s << 1 << " ";
             s << " accel\n";
           }
 
@@ -806,7 +857,7 @@ int OpenSeesConcreteShearWalls::processEvents(ofstream &s)
 
             s << "recorder EnvelopeDrift -file " << fileName2;
             s << " -iNode " << nodeTag1 << " -jNode " << nodeTag2;
-            s << " -dof 2 -perpDirn 2\n";
+            s << " -dof 1 -perpDirn 2\n";
           }
 
           else if (strcmp(type, "residual_disp") == 0)
@@ -827,25 +878,15 @@ int OpenSeesConcreteShearWalls::processEvents(ofstream &s)
             s << "recorder Node -file " << fileName;
             s << " -node " << nodeTag << " -dof ";
             for (int i = 1; i <= NDF; i++)
-              s << i << " ";
+              s << 1 << " ";
             s << " disp\n";
           }
         }
       }
     }
 
-        if (analysisType == 100) // 1  gravity
-    {
-      s << "constraints Plain\n";
-      s << "system UmfPack\n";
-      s << "test NormDispIncr 1.0e-3 30\n";
-      s << "algorithm ModifiedNewton\n";
-      s << "numberer RCM\n";
-      s << "integrator LoadControl 1\n";
-      s << "analysis Static\n";
-      s << "analyze " << 1 << "\n";
-    }
 
+	/*
     // add self weihts
     //pattern Plain 100 "Linear" {
     //  load $nodeTag 0.0 [expr ($widthX*$heightY*$thickness*$rho*$g)/(($numX+1)*($numY+1))];#SELF-WEIGHT
@@ -865,7 +906,7 @@ int OpenSeesConcreteShearWalls::processEvents(ofstream &s)
     }
 
     s << "} \n";
-
+	*/
     if (analysisType == 2) // cyclic
     {
 
@@ -922,7 +963,7 @@ int OpenSeesConcreteShearWalls::processEvents(ofstream &s)
 	{
 		//      s << "handler Plain\n";
 		s << "numberer RCM\n";
-		s << "system BandGen\n";
+		s << "system UmfPack\n";
 
 		if (filenameUQ != 0)
 		{
@@ -969,9 +1010,17 @@ int OpenSeesConcreteShearWalls::processEvents(ofstream &s)
 				}
 			}
 		}
+		else
+		{
+			s << "constraints Plain" << std::endl;
+			s << "integrator Newmark 0.5 0.25" << std::endl;
+			s << "test NormDispIncr 1.0e-3 30" << std::endl;
+			s << "algorithm ModifiedNewton" << std::endl;
+		}
 
 		s << "analysis Transient\n";
 		s << "analyze " << numSteps << " " << dT << "\n";
+		s << "puts \"Nonlinear dynamic analysis is done!\"" << std::endl;
 	}
   }
 
@@ -1004,6 +1053,9 @@ int OpenSeesConcreteShearWalls::processEvent(ofstream &s,
   json_t *timeSeriesArray = json_object_get(event, "timeSeries");
   json_array_foreach(timeSeriesArray, index, timeSeries)
   {
+	  if (index > 0)
+		  continue;
+
     const char *subType = json_string_value(json_object_get(timeSeries, "type"));
     if (strcmp(subType, "Value") == 0)
     {
@@ -1021,8 +1073,10 @@ int OpenSeesConcreteShearWalls::processEvent(ofstream &s,
       }
       s << " }\n";
 
+	  /*
       int nPts = json_array_size(data);
       s << "set nPts " << nPts << " \n";
+	  */
 
       string name(json_string_value(json_object_get(timeSeries, "name")));
       printf("%s\n", name.c_str());
@@ -1250,6 +1304,8 @@ int OpenSeesConcreteShearWalls::processEvent(ofstream &s,
 
 	if (0 == patternType.compare("UniformAcceleration"))
 	{
+		if (numPattern > 1)
+			continue;
 		int dirn = json_integer_value(json_object_get(pattern, "dof"));
 
 		int series = 0;
@@ -1349,4 +1405,79 @@ int OpenSeesConcreteShearWalls::getNodeCrdByTag(int nodeTag, double pt[])
   }
 
   return -1;
+}
+
+std::vector<int> OpenSeesConcreteShearWalls::getNodesAtElevation(double elevation)
+{
+	std::vector<int> floorNodes;
+
+	json_t* nodeJson;
+	size_t index = 0;
+	json_array_foreach(nodes, index, nodeJson)
+	{
+		json_t* coordinates = json_object_get(nodeJson, "crd");
+		if (NULL == coordinates)
+			continue;
+
+		json_t* elevationJson = json_array_get(coordinates, 1);
+		double nodeElevation = json_number_value(elevationJson);
+
+		if (fabs(nodeElevation - elevation) < 1e-3)
+		{
+			floorNodes.push_back(json_integer_value(json_object_get(nodeJson, "name")));
+		}
+	}
+
+	return floorNodes;
+}
+
+void OpenSeesConcreteShearWalls::processFloorsMasses(ofstream & openSeesTcl)
+{
+	json_t* SI = json_object_get(rootBIM, "StructuralInformation");
+	if (NULL == SI)
+		return;
+
+	json_t* layout = json_object_get(SI, "layout");
+	if (NULL == layout)
+		return;
+
+	json_t* floors = json_object_get(layout, "floors");
+	if (NULL == floors)
+		return;
+	
+	json_t* GI = json_object_get(rootBIM, "GI");
+	if (NULL == GI)
+		return;
+
+	json_t* areaJson = json_object_get(GI, "area");
+	if (NULL == areaJson)
+		return;
+
+	double area = json_number_value(areaJson);
+	double floorMass = 1000.0 * area; //Mass assumed 1 ton/m^2
+
+	json_t* floorJson;
+	size_t index = 0;
+	json_array_foreach(floors, index, floorJson)
+	{
+		json_t* elevationJson = json_object_get(floorJson, "elevation");
+		double floorElevation = json_number_value(elevationJson);
+
+		std::vector<int> floorNodes = getNodesAtElevation(floorElevation);
+
+		if (!floorNodes.empty())
+		{
+			double nodeMass = floorMass / floorNodes.size();
+
+			for each (auto nodeId in floorNodes)
+			{
+				openSeesTcl << "mass " << nodeId << " " << nodeMass << " 0.0" << std::endl;
+			}
+		}
+	}
+
+
+	
+
+
 }

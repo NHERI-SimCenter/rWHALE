@@ -2,6 +2,9 @@
 #define OpenSeesConcreteShearWalls_H
 class json_t;
 #include <fstream>
+#include <vector>
+
+
 using namespace::std;
 
 class OpenSeesConcreteShearWalls {
@@ -51,6 +54,7 @@ class OpenSeesConcreteShearWalls {
   char *filenameTCL;
   char *filenameUQ;
 
+  json_t *rootBIM;
   json_t *rootSAM;
   json_t *rootEDP;
   json_t *rootEVENT;
@@ -68,6 +72,10 @@ class OpenSeesConcreteShearWalls {
 
   int NDM;
   int NDF;
+
+
+  std::vector<int> getNodesAtElevation(double elevation);
+  void processFloorsMasses(ofstream &s);
 };
 
 #endif // OPENSEES_PREPROCESSOR_H
