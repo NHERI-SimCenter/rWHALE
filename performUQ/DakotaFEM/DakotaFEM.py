@@ -55,7 +55,11 @@ dakotaCommand = "dakota -input dakota.in -output dakota.out -error dakota.err"
 subprocess.Popen(dakotaCommand, cwd=bldgName, shell=True).wait()
 
 #Postprocess Dakota results
-postprocessCommand = '{}/postprocessDAKOTA {} {} {} {} {}'.format(scriptDir, numRVs, numSamples, bimName, edpName, lossName) \
+if(numRVs > 0):
+    postprocessCommand = '{}/postprocessDAKOTA {} {} {} {} {}'.format(scriptDir, numRVs, numSamples, bimName, edpName, lossName) \
++ ' ./{}/dakotaTab.out '.format(bldgName) + './{}/'.format(bldgName)
+else:
+    postprocessCommand = '{}/postprocessDAKOTA {} {} {} {} {}'.format(scriptDir, 1, 1, bimName, edpName, lossName) \
 + ' ./{}/dakotaTab.out '.format(bldgName) + './{}/'.format(bldgName)
 subprocess.Popen(postprocessCommand, shell=True).wait()
 
