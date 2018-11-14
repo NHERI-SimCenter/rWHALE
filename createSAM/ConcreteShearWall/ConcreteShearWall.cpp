@@ -4,6 +4,7 @@
 #include <iostream>
 #include <cmath>
 #include <cstring>
+#include <string>
 
 static int nL = 1;
 static int nH = 1;
@@ -560,26 +561,26 @@ int ConcreteRectangularWallSection::writeNDJSON(json_t *elements, json_t *nodes,
   int cline2Floor2 = theModel->addNode(cline2XLoc, cline2YLoc, floor2Loc, nodes);
 
   json_t *nodeMap = json_object();
-  json_object_set(nodeMap, "cline", json_integer(stoi(cline1)));
-  json_object_set(nodeMap, "floor", json_integer(stoi(floor1)));
+  json_object_set(nodeMap, "cline", json_integer(std::stoi(cline1)));
+  json_object_set(nodeMap, "floor", json_integer(std::stoi(floor1)));
   json_object_set(nodeMap, "node", json_integer(cline1Floor1));
   json_array_append(nodeMapping, nodeMap);
 
   nodeMap = json_object();
-  json_object_set(nodeMap, "cline", json_integer(stoi(cline1)));
-  json_object_set(nodeMap, "floor", json_integer(stoi(floor2)));
+  json_object_set(nodeMap, "cline", json_integer(std::stoi(cline1)));
+  json_object_set(nodeMap, "floor", json_integer(std::stoi(floor2)));
   json_object_set(nodeMap, "node", json_integer(cline1Floor2));
   json_array_append(nodeMapping, nodeMap);
 
   nodeMap = json_object();
-  json_object_set(nodeMap, "cline", json_integer(stoi(cline2)));
-  json_object_set(nodeMap, "floor", json_integer(stoi(floor1)));
+  json_object_set(nodeMap, "cline", json_integer(std::stoi(cline2)));
+  json_object_set(nodeMap, "floor", json_integer(std::stoi(floor1)));
   json_object_set(nodeMap, "node", json_integer(cline2Floor1));
   json_array_append(nodeMapping, nodeMap);
 
   nodeMap = json_object();
-  json_object_set(nodeMap, "cline", json_integer(stoi(cline2)));
-  json_object_set(nodeMap, "floor", json_integer(stoi(floor2)));
+  json_object_set(nodeMap, "cline", json_integer(std::stoi(cline2)));
+  json_object_set(nodeMap, "floor", json_integer(std::stoi(floor2)));
   json_object_set(nodeMap, "node", json_integer(cline2Floor2));
   json_array_append(nodeMapping, nodeMap);
 

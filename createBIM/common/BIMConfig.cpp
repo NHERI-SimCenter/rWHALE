@@ -10,7 +10,7 @@ BIMConfig::BIMConfig(const char* configPath)
 {
 	FILE * pCfgFile = NULL;
 	if (NULL == configPath)
-		throw std::exception("Failed to read BIM Config!");
+		throw std::logic_error("Failed to read BIM Config!");
 
 	pCfgFile = fopen(configPath, "r");
 
@@ -24,12 +24,12 @@ BIMConfig::BIMConfig(const char* configPath)
 		fclose(pCfgFile);
 	}
 	else
-		throw std::exception("Failed to read BIM Config!");
+		throw std::logic_error("Failed to read BIM Config!");
 
 	if (!parseConfig(pJsonConfig))
 	{
 		delete pJsonConfig;
-		throw std::exception("Failed to parse BIM Config!");
+		throw std::logic_error("Failed to parse BIM Config!");
 	}
 
 	delete pJsonConfig;

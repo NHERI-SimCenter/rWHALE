@@ -10,6 +10,9 @@
 #include <iostream>
 #include <cmath>
 #include <typeinfo>
+#include <algorithm>
+
+using namespace std;
 
 OpenSeesConcreteShearWalls::OpenSeesConcreteShearWalls()
     : filenameBIM(0), filenameSAM(0), filenameEVENT(0), filenameEDP(0),
@@ -441,7 +444,7 @@ int OpenSeesConcreteShearWalls::processNodes(ofstream &s)
 
   s << "\n#Fixing nodes at the base\n";
   std::vector<int> baseNodes = getNodesAtElevation(0.0);
-  for each (auto baseNode in baseNodes)
+  for (auto baseNode : baseNodes)
   {
 	  s << "fix " << baseNode << " 1 1 " << std::endl;
   }
@@ -1469,7 +1472,7 @@ void OpenSeesConcreteShearWalls::processFloorsMasses(ofstream & openSeesTcl)
 		{
 			double nodeMass = floorMass / floorNodes.size();
 
-			for each (auto nodeId in floorNodes)
+			for(auto nodeId : floorNodes)
 			{
 				openSeesTcl << "mass " << nodeId << " " << nodeMass << " 0.0" << std::endl;
 			}
