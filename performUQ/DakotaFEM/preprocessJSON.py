@@ -13,7 +13,7 @@ numDiscreteDesignSetString = 0
 discreteDesignSetStringName=[]
 discreteDesignSetStringValues =[]
 
-def preProcessDakota(bimName, evtName, samName, edpName, lossName, simName, driverFile, bldgName, numSamples):
+def preProcessDakota(bimName, evtName, samName, edpName, lossName, simName, driverFile, bldgName, numSamples, rngSeed, concurrency):
 
     #setting workflow driver name based on platform
     workflowDriver = 'workflow_driver'
@@ -57,12 +57,11 @@ def preProcessDakota(bimName, evtName, samName, edpName, lossName, simName, driv
     f.write("method\n")
     f.write("sampling,\n")
     if(not numRandomVariables == 0):
-        f.write('samples=' '{}'.format(numSamples))
+        f.write('samples={}\n'.format(numSamples))
     else:
-        f.write('samples=1')
+        f.write('samples=1\n')
 
-    #f.write("samples=5\n")
-    f.write("\nseed=98765,\n")
+    f.write("seed={},\n".format(rngSeed))
     f.write("sample_type random\n")
     f.write('\n\n')
 
@@ -133,8 +132,10 @@ def preProcessDakota(bimName, evtName, samName, edpName, lossName, simName, driv
 
     # write out the interface data
     f.write('interface,\n')
-    f.write('system # asynch evaluation_concurrency = 4\n')
-    f.write("analysis_driver = '{}' \n".format(workflowDriver))
+    f.write('fork')
+    if(concurrency > 1):
+        f.write(' asynch evaluation_concurrency = {}'.format(concurrency))
+    f.write("\nanalysis_driver = '{}' \n".format(workflowDriver))
     f.write('parameters_file = \'params.in\' \n')
     f.write('results_file = \'results.out\' \n')
     f.write('work_directory directory_tag \n')
