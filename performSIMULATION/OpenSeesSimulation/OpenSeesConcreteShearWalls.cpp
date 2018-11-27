@@ -257,16 +257,16 @@ int OpenSeesConcreteShearWalls::processMaterials(ofstream &s)
     if (strcmp(type, "shear") == 0)
     {
       int tag = json_integer_value(json_object_get(material, "name"));
-      double K0 = json_real_value(json_object_get(material, "K0"));
-      double Sy = json_real_value(json_object_get(material, "Sy"));
-      double eta = json_real_value(json_object_get(material, "eta"));
-      double C = json_real_value(json_object_get(material, "C"));
-      double gamma = json_real_value(json_object_get(material, "gamma"));
-      double alpha = json_real_value(json_object_get(material, "alpha"));
-      double beta = json_real_value(json_object_get(material, "beta"));
-      double omega = json_real_value(json_object_get(material, "omega"));
-      double eta_soft = json_real_value(json_object_get(material, "eta_soft"));
-      double a_k = json_real_value(json_object_get(material, "a_k"));
+      double K0 = json_number_value(json_object_get(material, "K0"));
+      double Sy = json_number_value(json_object_get(material, "Sy"));
+      double eta = json_number_value(json_object_get(material, "eta"));
+      double C = json_number_value(json_object_get(material, "C"));
+      double gamma = json_number_value(json_object_get(material, "gamma"));
+      double alpha = json_number_value(json_object_get(material, "alpha"));
+      double beta = json_number_value(json_object_get(material, "beta"));
+      double omega = json_number_value(json_object_get(material, "omega"));
+      double eta_soft = json_number_value(json_object_get(material, "eta_soft"));
+      double a_k = json_number_value(json_object_get(material, "a_k"));
       //s << "uniaxialMaterial Elastic " << tag << " " << K0 << "\n";
       if (K0 == 0)
         K0 = 1.0e-6;
@@ -427,7 +427,7 @@ int OpenSeesConcreteShearWalls::processNodes(ofstream &s)
     json_array_foreach(crds, crdIndex, crd)
     {
       s << json_number_value(crd) << " ";
-      //s << json_real_value(crd)*2.54/100 << " ";// convert to m
+      //s << json_number_value(crd)*2.54/100 << " ";// convert to m
     }
 
     json_t *mass = json_object_get(node, "mass");
@@ -1071,7 +1071,7 @@ int OpenSeesConcreteShearWalls::processEvent(ofstream &s,
 
       json_array_foreach(data, dataIndex, dataV)
       {
-		  double a = json_real_value(dataV);
+		  double a = json_number_value(dataV);
         s << json_number_value(dataV) << " ";
       }
       s << " }\n";

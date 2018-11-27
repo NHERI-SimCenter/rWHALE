@@ -135,8 +135,8 @@ main(int argc, const char **argv) {
       json_t* contentsFactor = json_object_get(pReplacementCost, "ContentsFactor");
 
       ReplacementCost replacementCost;
-      replacementCost.UnitCost = json_real_value(unitCost);
-      replacementCost.ContentsFactor = json_real_value(contentsFactor);
+      replacementCost.UnitCost = json_number_value(unitCost);
+      replacementCost.ContentsFactor = json_number_value(contentsFactor);
 
       replacementCostsMap.insert(std::pair<int, ReplacementCost>(json_integer_value(typeId), replacementCost));
     }
@@ -149,8 +149,8 @@ main(int argc, const char **argv) {
   json_t* contentsFactor = json_object_get(pDefaultReplacementCost, "ContentsFactor");
 
   ReplacementCost defaultReplacementCost;
-  defaultReplacementCost.UnitCost = json_real_value(unitCost);
-  defaultReplacementCost.ContentsFactor = json_real_value(contentsFactor);
+  defaultReplacementCost.UnitCost = json_number_value(unitCost);
+  defaultReplacementCost.ContentsFactor = json_number_value(contentsFactor);
 
   int i = 0;
 
@@ -296,7 +296,7 @@ main(int argc, const char **argv) {
       double replacementTime = 180.0;      
       json_t* pReplacementTime = json_object_get(pJsonConfig, "ReplacementTime");
       if(NULL != pReplacementTime)
-        replacementTime = json_real_value(pReplacementTime);
+        replacementTime = json_number_value(pReplacementTime);
 
       json_object_set(GI,"replacementTime",json_real(replacementTime));
       //json_object_set(GI,"structType",json_string("C2"));
@@ -320,9 +320,9 @@ main(int argc, const char **argv) {
       if(NULL != pStoryHeight)
       {
           json_t* mean = json_object_get(pStoryHeight, "Mean");
-          storyHeightMean = json_real_value(mean);
+          storyHeightMean = json_number_value(mean);
           json_t* stdDev = json_object_get(pStoryHeight, "StdDev");
-          storyHeightStdDev = json_real_value(stdDev);
+          storyHeightStdDev = json_number_value(stdDev);
       }
 
       json_object_set(height,"mean",json_real(numStory * storyHeightMean));

@@ -255,8 +255,8 @@ bool BIMConfig::parseReplacementCostMap(const json_t * pJsonConfig)
 		json_t* contentsFactor = json_object_get(pReplacementCost, "ContentsFactor");
 
 		BIM::ReplacementCost replacementCost;
-		replacementCost.UnitCost = json_real_value(unitCost);
-		replacementCost.ContentsFactor = json_real_value(contentsFactor);
+		replacementCost.UnitCost = json_number_value(unitCost);
+		replacementCost.ContentsFactor = json_number_value(contentsFactor);
 
 		replacementCostMap.insert(std::pair<int, BIM::ReplacementCost>(json_integer_value(typeId), replacementCost));
 	}
@@ -272,7 +272,7 @@ bool BIMConfig::parseDefaultStoryArea(const json_t * pJsonConfig)
 	{
 		json_t* pDefaultAreaJson = json_object_get(pDefaultsJson, "StoryArea");
 		if (NULL != pDefaultAreaJson)
-			defaultStoryArea = json_real_value(pDefaultAreaJson);
+			defaultStoryArea = json_number_value(pDefaultAreaJson);
 	}
 	return true;
 }
@@ -299,7 +299,7 @@ bool BIMConfig::parseReplacementTime(const json_t * pJsonConfig)
 {
 	replacementTime = 180.0;
 	json_t* pReplacementTime = json_object_get(pJsonConfig, "ReplacementTime");
-	replacementTime = json_real_value(pReplacementTime);
+	replacementTime = json_number_value(pReplacementTime);
 
 	return true;
 }
@@ -316,12 +316,12 @@ bool BIMConfig::parseStoryHeight(const json_t * pJsonConfig)
 		json_t* mean = json_object_get(pStoryHeight, "Mean");
 
 		if(NULL != mean)
-			storyHeightMean = json_real_value(mean);
+			storyHeightMean = json_number_value(mean);
 
 		json_t* stdDev = json_object_get(pStoryHeight, "StdDev");
 
 		if(NULL != stdDev)
-			storyHeightStdDev = json_real_value(stdDev);
+			storyHeightStdDev = json_number_value(stdDev);
 	}
 	return true;
 }
@@ -374,8 +374,8 @@ bool BIMConfig::parseDefaultReplacementCost(const json_t * pJsonConfig)
 	if (NULL == contentsFactor)
 		return false;
 
-	defaultReplacementCost.UnitCost = json_real_value(unitCost);
-	defaultReplacementCost.ContentsFactor = json_real_value(contentsFactor);
+	defaultReplacementCost.UnitCost = json_number_value(unitCost);
+	defaultReplacementCost.ContentsFactor = json_number_value(contentsFactor);
 
 	return true;
 }

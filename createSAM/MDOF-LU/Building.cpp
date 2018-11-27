@@ -150,9 +150,9 @@ Building::readBIM(const char *event, const char *bim, const char *sam)
       json_t *theRV = json_array_get(randomVariables, i);
       const char *type = json_string_value(json_object_get(theRV, "name"));
       if (strcmp(type,"kFactor") == 0)
-	kFactor = json_real_value(json_object_get(theRV, "value"));
+	kFactor = json_number_value(json_object_get(theRV, "value"));
       else if (strcmp(type,"dampFactor") == 0)
-	dampFactor = json_real_value(json_object_get(theRV, "value"));
+	dampFactor = json_number_value(json_object_get(theRV, "value"));
     }
   }
   json_object_clear(rootSAM);
