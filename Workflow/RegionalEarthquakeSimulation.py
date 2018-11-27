@@ -421,14 +421,15 @@ def main(run_type, inputFile, applicationsRegistry):
             driverFILE.close()
 
             uqAppDataList = [uqAppExe, '-filenameBIM', bimFILE, '-filenameSAM', samFILE, '-filenameEVENT', eventFILE,
-                             '-filenameEDP', edpFILE, '-filenameLOSS', dlFILE, '-filenameSIM', simFILE, 'driverFile',
+                             '-filenameEDP', edpFILE, '-filenameLOSS', dlFILE, '-filenameSIM', simFILE, '-driverFile',
                              driverFile]
             if (uqAppExe.endswith('.py')):
                 uqAppDataList.insert(0, 'python')
 
             for key in uqAppData.keys():
                 uqAppDataList.append('-' + key.encode('ascii', 'ignore'))
-                uqAppDataList.append(simAppData.get(key).encode('ascii', 'ignore'))
+                if uqAppData.get(key) is not None:
+                    uqAppDataList.append(str(uqAppData.get(key)))
 
             if run_type == 'run':
                 workflow_log('Running simulation for building ' + id + '...')
@@ -442,6 +443,7 @@ def main(run_type, inputFile, applicationsRegistry):
         readDLs = [os.path.abspath("../build/bin/ReadDLs"), minBldg, maxBldg, "DLs{}-{}.csv".format(minBldg, maxBldg)]
         command, result, returncode = runApplication(readDLs, workDir)
         log_output.append([command, result, returncode])
+        return [minBldg, maxBldg]
 
     except WorkFlowInputError as e:
         workflow_log('workflow error: %s' % e.value)
@@ -457,19 +459,31 @@ def main(run_type, inputFile, applicationsRegistry):
 
 if __name__ == '__main__':
 
-    if len(sys.argv) < 4:
-        print('\nNeed three arguments, e.g.:\n')
-        print('    python %s action workflowinputfile.json workflowapplications.json' % sys.argv[0])
-        print('\nwhere: action is either check or run\n')
-        exit(1)
+    # if len(sys.argv) < 4:
+    #     print('\nNeed three arguments, e.g.:\n')
+    #     print('    python %s action workflowinputfile.json workflowapplications.json' % sys.argv[0])
+    #     print('\nwhere: action is either check or run\n')
+    #     exit(1)
 
-    run_type = sys.argv[1]
-    inputFile = sys.argv[2]
-    applicationsRegistry = sys.argv[3]
+    run_type = 'run'
+    applicationsRegistry = 'WorkflowApplications.json'
+    inputFile = ''
 
-    main(run_type, inputFile, applicationsRegistry)
+    if len(sys.argv) == 4:
+        run_type = sys.argv[1]
+        inputFile = sys.argv[2]    
+        applicationsRegistry = sys.argv[3]
 
-    workflow_log_file = 'workflow-log-{}-{}.txt'.format(sys.argv[5], sys.argv[7])
+    elif len(sys.argv) == 3:
+        inputFile = sys.argv[1]    
+        applicationsRegistry = sys.argv[2]
+
+    elif len(sys.argv) == 2:
+        inputFile = sys.argv[1]    
+
+    [min, max] = main(run_type, inputFile, applicationsRegistry)
+
+    workflow_log_file = 'workflow-log-{}-{}.txt'.format(min, max)
     log_filehandle = open(workflow_log_file, 'wb')
 
     print >>log_filehandle, divider
