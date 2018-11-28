@@ -1,5 +1,5 @@
 {
-    "Name": "Workflow 2",
+    "Name": "Workflow2",
     "Author": "fmk",
     "WorkflowType": "Regional Simulation",
     "buildingFile":"buildings.json",
@@ -8,9 +8,9 @@
           "BuildingApplication": "UrbanSimDatabase",
           "ApplicationData": {
              "Min": "1",
-         "Max":"1",
-         "parcelsFile":"../NHERI/parcels.csv",
-         "buildingsFile":"../NHERI/buildings.csv"
+         "Max":"5",
+         "parcelsFile":"../build/data/parcels.csv",
+         "buildingsFile":"../build/data/buildings.csv"
           }
        },
        "Events": [
@@ -18,7 +18,8 @@
              "EventClassification": "Earthquake",
              "EventApplication": "SHA-GM",
              "ApplicationData": {
-                "scenarioConfig": "./HayWired7.25.json"
+                "scenarioConfig": "./HayWired7.25.json",
+				"seed": 2
              }
           }
        ],
@@ -38,7 +39,9 @@
        },
        "UQ-Simulation": {
           "UQApplication": "Dakota-FEM",
-          "ApplicationData": {}
+          "ApplicationData": {
+			"samples": 5
+		  }
        },
        "Damage&Loss": {
           "Damage&LossApplication": "FemaP58-LU",

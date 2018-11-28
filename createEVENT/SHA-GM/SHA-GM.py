@@ -9,8 +9,9 @@ import hashlib
 from scipy import spatial
 import glob
 import re
+import argparse
 
-def computeScenario(scenarioConfig, scenarioHash):
+def computeScenario(scenarioConfig, scenarioHash, seed):
     eqHazardPath = os.path.abspath(scenarioConfig["AppConfig"]["EQHazardPath"])
     simulateIMPath = os.path.abspath(scenarioConfig["AppConfig"]["SimulateIMPath"])
     selectRecordPath = os.path.abspath(scenarioConfig["AppConfig"]["SelectRecordPath"])
@@ -37,7 +38,14 @@ def computeScenario(scenarioConfig, scenarioHash):
 
     #Now we need to run the SimulateIM Process
     #First we create a simulation config
-    simConfig = {"GroundMotions": {"File": "./HazardCache/Hazard_Output.json"}, "NumSimulations": 1, "SpatialCorrelation": True}
+    simConfig = {
+        "GroundMotions":{
+            "File": "./HazardCache/Hazard_Output.json"
+            }, 
+        "NumSimulations": 1,
+        "SpatialCorrelation": True,
+        "Seed": seed
+    }
 
     with open("./HazardCache/Sim_Config.json", 'w') as simConfigFile:
         json.dump(simConfig, simConfigFile,  indent=4)
@@ -128,20 +136,28 @@ def createNGAWest2Event(rsn, scaleFactor, recordsFolder, eventFilePath):
 
 
 def main():
-    inputArgs = sys.argv
+    #Input Argument Specifications
+    gmArgsParser = argparse.ArgumentParser("Characterize ground motion using seismic hazard analysis and record selection")
+    gmArgsParser.add_argument("-filenameBIM", required=True, help="Path to the BIM file")
+    gmArgsParser.add_argument("-filenameEVENT", required=True, help="Path to the EVENT file")
+    gmArgsParser.add_argument("-scenarioConfig", required=True, help="Path to the earthquake scenario configuration file")
+    gmArgsParser.add_argument("-seed", type=int, default=1, help="Seed for random number generation")
+    gmArgsParser.add_argument("-getRV", action='store_true', help="Flag showing whether or not this call is to get the random variables definition")
+    
+    #Parse the arguments
+    gmArgs = gmArgsParser.parse_args()
 
-    if not "-getRV" in inputArgs:
+
+    #Check getRV flag
+    if not gmArgs.getRV:
         #We will use the template files so no changes are needed
         #We do not have any random variables for this event for now
         return 0
 
     #First let's process the arguments
-    argBIM = inputArgs.index("-filenameBIM") + 1
-    bimFilePath = inputArgs[argBIM]
-    argEVENT = inputArgs.index("-filenameEVENT") + 1
-    eventFilePath = inputArgs[argEVENT]
-    argScenario = inputArgs.index("-scenarioConfig") + 1
-    scenarioConfigPath = inputArgs[argScenario]
+    bimFilePath = gmArgs.filenameBIM
+    eventFilePath = gmArgs.filenameEVENT
+    scenarioConfigPath = gmArgs.scenarioConfig
 
     # if "-getRV" in inputArgs:
     #     #We will create an output that only contains empty random variables array
@@ -171,7 +187,7 @@ def main():
     recordsFolder = os.path.abspath(scenarioConfig["AppConfig"]["RecordsFolder"])
 
     if(needsCompute):
-        computeScenario(scenarioConfig, scenarioHash)
+        computeScenario(scenarioConfig, scenarioHash, gmArgs.seed)
 
     
     #We need to read the building location

@@ -342,10 +342,10 @@ def main(run_type, inputFile, applicationsRegistry):
 
             for key in eventAppData.keys():
                 eventAppDataList.append('-' + key.encode('ascii', 'ignore'))
-                value = eventAppData.get(key)
+                value = str(eventAppData.get(key))
                 if (os.path.exists(value) and not os.path.isabs(value)):
                     value = os.path.abspath(value)
-                eventAppDataList.append(value.encode('ascii', 'ignore'))
+                eventAppDataList.append(value)
 
             for item in eventAppDataList:
                 driverFILE.write('%s ' % item)
