@@ -2,6 +2,7 @@
 #define OPENSEES_PREPROCESSOR_H
 class json_t;
 #include <fstream>
+
 using namespace::std;
 
 class OpenSeesPreprocessor {
@@ -40,7 +41,7 @@ class OpenSeesPreprocessor {
 		   int &numSeries);
 
   int getNode(int cline, int floor);
-
+  
  private:
   char *filenameBIM;
   char *filenameSAM;
@@ -61,6 +62,8 @@ class OpenSeesPreprocessor {
 
   int NDM;
   int NDF;
+
+
 };
 
 #endif // OPENSEES_PREPROCESSOR_H

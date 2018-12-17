@@ -45,11 +45,11 @@ int main(int argc, char **argv) {
 
         json_t* latitudeJson = json_object_get(locationJson, "latitude");
         if (latitudeJson)
-          latitude = json_real_value(latitudeJson);
+          latitude = json_number_value(latitudeJson);
 
         json_t* longitudeJson = json_object_get(locationJson, "longitude");
         if (longitudeJson)
-          longitude = json_real_value(longitudeJson);
+          longitude = json_number_value(longitudeJson);
       }
     }
     // now parse the DL file for the building
@@ -72,14 +72,14 @@ int main(int argc, char **argv) {
 
       json_t *lossO = json_object_get(root,"EconomicLoss"); 
       if (lossO != 0) {
-	loss = json_real_value(json_object_get(lossO,"MedianLossRatio"));
-	medianRepairCost = json_real_value(json_object_get(lossO,"MedianRepairCost"));
-	stdRepairCost = json_real_value(json_object_get(lossO,"StdRepairCost"));
+	loss = json_number_value(json_object_get(lossO,"MedianLossRatio"));
+	medianRepairCost = json_number_value(json_object_get(lossO,"MedianRepairCost"));
+	stdRepairCost = json_number_value(json_object_get(lossO,"StdRepairCost"));
       }
 
       json_t *downtimeO = json_object_get(root,"RepairTime");
       if (downtimeO != 0)
-	medianDowntime = json_real_value(json_object_get(downtimeO,"MedianRepairTime"));
+	medianDowntime = json_number_value(json_object_get(downtimeO,"MedianRepairTime"));
 
       const char *name;
 
@@ -89,7 +89,7 @@ int main(int argc, char **argv) {
 
       json_t *pgaO = json_object_get(root,"MaxPGA");
       if (pgaO != 0)
-	pga = json_real_value(pgaO)/9.81;
+	pga = json_number_value(pgaO)/9.81;
 
       json_t *placardsO = json_object_get(root,"UnsafePlacards");
       if (placardsO != 0) {
