@@ -1,3 +1,9 @@
+# import functions for Python 2.X support
+from __future__ import division, print_function
+import sys
+if sys.version.startswith('2'): 
+    range=xrange
+
 import os
 import subprocess
 from time import gmtime, strftime
@@ -9,16 +15,20 @@ class WorkFlowInputError(Exception):
     def __str__(self):
         return repr(self.value)
 
+try:
+    basestring
+except NameError:
+    basestring = str
 
 def workflow_log(msg):
     # ISO-8601 format, e.g. 2018-06-16T20:24:04Z
-    print '%s %s' % (strftime('%Y-%m-%dT%H:%M:%SZ', gmtime()), msg)
+    print('%s %s' % (strftime('%Y-%m-%dT%H:%M:%SZ', gmtime()), msg))
 
 
 # function to return result of invoking an application
 def runApplication(application_plus_args, workDir):
     try:
-        result = subprocess.check_output(' '.join(application_plus_args), stderr=subprocess.STDOUT, shell=True, cwd=workDir)
+        result = subprocess.check_output(args=application_plus_args, stderr=subprocess.STDOUT, shell=False, cwd=workDir)
         # for line in result.split('\n'):
         # pass
         # print(line)
@@ -29,6 +39,9 @@ def runApplication(application_plus_args, workDir):
 
     if returncode != 0:
         workflow_log('NON-ZERO RETURN CODE: %s' % returncode)
+
+    #print(application_plus_args, result, returncode)
+
     return ' '.join(application_plus_args), result, returncode
 
 

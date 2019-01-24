@@ -13,8 +13,8 @@ int main(int argc, char **argv)
 {
   printf("%d\n", argc);
   if (argc != 6 && argc != 7) {
-    printf("HELLO\n");
-    printf("ERROR: correct usage: preprocessOpenSees fileNameBIM fileNameSAM fileNameEVENT filenameEDP filnameTCL\n");
+    //printf("HELLO\n"); ??
+    printf("ERROR: correct usage: mainPreprocessor fileNameBIM fileNameSAM fileNameEVENT filenameEDP filnameTCL\n");
     exit(0);
   }
 
