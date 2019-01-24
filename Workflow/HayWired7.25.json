@@ -1,10 +1,10 @@
 {
 	"AppConfig":
 	{
-		"EQHazardPath":"../../Simcenter-EQSS/EQScenario/build/EQScenario.jar",
-		"SimulateIMPath":"../../Simcenter-EQSS/build/SimulateGM/SimulateGM",
-		"SelectRecordPath":"../../Simcenter-EQSS/build/SelectGM/SelectGM",
-		"RecordsFolder":"../createEVENT/NGAWest2Records/"
+		"EQHazardPath":"../../../GroundMotionUtilities/EQHazard/build/EQHazard.jar",
+		"SimulateIMPath":"../../../GroundMotionUtilities/build/SimulateIM/SimulateIM",
+		"SelectRecordPath":"../../../GroundMotionUtilities/build/SelectRecord/SelectRecord",
+		"RecordsFolder":"../../createEVENT/NGAWest2Records/"
 	},
     "Site": {
 		"Type": "Grid",

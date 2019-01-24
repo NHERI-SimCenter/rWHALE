@@ -1,0 +1,16 @@
+#!/bin/bash
+#SBATCH --job-name="test"
+#SBATCH --nodes=1
+#SBATCH --ntasks-per-node=1
+#SBATCH --partition=normal
+#SBATCH --time=24:00:00
+#SBATCH --output=%j.out
+#SBATCH --error=%j.err
+#SBATCH --export=ALL
+#SBATCH -A DesignSafe-McKenna
+
+export TOP_DIR=/home/00384/rynge/git/WorkflowRegionalEarthquake
+
+$TOP_DIR/Pegasus/tacc/stage-1-compute-node $TOP_DIR
+
+

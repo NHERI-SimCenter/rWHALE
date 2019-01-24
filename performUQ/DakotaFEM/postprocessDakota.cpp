@@ -136,12 +136,12 @@ void processLosses(const char *bldgDir, const char *filenameLOSS, int numSample,
         //Reading losses
         json_t* lossJson = json_object_get(samplesJson, "Loss");
         json_array_foreach(lossJson, index, value)
-            vLoss.push_back(json_real_value(value));
+            vLoss.push_back(json_number_value(value));
 
         //Reading repair time
         json_t* downtimeJson = json_object_get(samplesJson, "RepairTime");
         json_array_foreach(downtimeJson, index, value)
-            vDowntime.push_back(json_real_value(value));
+            vDowntime.push_back(json_number_value(value));
 
         json_t* redTagsJson = json_object_get(samplesJson, "RedTags");
         json_array_foreach(redTagsJson, index, value)
@@ -206,7 +206,7 @@ double getReplacementCost(const char* filenameBIM)
     json_t* giJson = json_object_get(bimJson, "GI");
 
     json_t* replacementCostJson = json_object_get(giJson, "replacementCost");
-    replacementCost = json_real_value(replacementCostJson);
+    replacementCost = json_number_value(replacementCostJson);
 
     return replacementCost;
 }

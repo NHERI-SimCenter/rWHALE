@@ -48,5 +48,12 @@ finalProcessing/readDLs
 *.gz
 *.csv
 
+
+# Pegasus stuff
+Pegasus/plan.*
+Pegasus/tacc/*.out
+Pegasus/tacc/*.err
+
 build/*
 createEVENT/Hayward7.0
+

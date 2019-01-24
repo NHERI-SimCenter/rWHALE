@@ -1,3 +1,9 @@
+# import functions for Python 2.X support
+from __future__ import division, print_function
+import sys
+if sys.version.startswith('2'): 
+    range=range
+
 import json
 import sys
 import os
@@ -13,11 +19,11 @@ numDiscreteDesignSetString = 0
 discreteDesignSetStringName=[]
 discreteDesignSetStringValues =[]
 
-def preProcessDakota(bimName, evtName, samName, edpName, lossName, simName, driverFile, bldgName, numSamples):
+def preProcessDakota(bimName, evtName, samName, edpName, lossName, simName, driverFile, bldgName, numSamples, rngSeed, concurrency):
 
     #setting workflow driver name based on platform
     workflowDriver = 'workflow_driver'
-    if platform.system == 'Windows':
+    if platform.system() == 'Windows':
         workflowDriver = 'workflow_driver.bat'
 
     # 
@@ -36,7 +42,7 @@ def preProcessDakota(bimName, evtName, samName, edpName, lossName, simName, driv
 
     #with open('data.txt', 'w') as outfile:  
     #    json.dump(data, outfile)
-    #print data["method"]
+    #print(data["method"])
     parseFileForRV(bimName)
     parseFileForRV(evtName)
     parseFileForRV(samName)
@@ -56,32 +62,42 @@ def preProcessDakota(bimName, evtName, samName, edpName, lossName, simName, driv
 
     f.write("method\n")
     f.write("sampling,\n")
-    f.write('samples=' '{}'.format(numSamples))
-    #f.write("samples=5\n")
-    f.write("\nseed=98765,\n")
+    if(not numRandomVariables == 0):
+        f.write('samples={}\n'.format(numSamples))
+    else:
+        f.write('samples=1\n')
+
+    f.write("seed={},\n".format(rngSeed))
     f.write("sample_type random\n")
     f.write('\n\n')
 
     # write out the variable data
     f.write('variables,\n')
+    
+    if(numRandomVariables == 0):
+        f.write('normal_uncertain = 1\n')
+        f.write('means = 1.0\n')
+        f.write('std_deviations = 1e-3\n')
+        f.write("descriptors = 'dummyRV'\n\n")    
 
+        
     if (numNormalUncertain > 0):
         f.write('normal_uncertain = ' '{}'.format(numNormalUncertain))
         f.write('\n')
         f.write('means = ')
-        for i in xrange(numNormalUncertain):
+        for i in range(numNormalUncertain):
             f.write('{}'.format(normalUncertainMean[i]))
             f.write(' ')
         f.write('\n')
 
         f.write('std_deviations = ')
-        for i in xrange(numNormalUncertain):
+        for i in range(numNormalUncertain):
             f.write('{}'.format(normalUncertainStdDev[i]))
             f.write(' ')
         f.write('\n')
 
         f.write('descriptors = ')    
-        for i in xrange(numNormalUncertain):
+        for i in range(numNormalUncertain):
             f.write('\'')
             f.write(normalUncertainName[i])
             f.write('\' ')
@@ -92,7 +108,7 @@ def preProcessDakota(bimName, evtName, samName, edpName, lossName, simName, driv
         f.write('string ' '{}'.format(numDiscreteDesignSetString))
         f.write('\n')
         f.write('descriptors = ')    
-        for i in xrange(numDiscreteDesignSetString):
+        for i in range(numDiscreteDesignSetString):
             f.write('\'')
             f.write(discreteDesignSetStringName[i])
             f.write('\' ')
@@ -100,18 +116,18 @@ def preProcessDakota(bimName, evtName, samName, edpName, lossName, simName, driv
         f.write('\n')
 
         f.write('elements_per_variable = ')    
-        for i in xrange(numDiscreteDesignSetString):
+        for i in range(numDiscreteDesignSetString):
             #f.write('\'')
             numElements = len(discreteDesignSetStringValues[i])
             f.write(' ' '{}'.format(numElements))
             #f.write(length(discreteDesignSetStringValues[i]))
-            print discreteDesignSetStringValues[i]
-            print numElements
+            print(discreteDesignSetStringValues[i])
+            print(numElements)
             #f.write('\' ')
 
         f.write('\n')
         f.write('elements  ')    
-        for i in xrange(numDiscreteDesignSetString):
+        for i in range(numDiscreteDesignSetString):
             elements = discreteDesignSetStringValues[i]
             for j in elements:
                 f.write('\'' '{}'.format(j))
@@ -122,8 +138,10 @@ def preProcessDakota(bimName, evtName, samName, edpName, lossName, simName, driv
 
     # write out the interface data
     f.write('interface,\n')
-    f.write('system # asynch evaluation_concurrency = 4\n')
-    f.write("analysis_driver = '{}' \n".format(workflowDriver))
+    f.write('fork')
+    if(concurrency > 1):
+        f.write(' asynch evaluation_concurrency = {}'.format(concurrency))
+    f.write("\nanalysis_driver = '{}' \n".format(workflowDriver))
     f.write('parameters_file = \'params.in\' \n')
     f.write('results_file = \'results.out\' \n')
     f.write('work_directory directory_tag \n')
@@ -145,8 +163,8 @@ def preProcessDakota(bimName, evtName, samName, edpName, lossName, simName, driv
     f.write('response_functions = ' '{}'.format(numResponses))
     f.write('\n')
     f.write('response_descriptors = ')    
-    #for i in xrange(numResponses):
-    for i in xrange(1, numResponses+1):
+    #for i in range(numResponses):
+    for i in range(1, numResponses+1):
         f.write('\'a')
         f.write('{}'.format(i))
         f.write('\' ')
@@ -175,7 +193,7 @@ def preProcessDakota(bimName, evtName, samName, edpName, lossName, simName, driv
             print(line)
 
     f.write('\n')
-    f.write(scriptDir + '/extractEDP ' + edpName + ' results.out \n')
+    f.write('"'+os.path.join(scriptDir,'extractEDP')+'" ' + edpName + ' results.out \n')
 
     # Run 
     #f.write('rm -f *.com *.done *.dat *.log *.sta *.msg')
@@ -207,14 +225,14 @@ def parseFileForRV(fileName):
                 numRandomVariables += 1
 
             if (k["distribution"] == "discrete_design_set_string"):
-                print k
+                print(k)
                 discreteDesignSetStringName.append(k["name"])
                 elements =[];
                 for l in k["elements"]:
                     elements.append(l)
                 elements.sort()
                 discreteDesignSetStringValues.append(elements)
-                print elements
+                print(elements)
                 numDiscreteDesignSetString += 1
                 numRandomVariables += 1
 

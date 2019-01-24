@@ -1,7 +1,7 @@
 {
    "Name": "Workflow5",
-   "Author": "fmk",
-   "WorkflowType": "Regional Simulation",
+   "Author": "Wael Elhaddad",
+   "WorkflowType": "Regional Simulation of San Francisco Bay Area",
    "buildingFile":"buildings.json",
    "Applications": {
       "Buildings": {
@@ -38,7 +38,12 @@
       },
       "UQ-Simulation": {
          "UQApplication": "Dakota-FEM",
-         "ApplicationData": {}
+         "ApplicationData": {
+            "samples": 16,
+            "seed": 1,
+            "concurrency": 8,
+            "keepSamples": true
+         }
       },
       "Damage&Loss": {
          "Damage&LossApplication": "FemaP58-LU",

@@ -1,0 +1,8 @@
+#!/bin/bash
+
+set -e
+
+TOP_DIR=$1
+
+ssh login1 "$TOP_DIR/Pegasus/tacc/stage-2-login-node $TOP_DIR" 2>&1
+

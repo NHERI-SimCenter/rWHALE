@@ -6,13 +6,15 @@
 #include <fstream>
 
 #include "OpenSeesPreprocessor.h"
+#include "OpenSeesConcreteShearWalls.h"
+#include "jansson.h"
 
 int main(int argc, char **argv)
 {
   printf("%d\n", argc);
   if (argc != 6 && argc != 7) {
-    printf("HELLO\n");
-    printf("ERROR: correct usage: preprocessOpenSees fileNameBIM fileNameSAM fileNameEVENT filenameEDP filnameTCL\n");
+    //printf("HELLO\n"); ??
+    printf("ERROR: correct usage: mainPreprocessor fileNameBIM fileNameSAM fileNameEVENT filenameEDP filnameTCL\n");
     exit(0);
   }
 
@@ -22,25 +24,65 @@ int main(int argc, char **argv)
   char *filenameEDP = argv[4];
   char *filenameTCL = argv[5];
 
-  OpenSeesPreprocessor *thePreprocessor = new OpenSeesPreprocessor();
+  json_error_t error;
+  bool isShearWall = false;
 
-  if (argc == 6) {
-
-    thePreprocessor->createInputFile(filenameBIM, 
-				     filenameSAM, 
-				     filenameEVENT,
-				     filenameEDP,
-				     filenameTCL);
-  } else {
-
-    thePreprocessor->createInputFile(filenameBIM, 
-				     filenameSAM, 
-				     filenameEVENT,
-				     filenameEDP,
-				     filenameTCL,
-				     argv[6]);
+  json_t* bimJson = json_load_file(filenameBIM, 0, &error);
+  json_t* SI = json_object_get(bimJson, "StructuralInformation");
+  if (NULL != SI)
+  {
+	  isShearWall = true;
   }
-  delete thePreprocessor;
+
+  delete bimJson;
+
+  //Creating Different FidelitySAM
+  if (isShearWall)
+  {
+	  OpenSeesConcreteShearWalls shearWallPreProcessor;
+
+	  if (argc == 6) 
+	  {
+		  shearWallPreProcessor.createInputFile(filenameBIM,
+			  filenameSAM,
+			  filenameEVENT,
+			  filenameEDP,
+			  filenameTCL);
+	  }
+	  else 
+	  {
+		  shearWallPreProcessor.createInputFile(filenameBIM,
+			  filenameSAM,
+			  filenameEVENT,
+			  filenameEDP,
+			  filenameTCL,
+			  argv[6]);
+	  }
+  }
+  else
+  {
+	  OpenSeesPreprocessor *thePreprocessor = new OpenSeesPreprocessor();
+
+	  if (argc == 6) {
+
+		  thePreprocessor->createInputFile(filenameBIM,
+			  filenameSAM,
+			  filenameEVENT,
+			  filenameEDP,
+			  filenameTCL);
+	  }
+	  else {
+
+		  thePreprocessor->createInputFile(filenameBIM,
+			  filenameSAM,
+			  filenameEVENT,
+			  filenameEDP,
+			  filenameTCL,
+			  argv[6]);
+	  }
+	  delete thePreprocessor;
+  }
+  
   return 0;
 }
 

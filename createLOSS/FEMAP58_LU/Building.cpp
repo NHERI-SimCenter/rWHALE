@@ -172,9 +172,9 @@ void Building::readEDP(const char *filenameEDP,int resp_index)
         double value = 0;
         json_t *values = json_object_get(response,"scalar_data");
         if(json_is_real(values) && resp_index == 0)
-            value = json_real_value(values);
+            value = json_number_value(values);
         else
-            value = json_real_value(json_array_get(values, resp_index));
+            value = json_number_value(json_array_get(values, resp_index));
 
 	    if (edp.PFA[floor-1] < value)	    
 	      edp.PFA[floor-1] = value;
@@ -186,9 +186,9 @@ void Building::readEDP(const char *filenameEDP,int resp_index)
         double value = 0;
         json_t *values = json_object_get(response,"scalar_data");
         if(json_is_real(values) && resp_index == 0)
-            value = json_real_value(values);
+            value = json_number_value(values);
         else
-            value = json_real_value(json_array_get(values, resp_index));
+            value = json_number_value(json_array_get(values, resp_index));
 
 	    if (edp.IDR[floor1-1] < value)	    
 	      edp.IDR[floor1-1] = value;	    
@@ -200,9 +200,9 @@ void Building::readEDP(const char *filenameEDP,int resp_index)
         double value = 0;
         json_t *values = json_object_get(response,"scalar_data");
         if(json_is_real(values) && resp_index == 0)
-            value = json_real_value(values);
+            value = json_number_value(values);
         else
-            value = json_real_value(json_array_get(values, resp_index));
+            value = json_number_value(json_array_get(values, resp_index));
 
 	    if (edp.residual < value)
 	      edp.residual =value;

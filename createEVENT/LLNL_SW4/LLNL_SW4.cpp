@@ -172,7 +172,7 @@ int main(int argc, char **argv) {
 
   float buildingLoc[2];
   buildingLoc[0] = json_number_value(json_object_get(location,"latitude"));
-  buildingLoc[1] = json_real_value(json_object_get(location,"longitude"));
+  buildingLoc[1] = json_number_value(json_object_get(location,"longitude"));
 
   json_object_clear(root);  
 

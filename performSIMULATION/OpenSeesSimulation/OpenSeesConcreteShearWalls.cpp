@@ -10,6 +10,9 @@
 #include <iostream>
 #include <cmath>
 #include <typeinfo>
+#include <algorithm>
+
+using namespace std;
 
 OpenSeesConcreteShearWalls::OpenSeesConcreteShearWalls()
     : filenameBIM(0), filenameSAM(0), filenameEVENT(0), filenameEDP(0),
@@ -65,6 +68,7 @@ int OpenSeesConcreteShearWalls::writeRV(const char *BIM,
   // write the file & clean memory
   json_dump_file(root, outputFilename, 0);
   json_object_clear(root);
+  return 0;
 }
 
 int OpenSeesConcreteShearWalls::createInputFile(const char *BIM,
@@ -109,8 +113,8 @@ int OpenSeesConcreteShearWalls::createInputFile(const char *BIM,
   //Parse BIM Json input file
 
   json_error_t error0;
-  json_t *rootBIM = json_load_file((filenameBIM), 0, &error0);
-  json_t *GI = json_object_get(rootBIM, "GeneralInformation");
+  rootBIM = json_load_file((filenameBIM), 0, &error0);
+  json_t *GI = json_object_get(rootBIM, "GI");
   volumeOfWall = json_number_value(json_object_get(GI, "volume"));
 
   //
@@ -131,14 +135,26 @@ int OpenSeesConcreteShearWalls::createInputFile(const char *BIM,
 
   mapping = json_object_get(rootSAM, "nodeMapping");
 
+  tclFile << "#Nodes Coordinates" << std::endl;
   processNodes(tclFile);
+  tclFile << std::endl << std::endl;
 
+  tclFile << "#Material Properties" << std::endl;
   processMaterials(tclFile);
+  tclFile << std::endl << std::endl;
+
+  tclFile << "#Element Connectivity" << std::endl;
   processElements(tclFile);
+  tclFile << std::endl << std::endl;
+
   //processDamping(tclFile);
 
   rootEVENT = json_load_file(filenameEVENT, 0, &error);
   rootEDP = json_load_file(filenameEDP, 0, &error);
+
+  tclFile << "#Floors Masses" << std::endl;
+  processFloorsMasses(tclFile);
+  tclFile << std::endl << std::endl;
 
   processEvents(tclFile);
 
@@ -201,9 +217,17 @@ int OpenSeesConcreteShearWalls::createInputFile(const char *BIM,
 
   mapping = json_object_get(rootSAM, "nodeMapping");
 
+  tclFile << "#Nodes Coordinates" << std::endl;
   processNodes(tclFile);
+  tclFile << std::endl << std::endl;
+
+  tclFile << "#Material Properties" << std::endl;
   processMaterials(tclFile);
+  tclFile << std::endl << std::endl;
+
+  tclFile << "#Element Connectivity" << std::endl;
   processElements(tclFile);
+  tclFile << std::endl << std::endl;
 
   rootEVENT = json_load_file(filenameEVENT, 0, &error);
   rootEDP = json_load_file(filenameEDP, 0, &error);
@@ -233,16 +257,16 @@ int OpenSeesConcreteShearWalls::processMaterials(ofstream &s)
     if (strcmp(type, "shear") == 0)
     {
       int tag = json_integer_value(json_object_get(material, "name"));
-      double K0 = json_real_value(json_object_get(material, "K0"));
-      double Sy = json_real_value(json_object_get(material, "Sy"));
-      double eta = json_real_value(json_object_get(material, "eta"));
-      double C = json_real_value(json_object_get(material, "C"));
-      double gamma = json_real_value(json_object_get(material, "gamma"));
-      double alpha = json_real_value(json_object_get(material, "alpha"));
-      double beta = json_real_value(json_object_get(material, "beta"));
-      double omega = json_real_value(json_object_get(material, "omega"));
-      double eta_soft = json_real_value(json_object_get(material, "eta_soft"));
-      double a_k = json_real_value(json_object_get(material, "a_k"));
+      double K0 = json_number_value(json_object_get(material, "K0"));
+      double Sy = json_number_value(json_object_get(material, "Sy"));
+      double eta = json_number_value(json_object_get(material, "eta"));
+      double C = json_number_value(json_object_get(material, "C"));
+      double gamma = json_number_value(json_object_get(material, "gamma"));
+      double alpha = json_number_value(json_object_get(material, "alpha"));
+      double beta = json_number_value(json_object_get(material, "beta"));
+      double omega = json_number_value(json_object_get(material, "omega"));
+      double eta_soft = json_number_value(json_object_get(material, "eta_soft"));
+      double a_k = json_number_value(json_object_get(material, "a_k"));
       //s << "uniaxialMaterial Elastic " << tag << " " << K0 << "\n";
       if (K0 == 0)
         K0 = 1.0e-6;
@@ -403,7 +427,7 @@ int OpenSeesConcreteShearWalls::processNodes(ofstream &s)
     json_array_foreach(crds, crdIndex, crd)
     {
       s << json_number_value(crd) << " ";
-      //s << json_real_value(crd)*2.54/100 << " ";// convert to m
+      //s << json_number_value(crd)*2.54/100 << " ";// convert to m
     }
 
     json_t *mass = json_object_get(node, "mass");
@@ -417,6 +441,16 @@ int OpenSeesConcreteShearWalls::processNodes(ofstream &s)
 
     s << "\n";
   }
+
+  s << "\n#Fixing nodes at the base\n";
+  std::vector<int> baseNodes = getNodesAtElevation(0.0);
+  for (auto baseNode : baseNodes)
+  {
+	  s << "fix " << baseNode << " 1 1 " << std::endl;
+  }
+
+  s << std::endl << std::endl;
+
   /*
   int nodeTag = getNode(1, 1);
   s << "fix " << nodeTag;
@@ -555,6 +589,23 @@ int OpenSeesConcreteShearWalls::processEvents(ofstream &s)
   double startPoint[2];
   double endPoint[2];
 
+	s << "timeSeries Constant 100 -factor 9.81" << std::endl;
+	s << "pattern UniformExcitation 100 2 -accel 100" << std::endl;
+
+	s << "constraints Plain\n";
+	s << "system UmfPack\n";
+	s << "test NormDispIncr 1.0e-3 30\n";
+	s << "algorithm ModifiedNewton\n";
+	s << "numberer RCM\n";
+	s << "integrator LoadControl 1\n";
+	s << "analysis Static\n";
+	s << "analyze " << 1 << "\n";
+
+	s << "puts \"Gravity loading done!\"" << std::endl;
+	s << "loadConst -time 0.0" << std::endl;
+	s << "wipeAnalysis" << std::endl;
+	s << std::endl;
+  
   for (int i = 0; i < numEvents; i++)
   {
 
@@ -571,8 +622,11 @@ int OpenSeesConcreteShearWalls::processEvents(ofstream &s)
       json_t *eventEDPs = json_array_get(edps, j);
       const char *edpEventName = json_string_value(json_object_get(eventEDPs, "name"));
 
+
+
       if (strcmp(edpEventName, eventName) == 0)
       {
+		/*
         json_t *eventEDP = json_object_get(eventEDPs, "responses");
         int numResponses = json_array_size(eventEDP);
         for (int k = 0; k < numResponses; k++)
@@ -656,6 +710,7 @@ int OpenSeesConcreteShearWalls::processEvents(ofstream &s)
               json_t *value = json_object_get(json_array_get(infoDataArray, 0), "value");
               */
 
+		  /*
               size_t indexInfoData;
               json_t *infoData;
 
@@ -708,6 +763,7 @@ int OpenSeesConcreteShearWalls::processEvents(ofstream &s)
           }
         }
         //endhere
+		*/
 
         /*
           if (strcmp(type, "force") == 0)
@@ -741,7 +797,9 @@ int OpenSeesConcreteShearWalls::processEvents(ofstream &s)
           */
       }
 
-      if (strcmp(edpEventName, eventName) == 1000) // 0 This is old code, useful to earthquake events.
+
+
+      if (strcmp(edpEventName, eventName) == 0) // 0 This is old code, useful to earthquake events.
       {
         json_t *eventEDP = json_object_get(eventEDPs, "responses");
         int numResponses = json_array_size(eventEDP);
@@ -755,7 +813,7 @@ int OpenSeesConcreteShearWalls::processEvents(ofstream &s)
             int cline = json_integer_value(json_object_get(response, "cline"));
             int floor = json_integer_value(json_object_get(response, "floor"));
 
-            int nodeTag = this->getNode(cline, floor);
+            int nodeTag = this->getNode(cline, floor-1);
             //	    std::ostringstream fileString(string(edpEventName)+string(type));
             string fileString;
             ostringstream temp; //temp as in temporary
@@ -768,10 +826,10 @@ int OpenSeesConcreteShearWalls::processEvents(ofstream &s)
             s << "recorder EnvelopeNode -file " << fileName;
             s << " -timeSeries ";
             for (int i = 0; i < NDF; i++)
-              s << i + startTimeSeries << " ";
+              s << 1 << " ";
             s << " -node " << nodeTag << " -dof ";
             for (int i = 1; i <= NDF; i++)
-              s << i << " ";
+              s << 1 << " ";
             s << " accel\n";
           }
 
@@ -781,8 +839,8 @@ int OpenSeesConcreteShearWalls::processEvents(ofstream &s)
             int floor1 = json_integer_value(json_object_get(response, "floor1"));
             int floor2 = json_integer_value(json_object_get(response, "floor2"));
 
-            int nodeTag1 = this->getNode(cline, floor1);
-            int nodeTag2 = this->getNode(cline, floor2);
+            int nodeTag1 = this->getNode(cline, floor1 - 1);
+            int nodeTag2 = this->getNode(cline, floor2 - 1);
 
             string fileString1;
             string fileString2;
@@ -798,11 +856,11 @@ int OpenSeesConcreteShearWalls::processEvents(ofstream &s)
 
             s << "recorder EnvelopeDrift -file " << fileName1;
             s << " -iNode " << nodeTag1 << " -jNode " << nodeTag2;
-            s << " -dof 1 -perpDirn 1\n";
+            s << " -dof 1 -perpDirn 2\n";
 
             s << "recorder EnvelopeDrift -file " << fileName2;
             s << " -iNode " << nodeTag1 << " -jNode " << nodeTag2;
-            s << " -dof 2 -perpDirn 1\n";
+            s << " -dof 1 -perpDirn 2\n";
           }
 
           else if (strcmp(type, "residual_disp") == 0)
@@ -811,7 +869,7 @@ int OpenSeesConcreteShearWalls::processEvents(ofstream &s)
             int cline = json_integer_value(json_object_get(response, "cline"));
             int floor = json_integer_value(json_object_get(response, "floor"));
 
-            int nodeTag = this->getNode(cline, floor);
+            int nodeTag = this->getNode(cline, floor - 1);
 
             string fileString;
             ostringstream temp; //temp as in temporary
@@ -823,82 +881,15 @@ int OpenSeesConcreteShearWalls::processEvents(ofstream &s)
             s << "recorder Node -file " << fileName;
             s << " -node " << nodeTag << " -dof ";
             for (int i = 1; i <= NDF; i++)
-              s << i << " ";
+              s << 1 << " ";
             s << " disp\n";
           }
         }
       }
     }
 
-    // create analysis
-    if (analysisType == -999) // 1
-    {
-      //      s << "handler Plain\n";
-      s << "numberer RCM\n";
-      s << "system BandGen\n";
 
-      if (filenameUQ != 0)
-      {
-        printf("HI filenameUQ %s\n", filenameUQ);
-        json_error_t error;
-        json_t *rootUQ = json_load_file(filenameUQ, 0, &error);
-        json_dump_file(rootUQ, "TEST", 0);
-
-        json_t *theRVs = json_object_get(rootUQ, "RandomVariables");
-        json_t *theRV;
-        int index;
-
-        json_array_foreach(theRVs, index, theRV)
-        {
-          const char *type = json_string_value(json_object_get(theRV, "name"));
-          printf("type: %s\n", type);
-          if (strcmp(type, "integration_scheme") == 0)
-          {
-            //	    const char *typeI = json_string_value(json_object_get(theRV,"value"));
-            int typeI = json_integer_value(json_object_get(theRV, "value"));
-            if (typeI == 1)
-            {
-              s << "integrator Newmark 0.5 0.25\n";
-            }
-            else if (typeI == 2)
-            {
-              s << "integrator Newmark 0.5 0.1667\n";
-            }
-            else if (typeI == 3)
-            {
-              s << "integrator HHT .9\n";
-            }
-            //	  printf("type: %s\n",typeI);
-            /*
-	    int typeI = json_integer_value(json_object_get(theRV,"value"));
-	    if (strcmp(typeI,"NewmarkLinear") == 0) {    
-	      //	      s << "integrator Newmark 0.5 0.25\n";
-	    } else if (strcmp(typeI,"NewmarkAverage") == 0) {    
-	      //	      s << "integrator Newmark 0.5 0.1667\n";
-	    } else if (strcmp(typeI,"HHTpt9") == 0) {    
-	      //	      s << "integrator HHT .9\n";
-	    }
-	    */
-          }
-        }
-      }
-
-      s << "analysis Transient\n";
-      s << "analyze " << numSteps << " " << dT << "\n";
-    }
-
-    if (analysisType == 100) // 1  gravity
-    {
-      s << "constraints Plain\n";
-      s << "system UmfPack\n";
-      s << "test NormDispIncr 1.0e-3 30\n";
-      s << "algorithm ModifiedNewton\n";
-      s << "numberer RCM\n";
-      s << "integrator LoadControl 1\n";
-      s << "analysis Static\n";
-      s << "analyze " << 1 << "\n";
-    }
-
+	/*
     // add self weihts
     //pattern Plain 100 "Linear" {
     //  load $nodeTag 0.0 [expr ($widthX*$heightY*$thickness*$rho*$g)/(($numX+1)*($numY+1))];#SELF-WEIGHT
@@ -906,7 +897,7 @@ int OpenSeesConcreteShearWalls::processEvents(ofstream &s)
     int numNodes = json_array_size(nodes);
     s << "set numNodes " << numNodes << " \n";
     s << "set rho " << 2383.0 * 3.61273e-5 / 1000 << " \n"; //kilo-lb per cubic inch
-    s << "set g -1.0 \n";                             // lb force
+    s << "set g -9.81 \n";                             // lb force
 
     s << "set volumeOfWall " << volumeOfWall << "\n"; // TODO
 
@@ -918,8 +909,8 @@ int OpenSeesConcreteShearWalls::processEvents(ofstream &s)
     }
 
     s << "} \n";
-
-    if (analysisType == 1) // cyclic
+	*/
+    if (analysisType == 2) // cyclic
     {
 
       // apply gravity
@@ -968,6 +959,72 @@ int OpenSeesConcreteShearWalls::processEvents(ofstream &s)
       s << "remove recorders \n";
       s << "wipe  \n";
     }
+
+
+	// create analysis
+	if (analysisType == 1) // 1
+	{
+		//      s << "handler Plain\n";
+		s << "numberer RCM\n";
+		s << "system UmfPack\n";
+
+		if (filenameUQ != 0)
+		{
+			printf("HI filenameUQ %s\n", filenameUQ);
+			json_error_t error;
+			json_t *rootUQ = json_load_file(filenameUQ, 0, &error);
+			json_dump_file(rootUQ, "TEST", 0);
+
+			json_t *theRVs = json_object_get(rootUQ, "RandomVariables");
+			json_t *theRV;
+			int index;
+
+			json_array_foreach(theRVs, index, theRV)
+			{
+				const char *type = json_string_value(json_object_get(theRV, "name"));
+				printf("type: %s\n", type);
+				if (strcmp(type, "integration_scheme") == 0)
+				{
+					//	    const char *typeI = json_string_value(json_object_get(theRV,"value"));
+					int typeI = json_integer_value(json_object_get(theRV, "value"));
+					if (typeI == 1)
+					{
+						s << "integrator Newmark 0.5 0.25\n";
+					}
+					else if (typeI == 2)
+					{
+						s << "integrator Newmark 0.5 0.1667\n";
+					}
+					else if (typeI == 3)
+					{
+						s << "integrator HHT .9\n";
+					}
+					//	  printf("type: %s\n",typeI);
+					/*
+					int typeI = json_integer_value(json_object_get(theRV,"value"));
+					if (strcmp(typeI,"NewmarkLinear") == 0) {
+					//	      s << "integrator Newmark 0.5 0.25\n";
+					} else if (strcmp(typeI,"NewmarkAverage") == 0) {
+					//	      s << "integrator Newmark 0.5 0.1667\n";
+					} else if (strcmp(typeI,"HHTpt9") == 0) {
+					//	      s << "integrator HHT .9\n";
+					}
+					*/
+				}
+			}
+		}
+		else
+		{
+			s << "constraints Plain" << std::endl;
+			s << "integrator Newmark 0.5 0.25" << std::endl;
+			s << "test NormDispIncr 1.0e-3 30" << std::endl;
+			s << "algorithm ModifiedNewton" << std::endl;
+		}
+
+		s << "analysis Transient\n";
+		s << "analyze " << numSteps << " " << dT << "\n";
+		s << "puts \"Nonlinear dynamic analysis is done!\"" << std::endl;
+	}
   }
 
   return 0;
@@ -999,11 +1056,14 @@ int OpenSeesConcreteShearWalls::processEvent(ofstream &s,
   json_t *timeSeriesArray = json_object_get(event, "timeSeries");
   json_array_foreach(timeSeriesArray, index, timeSeries)
   {
+	  if (index > 0)
+		  continue;
+
     const char *subType = json_string_value(json_object_get(timeSeries, "type"));
-    if (strcmp(subType, "PathValue") == 0)
+    if (strcmp(subType, "Value") == 0)
     {
-      double dt = json_number_value(json_object_get(timeSeries, "dt"));
-      json_t *data = json_object_get(timeSeries, "values");
+      double dt = json_number_value(json_object_get(timeSeries, "dT"));
+      json_t *data = json_object_get(timeSeries, "data");
       s << "timeSeries Path " << numSeries << " -dt " << dt;
       s << " -values \{ ";
       json_t *dataV;
@@ -1011,12 +1071,15 @@ int OpenSeesConcreteShearWalls::processEvent(ofstream &s,
 
       json_array_foreach(data, dataIndex, dataV)
       {
-        s << json_number_value(json_array_get(dataV, 0)) << " ";
+		  double a = json_number_value(dataV);
+        s << json_number_value(dataV) << " ";
       }
       s << " }\n";
 
+	  /*
       int nPts = json_array_size(data);
       s << "set nPts " << nPts << " \n";
+	  */
 
       string name(json_string_value(json_object_get(timeSeries, "name")));
       printf("%s\n", name.c_str());
@@ -1045,16 +1108,17 @@ int OpenSeesConcreteShearWalls::processEvent(ofstream &s,
     }
   }
 
-  json_t *boundaryConditionsArray = json_object_get(event, "boundaryConditions");
+  /*json_t *boundaryConditionsArray = json_object_get(event, "boundaryConditions");
   json_t *loadsArray = json_object_get(event, "loads");
+  json_t *loadsArray = json_object_get(event, "pattern");
   size_t indexLoads;
   json_t *loadJson;
   json_array_foreach(loadsArray, indexLoads, loadJson)
   {
     json_array_append_new(boundaryConditionsArray, loadJson);
-  }
+  }*/
   json_t *patternArray = json_object_get(event, "pattern");
-  patternArray = boundaryConditionsArray;
+  //patternArray = boundaryConditionsArray;
 
   int nodeTag;
   string cline;
@@ -1075,7 +1139,7 @@ int OpenSeesConcreteShearWalls::processEvent(ofstream &s,
 
   json_array_foreach(patternArray, index, pattern)
   {
-    patternName = json_string_value(json_object_get(pattern, "name"));
+    //patternName = json_string_value(json_object_get(pattern, "name"));
     printf("pattern name is %s\n", patternName.c_str());
     patternType = json_string_value(json_object_get(pattern, "type"));
     timeSeriesName = json_string_value(json_object_get(pattern, "timeSeries"));
@@ -1091,6 +1155,7 @@ int OpenSeesConcreteShearWalls::processEvent(ofstream &s,
       positionType = "Point";
     else if (patternType.find("Line") != string::npos)
       positionType = "Line";
+
     else
       printf("positionType is not found! \n");
 
@@ -1240,6 +1305,25 @@ int OpenSeesConcreteShearWalls::processEvent(ofstream &s,
       s << "}\n";
     }
 
+	if (0 == patternType.compare("UniformAcceleration"))
+	{
+		if (numPattern > 1)
+			continue;
+		int dirn = json_integer_value(json_object_get(pattern, "dof"));
+
+		int series = 0;
+		string name(json_string_value(json_object_get(pattern, "timeSeries")));
+		printf("%s\n", name.c_str());
+		it = timeSeriesList.find(name);
+		if (it != timeSeriesList.end())
+			series = it->second;
+
+		int seriesTag = timeSeriesList[name];
+		s << "pattern UniformExcitation " << numPattern << " " << dirn;
+		s << " -accel " << series << "\n";
+		numPattern++;
+		
+	}
     numPattern++;
   }
 
@@ -1324,4 +1408,79 @@ int OpenSeesConcreteShearWalls::getNodeCrdByTag(int nodeTag, double pt[])
   }
 
   return -1;
+}
+
+std::vector<int> OpenSeesConcreteShearWalls::getNodesAtElevation(double elevation)
+{
+	std::vector<int> floorNodes;
+
+	json_t* nodeJson;
+	size_t index = 0;
+	json_array_foreach(nodes, index, nodeJson)
+	{
+		json_t* coordinates = json_object_get(nodeJson, "crd");
+		if (NULL == coordinates)
+			continue;
+
+		json_t* elevationJson = json_array_get(coordinates, 1);
+		double nodeElevation = json_number_value(elevationJson);
+
+		if (fabs(nodeElevation - elevation) < 1e-3)
+		{
+			floorNodes.push_back(json_integer_value(json_object_get(nodeJson, "name")));
+		}
+	}
+
+	return floorNodes;
+}
+
+void OpenSeesConcreteShearWalls::processFloorsMasses(ofstream & openSeesTcl)
+{
+	json_t* SI = json_object_get(rootBIM, "StructuralInformation");
+	if (NULL == SI)
+		return;
+
+	json_t* layout = json_object_get(SI, "layout");
+	if (NULL == layout)
+		return;
+
+	json_t* floors = json_object_get(layout, "floors");
+	if (NULL == floors)
+		return;
+	
+	json_t* GI = json_object_get(rootBIM, "GI");
+	if (NULL == GI)
+		return;
+
+	json_t* areaJson = json_object_get(GI, "area");
+	if (NULL == areaJson)
+		return;
+
+	double area = json_number_value(areaJson);
+	double floorMass = 1000.0 * area; //Mass assumed 1 ton/m^2
+
+	json_t* floorJson;
+	size_t index = 0;
+	json_array_foreach(floors, index, floorJson)
+	{
+		json_t* elevationJson = json_object_get(floorJson, "elevation");
+		double floorElevation = json_number_value(elevationJson);
+
+		std::vector<int> floorNodes = getNodesAtElevation(floorElevation);
+
+		if (!floorNodes.empty())
+		{
+			double nodeMass = floorMass / floorNodes.size();
+
+			for(auto nodeId : floorNodes)
+			{
+				openSeesTcl << "mass " << nodeId << " " << nodeMass << " 0.0" << std::endl;
+			}
+		}
+	}
+
+
+	
+
+
 }
