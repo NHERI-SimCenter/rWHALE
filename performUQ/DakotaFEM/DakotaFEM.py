@@ -1,3 +1,9 @@
+# import functions for Python 2.X support
+from __future__ import division, print_function
+import sys
+if sys.version.startswith('2'): 
+    range=xrange
+
 import sys
 import os
 import platform
@@ -45,7 +51,7 @@ elif  uqArgs.keepSamples.lower() == "false" or uqArgs.keepSamples is None:
     doCleanup = True
 else:
     doCleanup = True
-    print "Warning: {} is not a valid value for keepSamples".format(uqArgs.keepSamples)
+    print("Warning: {} is not a valid value for keepSamples".format(uqArgs.keepSamples))
 
 numSamples = uqArgs.samples
 rngSeed = uqArgs.seed
@@ -88,11 +94,22 @@ subprocess.Popen(dakotaCommand, cwd=bldgName, shell=True).wait()
 
 #Postprocess Dakota results
 if(numRVs > 0):
-    postprocessCommand = '{}/postprocessDAKOTA {} {} {} {} {}'.format(scriptDir, numRVs, numSamples, bimName, edpName, lossName) \
-+ ' ./{}/dakotaTab.out '.format(bldgName) + './{}/'.format(bldgName)
+    #postprocessCommand = '{}/postprocessDAKOTA {} {} {} {} {}'.format(scriptDir, numRVs, ) \
+    #+ ' ./{}/dakotaTab.out '.format(bldgName) + './{}/'.format(bldgName)
+    postprocessCommand = [u''+os.path.join(scriptDir,'postprocessDAKOTA'),
+                          u'{}'.format(numRVs), u'{}'.format(numSamples), 
+                          bimName, edpName, lossName,
+                          u'./{}/dakotaTab.out'.format(bldgName),
+                          u'./{}/'.format(bldgName)]
 else:
-    postprocessCommand = '{}/postprocessDAKOTA {} {} {} {} {}'.format(scriptDir, 1, 1, bimName, edpName, lossName) \
-+ ' ./{}/dakotaTab.out '.format(bldgName) + './{}/'.format(bldgName)
+    #postprocessCommand = '{}/postprocessDAKOTA {} {} {} {} {}'.format(scriptDir, 1, 1, bimName, edpName, lossName) \
+    #+ ' ./{}/dakotaTab.out '.format(bldgName) + './{}/'.format(bldgName)
+    postprocessCommand = [u''+os.path.join(scriptDir,'postprocessDAKOTA'),
+                          u'1', u'1', bimName, edpName, lossName,
+                          u'./{}/dakotaTab.out'.format(bldgName),
+                          u'./{}/'.format(bldgName)]                       
+
+print(postprocessCommand)
 subprocess.Popen(postprocessCommand, shell=True).wait()
 
 #Clean up building folder
