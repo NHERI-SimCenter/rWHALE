@@ -1,6 +1,6 @@
 [requires]
 jansson/2.11@bincrafters/stable
-mongo-cxx-driver/3.3.0@bisect/stable
+#mongo-cxx-driver/3.3.0@bisect/stable
 
 [generators]
 cmake
