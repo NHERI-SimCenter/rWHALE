@@ -14,11 +14,11 @@ log_output = []
 from WorkflowUtils import *
 
 def main(run_type, inputFile, applicationsRegistry):
-    # the whole workflow is wrapped within a 'try' block.
-    # a number of exceptions (files missing, explicit application failures, etc.) are
-    # handled explicitly to aid the user.
-    # But unhandled exceptions case the workflow to stop with an error, handled in the
-    # exception block way at the bottom of this main() function
+    # The whole workflow is wrapped within a 'try' block.
+    # A number of exceptions (files missing, explicit application failures, 
+    # etc.) are handled explicitly to aid the user. But unhandled exceptions 
+    # cause the workflow to stop with an error, handled in the exception block 
+    # way at the bottom of this main() function
     try:
 
         workflow_log(divider)
@@ -29,20 +29,18 @@ def main(run_type, inputFile, applicationsRegistry):
         workflow_log('runtype:                   %s' % run_type)
         workflow_log(divider)
 
-
-        #
-        # first we parse the applications registry to load all possible applications
-        #  - for each application type we place in a dictionary key being name, value containing path to executable
-        #
+        # First, we parse the applications registry to load all possible 
+        # applications - for each application type we place in a dictionary key 
+        # being name, value containing path to executable
         with open(applicationsRegistry, 'r') as data_file:
             registryData = json.load(data_file)
             # convert all relative paths to full paths
             relative2fullpath(registryData)
 
-        A = 'Applications'
         Applications = dict()
-        appList = 'Building Event Modeling EDP Simulation UQ DamageAndLoss'.split(' ')
-        appList = [a + A for a in appList]
+        appList = [a + 'Applications' for a in ['Building','Event','Modeling',
+                                                'EDP','Simulation','UQ',
+                                                'DamageAndLoss']]
 
         for app_type in appList:
 
@@ -57,44 +55,32 @@ def main(run_type, inputFile, applicationsRegistry):
                         Applications[app_type] = dict()
                     Applications[app_type][appName] = appExe
 
-        #
         # open input file, and parse json into data
-        #
-
         with open(inputFile, 'r') as data_file:
             data = json.load(data_file)
             # convert all relative paths to full paths
             relative2fullpath(data)
 
-        #
         # get all application data, quit if error
-        #
-
         if 'WorkflowType' in data:
             typeWorkflow = data['WorkflowType']
         else:
             raise WorkFlowInputError('Need a Workflow Type')
 
-        # check correct workflow type
+        #TODO: check correct workflow type
 
         # Use workflow name to set cwd
         workDir = data['Name']
-        if(not os.path.exists(workDir)):
+        if (not os.path.exists(workDir)):
             os.mkdir(workDir)
-            
-        #
-        # now we parse for the applications & app specific data in workflow
-        #
 
+        # Now we parse for the applications & app specific data in workflow
         if 'Applications' in data:
             available_apps = data['Applications']
         else:
             raise WorkFlowInputError('Need an Applications Entry')
 
-        #
         # get building application and its data
-        #
-
         if 'Buildings' in available_apps:
             buildingApp = available_apps['Buildings']
 
@@ -109,29 +95,29 @@ def main(run_type, inputFile, applicationsRegistry):
                     print('Overriding min: ' + minArg)
                     buildingAppData['Min'] = minArg
 
-
                 if '-Max' in sys.argv:
                     maxArgIndex = sys.argv.index('-Max') + 1
                     maxArg = sys.argv[maxArgIndex]
                     print('Overriding max: ' + maxArg)
                     buildingAppData['Max'] = maxArg
 
-
-                if buildingApplication in Applications['BuildingApplications'].keys():
-                    buildingAppExe = u'' + Applications['BuildingApplications'].get(buildingApplication)
+                if (buildingApplication in 
+                    Applications['BuildingApplications'].keys()):
+                    buildingAppExe = (u'' +
+                        #u'' + Applications['BuildingApplications'].get(buildingApplication))                         
+                        Applications['BuildingApplications'][buildingApplication])
                 else:
-                    raise WorkFlowInputError('Building application %s not in registry' % buildingApplication)
-
+                    raise WorkFlowInputError(
+                        'Building application {} not in registry'.format(
+                            buildingApplication))
             else:
-                raise WorkFlowInputError('Need a Building Generator Application in Buildings')
-
+                raise WorkFlowInputError(
+                    'Need a Building Generator Application in Buildings')
         else:
             raise WorkFlowInputError('Need a Buildings Entry in Applications')
 
-        #
-        # get events, for each the  application and its data .. FOR NOW 1 EVENT
-        #
 
+        # get events, for each application and its data .. FOR NOW 1 EVENT
         if 'Events' in available_apps:
             events = available_apps['Events']
 
@@ -143,28 +129,28 @@ def main(run_type, inputFile, applicationsRegistry):
                             eventApplication = event['EventApplication']
                             eventAppData = event['ApplicationData']
                             eventData = event['ApplicationData']
-                            if eventApplication in Applications['EventApplications'].keys():
-                                eventAppExe = u'' + Applications['EventApplications'].get(eventApplication)
+                            if (eventApplication in 
+                                Applications['EventApplications'].keys()):
+                                eventAppExe = (u'' + 
+                                    Applications['EventApplications'][eventApplication])
                             else:
-                                raise WorkFlowInputError('Event application %s not in registry' % eventApplication)
-
+                                raise WorkFlowInputError(
+                                    'Event application {} not in registry'.format(
+                                        eventApplication))
                         else:
-                            raise WorkFlowInputError('Need an EventApplication section')
-
-
+                            raise WorkFlowInputError(
+                                'Need an EventApplication section')
                     else:
-                        raise WorkFlowInputError('Event classification must be Earthquake, not %s' % eventClassification)
-
+                        raise WorkFlowInputError(
+                            'Event classification must be Earthquake, '
+                            'not {}'.format(eventClassification))
                 else:
                     raise WorkFlowInputError('Need Event Classification')
-
         else:
             raise WorkFlowInputError('Need an Events Entry in Applications')
 
-        #
-        # get modeling application and its data
-        #
 
+        # get modeling application and its data
         if 'Modeling' in available_apps:
             modelingApp = available_apps['Modeling']
 
@@ -173,22 +159,23 @@ def main(run_type, inputFile, applicationsRegistry):
 
                 # check modeling app in registry, if so get full executable path
                 modelingAppData = modelingApp['ApplicationData']
-                if modelingApplication in Applications['ModelingApplications'].keys():
-                    modelingAppExe = u'' + Applications['ModelingApplications'].get(modelingApplication)
+                if (modelingApplication in 
+                    Applications['ModelingApplications'].keys()):
+                    modelingAppExe = (u'' + 
+                        Applications['ModelingApplications'][modelingApplication])
                 else:
-                    raise WorkFlowInputError('Modeling application %s not in registry' % modelingApplication)
-
+                    raise WorkFlowInputError(
+                        'Modeling application {} not in registry'.format(
+                            modelingApplication))
             else:
-                raise WorkFlowInputError('Need a ModelingApplication in Modeling data')
-
+                raise WorkFlowInputError(
+                    'Need a ModelingApplication in Modeling data')
 
         else:
             raise WorkFlowInputError('Need a Modeling Entry in Applications')
 
-        #
-        # get edp application and its data
-        #
 
+        # get EDP application and its data
         if 'EDP' in available_apps:
             edpApp = available_apps['EDP']
 
@@ -198,17 +185,18 @@ def main(run_type, inputFile, applicationsRegistry):
                 # check modeling app in registry, if so get full executable path
                 edpAppData = edpApp['ApplicationData']
                 if edpApplication in Applications['EDPApplications'].keys():
-                    edpAppExe = u'' + Applications['EDPApplications'].get(edpApplication)
+                    edpAppExe = (u'' + 
+                        Applications['EDPApplications'][edpApplication])
                 else:
-                    raise WorkFlowInputError('EDP application %s not in registry', edpApplication)
-
+                    raise WorkFlowInputError(
+                        'EDP application {} not in registry'.format(
+                            edpApplication))
             else:
                 raise WorkFlowInputError('Need an EDPApplication in EDP data')
-
-
         else:
             raise WorkFlowInputError('Need an EDP Entry in Applications')
 
+        # get simulation application and its data
         if 'Simulation' in available_apps:
             simulationApp = available_apps['Simulation']
 
@@ -217,18 +205,22 @@ def main(run_type, inputFile, applicationsRegistry):
 
                 # check modeling app in registry, if so get full executable path
                 simAppData = simulationApp['ApplicationData']
-                if simulationApplication in Applications['SimulationApplications'].keys():
-                    simAppExe = u'' + Applications['SimulationApplications'].get(simulationApplication)
+                if (simulationApplication in 
+                    Applications['SimulationApplications'].keys()):
+                    simAppExe = (u'' + 
+                        Applications['SimulationApplications'][simulationApplication])
                 else:
-                    raise WorkFlowInputError('Simulation application %s not in registry', simulationApplication)
-
+                    raise WorkFlowInputError(
+                        'Simulation application {} not in registry'.format(
+                            simulationApplication))
             else:
-                raise WorkFlowInputError('Need an SimulationApplication in Simulation data')
-
-
+                raise WorkFlowInputError(
+                    'Need an SimulationApplication in Simulation data')
         else:
             raise WorkFlowInputError('Need a Simulation Entry in Applications')
 
+
+        # get UQ application and its data
         if 'UQ-Simulation' in available_apps:
             uqApp = available_apps['UQ-Simulation']
 
@@ -238,14 +230,14 @@ def main(run_type, inputFile, applicationsRegistry):
                 # check modeling app in registry, if so get full executable path
                 uqAppData = uqApp['ApplicationData']
                 if uqApplication in Applications['UQApplications'].keys():
-                    uqAppExe = u'' + Applications['UQApplications'].get(uqApplication)
+                    uqAppExe = (u'' + 
+                                Applications['UQApplications'][uqApplication])
                 else:
-                    raise WorkFlowInputError('UQ application %s not in registry', uqApplication)
-
+                    raise WorkFlowInputError(
+                        'UQ application {} not in registry'.format(
+                            uqApplication))
             else:
                 raise WorkFlowInputError('Need a UQApplication in UQ data')
-
-
         else:
             raise WorkFlowInputError('Need a Simulation Entry in Applications')
 
@@ -257,33 +249,37 @@ def main(run_type, inputFile, applicationsRegistry):
 
                 # check modeling app in registry, if so get full executable path
                 dlAppData = DLApp['ApplicationData']
-                if dlApplication in Applications['DamageAndLossApplications'].keys():
-                    dlAppExe = u'' + Applications['DamageAndLossApplications'].get(dlApplication)
+                if (dlApplication in 
+                    Applications['DamageAndLossApplications'].keys()):
+                    dlAppExe = (u'' + 
+                        Applications['DamageAndLossApplications'][dlApplication])
                 else:
-                    raise WorkFlowInputError('Damage & Loss application %s not in registry' % dlApplication)
-
+                    raise WorkFlowInputError(
+                        'Damage & Loss application {} not in registry'.format(
+                            dlApplication))
             else:
-                raise WorkFlowInputError('Need a Damage&LossApplicationApplication in Damage & Loss data')
-
+                raise WorkFlowInputError(
+                    'Need a Damage&LossApplicationApplication in Damage & Loss '
+                    'data')
         else:
             raise WorkFlowInputError('Need a Simulation Entry in Applications')
 
         workflow_log('SUCCESS: Parsed workflow input')
         workflow_log(divider)
 
-        #
-        # now invoke the applications
-        #
 
-        #
+        # Now invoke the applications
+
         # put building generator application data into list and exe
-        #
-
         buildingsFile = os.path.abspath('{}/buildings.json'.format(workDir))
         if 'buildingFile' in data:
-            buildingsFile = os.path.abspath(workDir + '/' + data['buildingFile'])
+            buildingsFile = os.path.abspath(
+                os.path.join(workDir, data['buildingFile']))
 
-        buildingsFile = u'' + buildingsFile.replace('.json', '{}-{}.json'.format(buildingAppData['Min'], buildingAppData['Max']))
+        buildingsFile = (u'' + 
+                         buildingsFile.replace(
+                             '.json', '{}-{}.json'.format(buildingAppData['Min'],
+                                                          buildingAppData['Max'])))
         buildingAppDataList = [buildingAppExe, buildingsFile]
 
         for key in buildingAppData.keys():
@@ -295,18 +291,19 @@ def main(run_type, inputFile, applicationsRegistry):
                 value = buildingAppData.get(key)
                 # make sure we have an int
                 if not re.search('^[0-9]+$', value):
-                    print('Expected value for %s is not an integer: %s' %(key, value))
+                    print('Expected value for '
+                          '{} is not an integer: {}'.format(key, value))
                     print(buildingAppData)
                     sys.exit(1)
 
-        buildingAppDataList.append('-getRV')        
-        command, result, returncode = runApplication(buildingAppDataList, workDir)
+        buildingAppDataList.append('-getRV')
+        command, result, returncode = runApplication(buildingAppDataList,
+                                                     workDir)
         log_output.append([command, result, returncode])
 
         del buildingAppDataList[-1]
 
-        #
-        # now we need to open buildingsfile and for each building
+        # Now we need to open buildingsfile and for each building
         #  - get RV for EVENT file for building
         #  - get RV for SAM file for building
         #  - get EDP for buildings and event
@@ -318,7 +315,7 @@ def main(run_type, inputFile, applicationsRegistry):
             data = json.load(data_file)
 
         for building in data:
-            id = building['id']
+            id = u'' + building['id']
             bimFILE = u'' + building['file']
             eventFILE = id + '-EVENT.json'
             samFILE = id + '-SAM.json'
@@ -328,13 +325,16 @@ def main(run_type, inputFile, applicationsRegistry):
             driverFile = id + '-driver'
 
             # open driver file & write building app (minus the -getRV) to it
-            driverFILE = open(workDir + '/' +driverFile, 'w')
+            driverFILE = open(os.path.join(workDir, driverFile), 'w')
             for item in buildingAppDataList:
-                driverFILE.write('"%s" ' % item)
+                driverFILE.write('"{}" '.format(item))
             driverFILE.write('\n')
 
+
             # get RV for event
-            eventAppDataList = [eventAppExe, '-filenameBIM', bimFILE, '-filenameEVENT', eventFILE]
+            eventAppDataList = [eventAppExe, 
+                                '-filenameBIM', bimFILE,
+                                '-filenameEVENT', eventFILE]
             if (eventAppExe.endswith('.py')):
                 eventAppDataList.insert(0, 'python')
 
@@ -346,32 +346,40 @@ def main(run_type, inputFile, applicationsRegistry):
                 eventAppDataList.append(u'' + value)
 
             for item in eventAppDataList:
-                driverFILE.write('"%s" ' % item)
+                driverFILE.write('"{}" '.format(item))
             driverFILE.write('\n')
 
             eventAppDataList.append('-getRV')
-            command, result, returncode = runApplication(eventAppDataList, workDir)
+            command, result, returncode = runApplication(eventAppDataList,
+                                                         workDir)
             log_output.append([command, result, returncode])
 
+
             # get RV for building model
-            modelAppDataList = [modelingAppExe, '-filenameBIM', bimFILE, '-filenameEVENT', eventFILE, '-filenameSAM',
-                                samFILE]
+            modelAppDataList = [modelingAppExe, 
+                                '-filenameBIM', bimFILE,
+                                '-filenameEVENT', eventFILE, 
+                                '-filenameSAM', samFILE]
 
             for key in modelingAppData.keys():
                 modelAppDataList.append('-' + key)
                 modelAppDataList.append(u'' + modelingAppData.get(key))
 
             for item in modelAppDataList:
-                driverFILE.write('"%s" ' % item)
+                driverFILE.write('"{}" '.format(item))
             driverFILE.write('\n')
 
             modelAppDataList.append('-getRV')
-            command, result, returncode = runApplication(modelAppDataList, workDir)
+            command, result, returncode = runApplication(modelAppDataList,
+                                                         workDir)
             log_output.append([command, result, returncode])
 
 
-            # get RV for EDP!
-            edpAppDataList = [edpAppExe, '-filenameBIM', bimFILE, '-filenameEVENT', eventFILE, '-filenameSAM', samFILE,
+            # get RV for EDP
+            edpAppDataList = [edpAppExe, 
+                              '-filenameBIM', bimFILE,
+                              '-filenameEVENT', eventFILE, 
+                              '-filenameSAM', samFILE,
                               '-filenameEDP', edpFILE]
 
             for key in edpAppData.keys():
@@ -379,48 +387,64 @@ def main(run_type, inputFile, applicationsRegistry):
                 edpAppDataList.append(u'' + edpAppData.get(key))
 
             for item in edpAppDataList:
-                driverFILE.write('"%s" ' % item)
+                driverFILE.write('"{}" '.format(item))
             driverFILE.write('\n')
 
             edpAppDataList.append('-getRV')
-            command, result, returncode = runApplication(edpAppDataList, workDir)
+            command, result, returncode = runApplication(edpAppDataList,
+                                                         workDir)
             log_output.append([command, result, returncode])
 
+
             # get RV for Simulation
-            simAppDataList = [simAppExe, '-filenameBIM', bimFILE, '-filenameSAM', samFILE, '-filenameEVENT', eventFILE,
-                              '-filenameEDP', edpFILE, '-filenameSIM', simFILE]
-            
+            simAppDataList = [simAppExe, 
+                              '-filenameBIM', bimFILE,
+                              '-filenameSAM', samFILE, 
+                              '-filenameEVENT', eventFILE,
+                              '-filenameEDP', edpFILE, 
+                              '-filenameSIM', simFILE]
+
             if (simAppExe.endswith('.py')):
                 simAppDataList.insert(0, 'python')
-                
+
             for key in simAppData.keys():
                 simAppDataList.append('-' + key)
                 simAppDataList.append(u'' + simAppData.get(key))
 
             for item in simAppDataList:
-                driverFILE.write('"%s" ' % item)
+                driverFILE.write('"{}" '.format(item))
             driverFILE.write('\n')
 
             simAppDataList.append('-getRV')
-            command, result, returncode = runApplication(simAppDataList, workDir)
+            command, result, returncode = runApplication(simAppDataList,
+                                                         workDir)
             log_output.append([command, result, returncode])
 
-            # Adding CreateLoss to Dakota Driver
-            dlAppDataList = [dlAppExe, '-filenameBIM', bimFILE, '-filenameEDP', edpFILE, '-filenameLOSS', dlFILE]
 
-            for key in dlAppData.keys():
-                dlAppDataList.append('-' + key)
-                dlAppDataList.append(u'' + dlAppData.get(key))
+            # If FemaP58-LU is used, then we add CreateLoss to Dakota Driver
+            # (Otherwise, loss assessment is performed after all structural 
+            # response simulations are finished.)
+            if dlApplication == 'FemaP58-LU':
+                dlAppDataList = [dlAppExe, 
+                                 '-filenameBIM', bimFILE, 
+                                 '-filenameEDP', edpFILE, 
+                                 '-filenameLOSS', dlFILE]
+    
+                for key in dlAppData.keys():
+                    dlAppDataList.append('-' + key)
+                    dlAppDataList.append(u'' + dlAppData.get(key))
+    
+                for item in dlAppDataList:
+                    driverFILE.write('"{}" '.format(item))
 
-            for item in dlAppDataList:
-                driverFILE.write('"%s" ' % item)
-
-            # perform the simulation
+            # perform the structural response simulation
             driverFILE.close()
 
-            uqAppDataList = [uqAppExe, '-filenameBIM', bimFILE, '-filenameSAM', samFILE, '-filenameEVENT', eventFILE,
-                             '-filenameEDP', edpFILE, '-filenameLOSS', dlFILE, '-filenameSIM', simFILE, '-driverFile',
-                             driverFile]
+            uqAppDataList = [uqAppExe, 
+                             '-filenameBIM', bimFILE, '-filenameSAM', samFILE, 
+                             '-filenameEVENT', eventFILE, '-filenameEDP', edpFILE, 
+                             '-filenameLOSS', dlFILE, '-filenameSIM', simFILE, 
+                             '-driverFile', driverFile]
             if (uqAppExe.endswith('.py')):
                 uqAppDataList.insert(0, 'python')
 
@@ -430,29 +454,35 @@ def main(run_type, inputFile, applicationsRegistry):
                     uqAppDataList.append(u'' + str(uqAppData.get(key)))
 
             if run_type == 'run':
-                workflow_log('Running simulation for building ' + id + '...')
-                command, result, returncode = runApplication(uqAppDataList, workDir)
+                workflow_log('Running simulation for building {} ...'.format(id))
+                command, result, returncode = runApplication(uqAppDataList,
+                                                             workDir)
                 log_output.append([command, result, returncode])
             else:
                 workflow_log('Check run only. No simulation performed.')
 
+            # Perform the loss assessment (unless FemaP58-LU is used)
+            
+
+        # Collect the Damage and Loss data into a single file
         minBldg = buildingAppData['Min']
         maxBldg = buildingAppData['Max']
-        readDLs = [os.path.abspath("../build/bin/ReadDLs"), minBldg, maxBldg, "DLs{}-{}.csv".format(minBldg, maxBldg)]
+        readDLs = [os.path.abspath("../build/bin/ReadDLs"), minBldg, maxBldg,
+                   "DLs{}-{}.csv".format(minBldg, maxBldg)]
         command, result, returncode = runApplication(readDLs, workDir)
         log_output.append([command, result, returncode])
         return [minBldg, maxBldg]
 
     except WorkFlowInputError as e:
-        workflow_log('workflow error: %s' % e.value)
+        workflow_log('workflow error: {}'.format(e.value))
         workflow_log(divider)
         exit(1)
 
     # unhandled exceptions are handled here
     except:
-        raise
         workflow_log('unhandled exception... exiting')
-        exit(1)
+        raise
+        exit(1) # azs - this seems unnecessary 
 
 
 if __name__ == '__main__':
@@ -469,15 +499,15 @@ if __name__ == '__main__':
 
     if len(sys.argv) == 4:
         run_type = sys.argv[1]
-        inputFile = sys.argv[2]    
+        inputFile = sys.argv[2]
         applicationsRegistry = sys.argv[3]
 
     elif len(sys.argv) == 3:
-        inputFile = sys.argv[1]    
+        inputFile = sys.argv[1]
         applicationsRegistry = sys.argv[2]
 
     elif len(sys.argv) == 2:
-        inputFile = sys.argv[1]    
+        inputFile = sys.argv[1]
 
     [min, max] = main(run_type, inputFile, applicationsRegistry)
 
@@ -491,14 +521,16 @@ if __name__ == '__main__':
     # nb: log_output is a global variable, defined at the top of this script.
     for result in log_output:
         print(divider, file=log_filehandle)
-        print('command line:\n%s\n' % result[0], file=log_filehandle)
+        print('command line:\n{}\n'.format(result[0]), 
+              file=log_filehandle)
         print(divider, file=log_filehandle)
-        print('output from process:\n%s\n' % result[1], file=log_filehandle)
+        print('output from process:\n{}\n'.format(result[1]), 
+              file=log_filehandle)
 
     print(divider, file=log_filehandle)
     print('End of Log', file=log_filehandle)
     print(divider, file=log_filehandle)
 
-    workflow_log('Log file: %s' % workflow_log_file)
+    workflow_log('Log file: {}'.format(workflow_log_file))
     workflow_log('End of run.')
 
