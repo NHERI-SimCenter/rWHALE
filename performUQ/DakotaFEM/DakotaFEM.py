@@ -94,22 +94,12 @@ subprocess.Popen(dakotaCommand, cwd=bldgName, shell=True).wait()
 
 #Postprocess Dakota results
 if(numRVs > 0):
-    #postprocessCommand = '{}/postprocessDAKOTA {} {} {} {} {}'.format(scriptDir, numRVs, ) \
-    #+ ' ./{}/dakotaTab.out '.format(bldgName) + './{}/'.format(bldgName)
-    postprocessCommand = [u''+os.path.join(scriptDir,'postprocessDAKOTA'),
-                          u'{}'.format(numRVs), u'{}'.format(numSamples), 
-                          bimName, edpName, lossName,
-                          u'./{}/dakotaTab.out'.format(bldgName),
-                          u'./{}/'.format(bldgName)]
+    postprocessCommand = '"{}/postprocessDAKOTA" {} {} {} {} {}'.format(scriptDir, numRVs, numSamples, bimName, edpName, lossName) \
+    + ' ./{}/dakotaTab.out '.format(bldgName) + './{}/'.format(bldgName)
 else:
-    #postprocessCommand = '{}/postprocessDAKOTA {} {} {} {} {}'.format(scriptDir, 1, 1, bimName, edpName, lossName) \
-    #+ ' ./{}/dakotaTab.out '.format(bldgName) + './{}/'.format(bldgName)
-    postprocessCommand = [u''+os.path.join(scriptDir,'postprocessDAKOTA'),
-                          u'1', u'1', bimName, edpName, lossName,
-                          u'./{}/dakotaTab.out'.format(bldgName),
-                          u'./{}/'.format(bldgName)]                       
+    postprocessCommand = '"{}/postprocessDAKOTA" {} {} {} {} {}'.format(scriptDir, 1, 1, bimName, edpName, lossName) \
+    + ' ./{}/dakotaTab.out '.format(bldgName) + './{}/'.format(bldgName)                      
 
-print(postprocessCommand)
 subprocess.Popen(postprocessCommand, shell=True).wait()
 
 #Clean up building folder
