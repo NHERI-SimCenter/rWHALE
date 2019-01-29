@@ -220,7 +220,7 @@ int ConcreteRectangularWallSection::readFromJSON(json_t *obj)
 
     json_t *tranb_rebar = json_object_get(obj, "transverseBoundaryElementRebar");
     //t = json_string_value(json_object_get(tranb_rebar, "material"));
-    if (tranb_rebar > 0)
+    if (tranb_rebar != nullptr)
     {
       trb_mat.assign(json_string_value(json_object_get(tranb_rebar, "material")));
       trb_numBarsThickness = json_integer_value(json_object_get(tranb_rebar, "numBarsThickness"));
