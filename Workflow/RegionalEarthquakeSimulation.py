@@ -509,6 +509,9 @@ if __name__ == '__main__':
     elif len(sys.argv) == 2:
         inputFile = sys.argv[1]
 
+    else:
+        inputFile = sys.argv[1]    
+
     [min, max] = main(run_type, inputFile, applicationsRegistry)
 
     workflow_log_file = 'workflow-log-{}-{}.txt'.format(min, max)
