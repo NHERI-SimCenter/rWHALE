@@ -7,13 +7,14 @@ import sys
 import subprocess
 from time import gmtime, strftime
 import shutil
+import argparse
 
 divider = '#' * 80
 log_output = []
 
 from WorkflowUtils import *
 
-def main(run_type, inputFile, applicationsRegistry):
+def main(workflowArguments):
     # The whole workflow is wrapped within a 'try' block.
     # A number of exceptions (files missing, explicit application failures, 
     # etc.) are handled explicitly to aid the user. But unhandled exceptions 
@@ -24,15 +25,16 @@ def main(run_type, inputFile, applicationsRegistry):
         workflow_log(divider)
         workflow_log('Start of run')
         workflow_log(divider)
-        workflow_log('workflow input file:       %s' % inputFile)
-        workflow_log('application registry file: %s' % applicationsRegistry)
-        workflow_log('runtype:                   %s' % run_type)
+        workflow_log('Workflow Configuration:       %s' % workflowArguments.configuration)
+        workflow_log('Applications Registry: %s' % workflowArguments.registry)
+        if workflowArguments.check:
+            workflow_log('Run Type: check only')
         workflow_log(divider)
 
         # First, we parse the applications registry to load all possible 
         # applications - for each application type we place in a dictionary key 
         # being name, value containing path to executable
-        with open(applicationsRegistry, 'r') as data_file:
+        with open(workflowArguments.registry, 'r') as data_file:
             registryData = json.load(data_file)
             # convert all relative paths to full paths
             relative2fullpath(registryData)
@@ -56,7 +58,7 @@ def main(run_type, inputFile, applicationsRegistry):
                     Applications[app_type][appName] = appExe
 
         # open input file, and parse json into data
-        with open(inputFile, 'r') as data_file:
+        with open(workflowArguments.configuration, 'r') as data_file:
             data = json.load(data_file)
             # convert all relative paths to full paths
             relative2fullpath(data)
@@ -89,17 +91,13 @@ def main(run_type, inputFile, applicationsRegistry):
 
                 # check building app in registry, if so get full executable path
                 buildingAppData = buildingApp['ApplicationData']
-                if '-Min' in sys.argv:
-                    minArgIndex = sys.argv.index('-Min') + 1
-                    minArg = sys.argv[minArgIndex]
-                    print('Overriding min: ' + minArg)
-                    buildingAppData['Min'] = minArg
+                if workflowArguments.Min:
+                    print('Overriding min: ' + str(workflowArguments.Min))
+                    buildingAppData['Min'] = str(workflowArguments.Min)
 
-                if '-Max' in sys.argv:
-                    maxArgIndex = sys.argv.index('-Max') + 1
-                    maxArg = sys.argv[maxArgIndex]
-                    print('Overriding max: ' + maxArg)
-                    buildingAppData['Max'] = maxArg
+                if workflowArguments.Max:
+                    print('Overriding max: ' + str(workflowArguments.Max))
+                    buildingAppData['Max'] = str(workflowArguments.Max)
 
                 if (buildingApplication in 
                     Applications['BuildingApplications'].keys()):
@@ -453,13 +451,13 @@ def main(run_type, inputFile, applicationsRegistry):
                 if uqAppData.get(key) is not None:
                     uqAppDataList.append(u'' + str(uqAppData.get(key)))
 
-            if run_type == 'run':
+            if workflowArguments.check:
+                workflow_log('Check run only. No simulation performed.')
+            else:
                 workflow_log('Running simulation for building {} ...'.format(id))
                 command, result, returncode = runApplication(uqAppDataList,
                                                              workDir)
                 log_output.append([command, result, returncode])
-            else:
-                workflow_log('Check run only. No simulation performed.')
 
             # Perform the loss assessment (unless FemaP58-LU is used)
             
@@ -487,32 +485,19 @@ def main(run_type, inputFile, applicationsRegistry):
 
 if __name__ == '__main__':
 
-    # if len(sys.argv) < 4:
-    #     print('\nNeed three arguments, e.g.:\n')
-    #     print('    python %s action workflowinputfile.json workflowapplications.json' % sys.argv[0])
-    #     print('\nwhere: action is either check or run\n')
-    #     exit(1)
+    #Defining the command line arguments
+    workflowArgParser = argparse.ArgumentParser("Run the NHERI SimCenter workflow for a set of buildings")
+    workflowArgParser.add_argument("configuration", help="Configuration file specifying the applications and data to be used")
+    workflowArgParser.add_argument("-Min", type=int, default=None, help="Override the index of the first building")
+    workflowArgParser.add_argument("-Max", type=int, default=None, help="Override the index of the last building")
+    workflowArgParser.add_argument("-c", "--check", help="Check the configuration file", action="store_true")
+    workflowArgParser.add_argument("-r", "--registry", default="WorkflowApplications.json", help="Path to file containing registered workflow applications")
 
-    run_type = 'run'
-    applicationsRegistry = 'WorkflowApplications.json'
-    inputFile = ''
+    #Parsing the command line arguments
+    workflowArguments = workflowArgParser.parse_args()    
 
-    if len(sys.argv) == 4:
-        run_type = sys.argv[1]
-        inputFile = sys.argv[2]
-        applicationsRegistry = sys.argv[3]
-
-    elif len(sys.argv) == 3:
-        inputFile = sys.argv[1]
-        applicationsRegistry = sys.argv[2]
-
-    elif len(sys.argv) == 2:
-        inputFile = sys.argv[1]
-
-    else:
-        inputFile = sys.argv[1]    
-
-    [min, max] = main(run_type, inputFile, applicationsRegistry)
+    #Calling the main workflow method and passing the parsed arguments
+    [min, max] = main(workflowArguments)
 
     workflow_log_file = 'workflow-log-{}-{}.txt'.format(min, max)
     log_filehandle = open(workflow_log_file, 'w')
