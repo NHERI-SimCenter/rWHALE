@@ -72,6 +72,26 @@ Building::BldgOccupancy Building::s2BldgOccupancy(string s)
     return unknown;
 }
 
+Building::SeismicZone Building::s2SeismicZone(string s)
+{
+	transform(s.begin(), s.end(), s.begin(), ::toupper);
+
+	if (s == "Z0")
+		return Z0;
+	if (s == "Z1")
+		return Z1;
+	if (s == "Z2A")
+		return Z2A;
+	if (s == "Z2B")
+		return Z2B;
+	if (s == "Z3")
+		return Z3;
+	if (s == "Z4")
+		return Z4;
+
+	return UNKNOWNZONE;
+}
+
 void
 Building::readBIM(const char *event, const char *bim)
 {
@@ -122,11 +142,16 @@ Building::readBIM(const char *event, const char *bim, const char *sam)
   json_t *nType = json_object_get(GI,"numStory");
   json_t *hType = json_object_get(GI,"height");
   json_t *yType = json_object_get(GI,"yearBuilt");
+  json_t *zType = json_object_get(GI, "seismicZone");
 
   const char *type = json_string_value(sType);
   string s(type);
 
   strutype=s2StruType(s);
+
+  const char *type1 = json_string_value(zType);
+  string s1(type1);
+  zone = s2SeismicZone(s1);
 
   year=json_integer_value(yType);
   nStory=json_integer_value(nType);
