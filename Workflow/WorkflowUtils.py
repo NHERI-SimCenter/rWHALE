@@ -7,6 +7,7 @@ if sys.version.startswith('2'):
 import os
 import subprocess
 from time import gmtime, strftime
+import shutil
 
 class WorkFlowInputError(Exception):
     def __init__(self, value):
@@ -79,3 +80,11 @@ def recursive_iter(obj):
 
 def relative2fullpath(json_object):
     recursive_iter(json_object)
+
+def cleanupFile(filePath):
+    if os.path.exists(filePath):
+        os.remove(filePath)
+
+def cleanupFolder(folderPath):
+    if os.path.exists(folderPath):
+        shutil.rmtree(folderPath)

@@ -136,6 +136,21 @@
             "description":"Configuration file of the earthquake scenario including rupture, site grid, GMPE, IM and records selection"
           }
         ]
+      },
+      {
+        "Name": "NNGM",
+        "ExecutablePath": "../build/bin/NNGM.py",
+        "ApplicationSpecificInputs":[{
+            "id": "groundMotions",
+            "type": "path",
+            "description":"Configuration file with information about the ground motions to use"
+          },
+		  {
+            "id": "recordsFolder",
+            "type": "path",
+            "description":"Folder containing records"
+          }
+        ]
       }
     ]
   },
