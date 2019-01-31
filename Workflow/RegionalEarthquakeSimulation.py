@@ -29,6 +29,8 @@ def main(workflowArguments):
         workflow_log('Applications Registry: %s' % workflowArguments.registry)
         if workflowArguments.check:
             workflow_log('Run Type: check only')
+        if workflowArguments.forceCleanup:
+            workflow_log('Forced Cleanup Flag: True')
         workflow_log(divider)
 
         # First, we parse the applications registry to load all possible 
@@ -461,6 +463,15 @@ def main(workflowArguments):
 
             # Perform the loss assessment (unless FemaP58-LU is used)
             
+            #Cleanup if necessary (cleanup is forced for HPC)
+            if workflowArguments.forceCleanup:
+                cleanupFile(os.path.join(workDir, eventFILE))
+                cleanupFile(os.path.join(workDir, samFILE))
+                cleanupFile(os.path.join(workDir, edpFILE))
+                cleanupFile(os.path.join(workDir, simFILE))
+                cleanupFile(os.path.join(workDir, driverFile))
+
+                cleanupFolder(os.path.join(workDir, id))
 
         # Collect the Damage and Loss data into a single file
         minBldg = buildingAppData['Min']
@@ -469,6 +480,14 @@ def main(workflowArguments):
                    "DLs{}-{}.csv".format(minBldg, maxBldg)]
         command, result, returncode = runApplication(readDLs, workDir)
         log_output.append([command, result, returncode])
+
+        if workflowArguments.forceCleanup:
+            for building in data:
+                id = u'' + building['id']
+                dlFILE = id + '-DL.json'
+                cleanupFile(os.path.join(workDir, dlFILE))
+                cleanupFile(os.path.join(workDir, building['file']))
+
         return [minBldg, maxBldg]
 
     except WorkFlowInputError as e:
@@ -490,8 +509,9 @@ if __name__ == '__main__':
     workflowArgParser.add_argument("configuration", help="Configuration file specifying the applications and data to be used")
     workflowArgParser.add_argument("-Min", type=int, default=None, help="Override the index of the first building")
     workflowArgParser.add_argument("-Max", type=int, default=None, help="Override the index of the last building")
-    workflowArgParser.add_argument("-c", "--check", help="Check the configuration file", action="store_true")
+    workflowArgParser.add_argument("-c", "--check", help="Check the configuration file")
     workflowArgParser.add_argument("-r", "--registry", default="WorkflowApplications.json", help="Path to file containing registered workflow applications")
+    workflowArgParser.add_argument("-f", "--forceCleanup",  action="store_true", help="Path to file containing registered workflow applications")
 
     #Parsing the command line arguments
     workflowArguments = workflowArgParser.parse_args()    
