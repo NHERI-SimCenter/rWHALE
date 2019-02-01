@@ -42,7 +42,7 @@ In this framework for regional simulation, the JSON format is adopted for all th
 
   * **SHA-GM.py** [Experimental]: This application combines seismic hazard analysis (SHA) and ground motion record selection/scaling to provide ground motions for structural analysis based on a user-defined earthquake scenarios.
 
-* **NNGM.py** : This application assumes a set of recorded ground motion is provided and uses nearest-neighbor search to set the hazard input for each building using the nearest recorded ground motion.
+  * **NNGM.py** : This application assumes a set of recorded ground motion is provided and uses nearest-neighbor search to set the hazard input for each building using the nearest recorded ground motion.
 
 * **createSAM**:  This directory contains applications to create structural analysis model (SAM) given BIM and Event data
 
@@ -65,7 +65,7 @@ In this framework for regional simulation, the JSON format is adopted for all th
 
   * **FEMA_P58_LU**: Damage and loss assessment tool that uses FEMA-P58 methodology. This tool was developed by Prof. Xinzheng Lu's research group at Tsinghua University [1].
 
-  * **OpenPerform** [Under development]: an efficient object-oriented damage and loss assessment python tool using FEMA-P58 methodology is currently under development.
+  * **PELICUN** [Under development]: an efficient object-oriented damage and loss assessment python tool using FEMA-P58 methodology was developed by NHERI SimCenter and is currently being integrated with the regional simulation workflow.
 
 * **Workflow**: This directory contains scripts and examples to run the workflow with different configurations.
 
@@ -130,7 +130,11 @@ After installing the dependencies, building the workflow applications can then b
 
 ## Building the source code on Windows
 
-Visual studio projects is under development. Currently the workflow can be built and run in Windows using the Windows subsystem for Linux and building using the same commands for Linux systems.
+Building the workflow applications on Windows requires the following:
+1. [Visual Studio 2017 community edition](https://visualstudio.microsoft.com/vs/)
+2. [CMake](https://cmake.org/)
+
+The steps to build all the applications are as follows:
 
 1. Install the dependencies using Conan
 
@@ -147,11 +151,8 @@ cmake .. -G "Visual Studio 15 2017 Win64"
 
 ## Data
 
-Some data files required to run the workflow are not included in this repository, and are distributed using the [SimCenter Box account](https://berkeley.box.com/s/7es601ve766fprph88n67khfip7fqupd). If you cannot access the data, please contact the SimCenter using [Slack](https://designsafe-ci.slack.com/messages/C92HT3GG4) or by [email](nheri-simcenter@berkeley.edu).
+Sample data files for regional simulation of Anchorage, Alaska are available in DesignSafe data depot in the community folder in the following location [SimCenter/Datasets/AnchorageM7](https://www.designsafe-ci.org/data/browser/public/designsafe.storage.community//SimCenter/Datasets/AnchorageM7). If you cannot access the data, please contact the SimCenter using [Slack](https://designsafe-ci.slack.com/messages/C92HT3GG4) or by [email](nheri-simcenter@berkeley.edu).
 
-* **BIM Datasets**: The workflow is distributed with a sample UrbanSim data to run a sample number of buildings, e.g. sample buildings.csv and parcels.csv files for UrbanSimDatabase with 100 buildings. Data for SF Bay Area is available only for the GenericBimDatabase application and can be obtained from the SimCenter Box account.
-
-* **Ground Motion**: files for the LLNL Hayward 7.0 scenario are available through the SimCenter Box account.
 
 ## Pegasus Workflow
 
