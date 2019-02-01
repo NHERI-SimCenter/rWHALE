@@ -140,7 +140,7 @@ conan install ..
 
 2. Use CMake to generate the make files
 ```shell
-cmake ..
+cmake .. -G "Visual Studio 15 2017 Win64"
 ```
 
 3. Open the generated Visual Studio project (Project.sln) and build all the workflow applications.
