@@ -1,6 +1,7 @@
 #include "Building.h"
 #include <jansson.h> // for Json
 #include <cstring>
+#include <iostream>
 
 Building::Building()
   :kFactor(1.0), dampFactor(1.0)
@@ -142,15 +143,22 @@ Building::readBIM(const char *event, const char *bim, const char *sam)
   json_t *nType = json_object_get(GI,"numStory");
   json_t *hType = json_object_get(GI,"height");
   json_t *yType = json_object_get(GI,"yearBuilt");
+  
   json_t *zType = json_object_get(GI, "seismicZone");
-
   const char *type = json_string_value(sType);
   string s(type);
-
   strutype=s2StruType(s);
 
-  const char *type1 = json_string_value(zType);
-  string s1(type1);
+  const char *seismicZoneType = NULL;
+  if (NULL == zType)
+  {
+	  std::cout << "No seismic zone specificed, Assuming seismic zone 4.\n";
+	  seismicZoneType = "Z4";
+  }
+  else
+	  seismicZoneType = json_string_value(zType);
+
+  string s1(seismicZoneType);
   zone = s2SeismicZone(s1);
 
   year=json_integer_value(yType);
