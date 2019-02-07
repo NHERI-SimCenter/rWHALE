@@ -14,6 +14,7 @@ class Building
 public:
     enum StruType{RM1, RM2, URM, C1, C2, C3, W1, W2, S1, S2, S3, S4, S5, PC1, PC2, MH, UNKNOWN}; //Hazus structural type
     enum BldgOccupancy{office, education, healthcare, hospitality, residence, retail, warehouse, research, unknown};
+	enum SeismicZone{Z0, Z1, Z2A, Z2B, Z3, Z4, UNKNOWNZONE};	//UBC seismic zone, to determine codelevel
 
     struct EDP{     //engineering demand parameters
       vector<double> IDR; // Inter-story drift ratio. size = nStory
@@ -49,6 +50,9 @@ public:
     double clpsMedian;	    //collapse median. unit: m/s^2
     double clpsDispersion;  //collapse dispersion
     
+	SeismicZone zone;
+	SeismicZone s2SeismicZone(string s);
+
     //building structural info
     vector <InterstoryParam> interstoryParams;
     vector <FloorParam> floorParams;
@@ -64,6 +68,7 @@ public:
     double lambda(int n) {
       return 0.4053*(double)(n*n)+0.405*(double)(n)+0.1869;
     }
+
 };
 
 #endif // BUILDING_H
