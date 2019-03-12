@@ -1,5 +1,5 @@
 [requires]
-jansson/2.11@bincrafters/stable
+jansson/2.11@simcenter/stable
 #mongo-cxx-driver/3.3.0@bisect/stable
 
 [generators]
