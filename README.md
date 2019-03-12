@@ -99,9 +99,10 @@ Before building the workflow, the following dependencies will need to be install
 
 This repository uses CMake for the build process. The general instructions for building the workflow application is as follows:
 
-1. Install the dependencies using Conan
+1. Install the dependencies using Conan (note that adding the simcenter remote is only needed once)
 
 ```shell
+conan remote add simcenter https://api.bintray.com/conan/nheri-simcenter/simcenter
 conan install ..
 ```
 
@@ -136,9 +137,10 @@ Building the workflow applications on Windows requires the following:
 
 The steps to build all the applications are as follows:
 
-1. Install the dependencies using Conan
+1. Install the dependencies using Conan (note that adding the simcenter remote is only needed once)
 
 ```shell
+conan remote add simcenter https://api.bintray.com/conan/nheri-simcenter/simcenter
 conan install ..
 ```
 
