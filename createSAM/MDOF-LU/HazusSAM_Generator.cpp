@@ -85,14 +85,89 @@ void HazusSAM_Generator::CalcBldgPara(Building *bldg)
     bldg->floorParams.resize(bldg->nStory);
 
     //Determine seismic design level
-    // (Need further improvement: does not include low-code, does not consider seismic zone)
     int codelevel=0;
-    if(1973<bldg->year)
-        codelevel=0;    //high-code
-    else if (1941<=bldg->year && bldg->year<=1973)
-        codelevel=1;    //moderate-code
-    else
-        codelevel=3;    //pre-code
+	switch (bldg->zone)
+	{
+case 0:
+		codelevel = 3;	//pre-code
+		if (strucType == "W1")
+		{
+			codelevel = 2;	//low-code
+		}
+		break;
+	case 1:
+		if (1975 < bldg->year)
+			codelevel = 2;	//low-code
+		else {
+			codelevel = 3;	//pre-code
+			if (strucType == "W1")
+			{
+				codelevel = 2;	//low-code
+			}
+		}
+		break;
+	case 2:
+		if (1941 <= bldg->year)
+			codelevel = 2;	//low-code
+		else{
+			codelevel = 3;	//pre-code
+			if (strucType == "W1")
+			{
+				codelevel = 2;	//low-code
+			}
+		}
+		break;
+	case 3:
+		if (1975 < bldg->year)
+			codelevel = 1;	//moderate-code
+		else if (1941 <= bldg->year && bldg->year <= 1975)
+			codelevel = 2;	//low-code
+		else {
+			codelevel = 3;	//pre-code
+			if (strucType == "W1")
+			{
+				codelevel = 2;	//low-code
+			}
+		}
+		break;
+	case 4:
+		if (1941 <= bldg->year)
+			codelevel = 1;	//moderate-code
+		else{
+			codelevel = 3;	//pre-code
+			if (strucType == "W1")
+			{
+				codelevel = 1;	//moderate-code
+			}
+		}
+		break;
+	case 5:
+		if (1975 < bldg->year)
+			codelevel = 0;	//high-code
+		else if (1941 <= bldg->year && bldg->year <= 1975)
+			codelevel = 1;	//moderate-code
+		else{
+			codelevel = 3;	//pre-code
+			if (strucType=="W1")
+			{
+				codelevel = 1;	//moderate-code
+			}
+		}
+		break;
+	default:
+		if (1975 < bldg->year)
+			codelevel = 0;	//high-code
+		else if (1941 <= bldg->year && bldg->year <= 1975)
+			codelevel = 1;	//moderate-code
+		else{
+			codelevel = 3;	//pre-code
+			if (strucType == "W1")
+			{
+				codelevel = 1;	//moderate-code
+			}
+		}
+		break;
+	}
 
     bldg->dampingRatio=hazus[codelevel][strucType].damp;
 

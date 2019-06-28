@@ -14,8 +14,9 @@ with open('WorkflowTasks', 'w+') as tasksFile:
         min = i * 10 + 1
         max = (i + 1) * 10
         tasksFile.write('cd /tmp/WorkflowRegionalEarthquake/Workflow && ')  
-        tasksFile.write('python RegionalEarthquakeSimulation.py run {} WorkflowApplications.json -Min {} -Max {} && '.format(configFile, min, max))  
+        tasksFile.write('python RegionalEarthquakeSimulation.py {} -Min {} -Max {} -f && '.format(configFile, min, max))  
         tasksFile.write('mkdir -p {}/results/{}/ && '.format(outDir, subfolder))
-        tasksFile.write('cp -f {}/DLs{}-{}.csv {}/results/{}/\n'.format(configFile[:-5], min, max, outDir, subfolder))
+        tasksFile.write('cp -f {}/DLs{}-{}.csv {}/results/{}/ && '.format(configFile[:-5], min, max, outDir, subfolder))
+        tasksFile.write('mkdir -p {}/logs/{}/ && cp -f workflow-log-{}-{}.txt {}/logs/{}/\n'.format(outDir, subfolder, min, max, outDir, subfolder))
 
   
