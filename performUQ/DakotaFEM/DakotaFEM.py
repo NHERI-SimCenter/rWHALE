@@ -16,17 +16,17 @@ import argparse
 
 #Input Arguments Specifications
 uqArgParser = argparse.ArgumentParser()
-uqArgParser.add_argument("-filenameBIM", required=True, help="Path to BIM file")
-uqArgParser.add_argument("-filenameSAM", required=True, help="Path to SAM file")
-uqArgParser.add_argument("-filenameEVENT", required=True, help="Path to EVENT file")
-uqArgParser.add_argument("-filenameEDP", required=True, help="Path to EDP file")
-uqArgParser.add_argument("-filenameSIM", required=True, help="Path to SIM file")
-uqArgParser.add_argument("-filenameLOSS", required=True, help="Path to Damage & Loss file")
-uqArgParser.add_argument("-driverFile", required=True, help="Path to UQ driver")
-uqArgParser.add_argument("-samples", type=int, required=True, help="Number of samples")
-uqArgParser.add_argument("-seed", type=int, default=1, help="The seed used for random number generation")
-uqArgParser.add_argument("-keepSamples", help="A flag to specify whether to clean working directory for samples")
-uqArgParser.add_argument("-concurrency", type=int, default=1, help="Number of concurrent evaluations")
+uqArgParser.add_argument("-filenameBIM", "--filenameBIM", required=True, help="Path to BIM file")
+uqArgParser.add_argument("-filenameSAM", "--filenameSAM", required=True, help="Path to SAM file")
+uqArgParser.add_argument("-filenameEVENT", "--filenameEVENT", required=True, help="Path to EVENT file")
+uqArgParser.add_argument("-filenameEDP", "--filenameEDP", required=True, help="Path to EDP file")
+uqArgParser.add_argument("-filenameSIM", "--filenameSIM", required=True, help="Path to SIM file")
+uqArgParser.add_argument("-filenameLOSS", "--filenameLOSS", required=True, help="Path to Damage & Loss file")
+uqArgParser.add_argument("-driverFile", "--driverFile", required=True, help="Path to UQ driver")
+uqArgParser.add_argument("-samples", "--samples", type=int, required=True, help="Number of samples")
+uqArgParser.add_argument("-seed", "--seed", type=int, default=1, help="The seed used for random number generation")
+uqArgParser.add_argument("-keepSamples", "--keepSamples", help="A flag to specify whether to clean working directory for samples")
+uqArgParser.add_argument("-concurrency", "--concurrency", type=int, default=1, help="Number of concurrent evaluations")
 
 #Parse Arguments
 uqArgs = uqArgParser.parse_args()

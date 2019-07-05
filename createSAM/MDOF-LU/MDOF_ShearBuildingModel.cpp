@@ -20,23 +20,28 @@ int main(int argc, char **argv)
 
   int arg = 1;
   while (arg < argc) {
-    if (strcmp(argv[arg], "-filenameBIM") ==0) {
+    if ((strcmp(argv[arg], "-filenameBIM") ==0) || 
+		(strcmp(argv[arg], "--filenameBIM") ==0)) {
       arg++;
       filenameBIM = argv[arg];
     }
-    else if (strcmp(argv[arg], "-filenameEVENT") ==0) {
+    else if ((strcmp(argv[arg], "-filenameEVENT") == 0) ||
+		     (strcmp(argv[arg], "--filenameEVENT") == 0)) {
       arg++;
       filenameEVENT = argv[arg];
     }
-    else if (strcmp(argv[arg], "-filenameSAM") ==0) {
+    else if ((strcmp(argv[arg], "-filenameSAM") == 0) ||
+		     (strcmp(argv[arg], "--filenameSAM") == 0)) {
       arg++;
       filenameSAM = argv[arg];
     }
-    else if (strcmp(argv[arg], "-hazusData") ==0) {
+    else if ((strcmp(argv[arg], "-hazusData") == 0) ||
+		     (strcmp(argv[arg], "--hazusData") == 0)) {
       arg++;
       filenameHazusData = argv[arg];
     }
-    else if (strcmp(argv[arg], "-getRV") ==0) {
+    else if ((strcmp(argv[arg], "-getRV") == 0) ||
+		     (strcmp(argv[arg], "--getRV") == 0)) {
       getRV = true;
     }
     arg++;
