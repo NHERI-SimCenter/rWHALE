@@ -188,6 +188,11 @@ If you wish to try out existing workflow components with new parameters, or to
 develop new components, you may wish to consider using the 'test harness' provided in this repository.
 See the [README](./tests/README.md) in the ``tests`` directory for details.
 
+Please visit the [rWHALE Research Tool webpage](https://simcenter.designsafe-ci.org/research-tools/regional-workflow/)
+for more resources related to this tool. Additionally, this page
+provides more information on the NHERI SimCenter, including other SimCenter
+applications, FAQ, and how to collaborate.
+
 ## Disclaimer
 
 NHERI SimCenter provides the source code of the regional earthquake simulation workflow as-is and makes no representations or warranties of any kind concerning the source code and the results obtained from them, whether expressed, implied, statutory, or other. This includes, without limitation, warranties of title, merchantability, fitness for a particular purpose, non-infringement, absence of latent or other defects, accuracy, or the presence or absence of errors, whether or not known or discoverable.
