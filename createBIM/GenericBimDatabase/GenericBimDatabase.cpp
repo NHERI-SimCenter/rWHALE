@@ -29,37 +29,43 @@ int main(int argc, const char **argv)
     int maxRow = -1;
     bool getRV = false;
 
-    const char* buildingsFilename = NULL;
+    const char* buildingSourceFilename = NULL;
     const char* configFile = NULL;
-    const char* outputFile = argv[1];
+    const char* outputFile = argv[1]; //for the sake of backward compatibility
 
-    int arg = 2;
+    int arg = 1;
     while(arg < argc)
     {
-        if (strcmp(argv[arg], "-Min") == 0)
-        {
+        if ((strcmp(argv[arg], "-buildingFile") == 0) ||
+            (strcmp(argv[arg], "--buildingFile") == 0)) {
+            arg++;
+            outputFile = argv[arg];
+        }
+        else if ((strcmp(argv[arg], "-Min") == 0) ||
+                 (strcmp(argv[arg], "--Min") == 0)) {
             arg++;
             minRow = atoi(argv[arg]);
         }
-        else if (strcmp(argv[arg], "-Max") == 0)
-        {
+        else if ((strcmp(argv[arg], "-Max") == 0) ||
+                 (strcmp(argv[arg], "--Max") == 0)) {
             arg++;
             maxRow = atoi(argv[arg]);
         }
-        else if (strcmp(argv[arg], "-buildingsFile") == 0)
-        {
+        else if ((strcmp(argv[arg], "-buildingSourceFile") == 0) ||
+			     (strcmp(argv[arg], "-buildingsFile") == 0) ||
+                 (strcmp(argv[arg], "--buildingSourceFile") == 0)) {
             arg++;
-            buildingsFilename = argv[arg];
-            std::cerr << "Buildings File: " << buildingsFilename << std::endl;    
+            buildingSourceFilename = argv[arg];
+            std::cerr << "Building Source File: " << buildingSourceFilename << std::endl;    
         }
-        else if (strcmp(argv[arg], "-config") == 0)
-        {
+        else if ((strcmp(argv[arg], "-config") == 0) ||
+                 (strcmp(argv[arg], "--config") == 0)) {
             arg++;
             configFile = argv[arg];
         }
-        else if (strcmp(argv[arg], "-getRV") == 0)
-        {
-            getRV = true;
+        else if ((strcmp(argv[arg], "-getRV") == 0) ||
+                 (strcmp(argv[arg], "--getRV") == 0)) {
+          getRV = true;
         }
         arg++;
     }
@@ -78,7 +84,7 @@ int main(int argc, const char **argv)
         maxRow = tmp;
     }
 
-    if (minRow == -1 || maxRow == -1 || buildingsFilename == 0)
+    if (minRow == -1 || maxRow == -1 || buildingSourceFilename == 0)
     {
         std::cerr << "INVALID INPUT\n";
         exit(-1);
@@ -116,7 +122,7 @@ int main(int argc, const char **argv)
     // writing and write a BIM file
     //
   
-    CsvParser* csvparser = CsvParser_new(buildingsFilename, ",", 1);
+    CsvParser* csvparser = CsvParser_new(buildingSourceFilename, ",", 1);
     const CsvRow* header = CsvParser_getHeader(csvparser);
     CsvRow* row;
 
